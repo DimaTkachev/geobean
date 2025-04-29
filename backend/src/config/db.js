@@ -14,7 +14,7 @@ const pool = mysql.createPool({
 
 async function connectToDatabase() {
     const maxRetries = 5;
-    const retryDelay = 5000; // 2 seconds
+    const retryDelay = 2000; // 2 seconds
 
     for (let i = 0; i < maxRetries; i++) {
         try {

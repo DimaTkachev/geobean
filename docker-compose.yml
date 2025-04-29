@@ -1,0 +1,34 @@
+version: "3.8"
+
+services:
+  backend:
+    build: ./backend # Теперь указывает на правильную папку
+    ports:
+      - "5001:5001"
+    environment:
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASSWORD=password
+      - DB_NAME=geobean
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./backend/src:/app/src
+
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: geobean
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+    command: --default-authentication-plugin=mysql_native_password
+
+volumes:
+  mysql-data:

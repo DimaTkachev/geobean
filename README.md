@@ -7,12 +7,10 @@
 
 ### Running
 
-1. Start the backend:
+1. Start the backend in root folder:
 
    ```bash
-   docker-compose -f backend/docker-compose.yml up --build
-
-   npm run dev
+   docker-compose up --build
    ```
 
 2. Start the frontend in another terminal:

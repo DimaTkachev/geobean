@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   backend:
-    build: ./backend # Теперь указывает на правильную папку
+    build: ./backend
     ports:
       - "5001:5001"
     environment:
@@ -13,22 +13,49 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    volumes:
-      - ./backend/src:/app/src
+    restart: unless-stopped
 
   db:
     image: mysql:8.0
     environment:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: geobean
+      MYSQL_USER: devuser
+      MYSQL_PASSWORD: devpass
     ports:
       - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "localhost",
+          "-u",
+          "root",
+          "-ppassword",
+        ]
       interval: 5s
       timeout: 10s
       retries: 10
     command: --default-authentication-plugin=mysql_native_password
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 0
+      MYSQL_ROOT_PASSWORD: password
+    restart: always
 
 volumes:
   mysql-data:

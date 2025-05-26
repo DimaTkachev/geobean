@@ -2,14 +2,12 @@
   "name": "backend",
   "version": "1.0.0",
   "main": "index.js",
-  
-    "scripts": {
-      "start": "node src/server.js",
-      "dev": "nodemon src/server.js",
-      "lint": "eslint src",
-      "format": "prettier --write src"
-    }
-  ,
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "lint": "eslint src",
+    "format": "prettier --write src"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -18,7 +16,8 @@
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
-    "mysql2": "^3.14.1"
+    "mysql2": "^3.14.1",
+    "sequelize": "^6.37.7"
   },
   "devDependencies": {
     "eslint": "^9.25.1",

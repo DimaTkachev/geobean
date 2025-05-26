@@ -6,7 +6,8 @@ const {
   Continent, 
   Roasting, 
   ProcessingMethod, 
-  TasteTag 
+  TasteTag,  
+  Weight
 } = require("../models");
 
 exports.getAllMarkers = async (req, res) => {
@@ -15,7 +16,7 @@ exports.getAllMarkers = async (req, res) => {
       include: [
         {
           model: CoffeeLot,
-          attributes: ["lotID", "name", "image", "qRate"],
+          attributes: ["lotID", "name", "image", "qRate","tasteFilter"],
           include: [
             {
               model: Region,
@@ -32,6 +33,10 @@ exports.getAllMarkers = async (req, res) => {
             {
               model: Roasting,
               attributes: ["name"],
+            },
+            {
+              model: Weight,
+              attributes: ["value"],
             },
             {
               model: ProcessingMethod,

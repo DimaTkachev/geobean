@@ -1,15 +1,21 @@
 import React, { useEffect } from 'react';
-import { fetchApi } from '../../utils/api';
+import { fetchApi } from '@/utils/api';
 import './App.css';
+
+interface MapData {
+    // Add your map data interface properties here
+    id: number;
+    // other properties...
+}
 
 export const App: React.FC = () => {
     useEffect(() => {
-        fetchApi('/api/map/all')
-            .then((data) => {
+        fetchApi<MapData[]>('/api/map/all')
+            .then((data: MapData[]) => {
                 console.log(data);
             })
-            .catch((err) => {
-                console.error('Error fetching data:', err);
+            .catch((error: Error) => {
+                console.error('Error fetching data:', error);
             });
     }, []);
 

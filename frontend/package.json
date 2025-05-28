@@ -4,9 +4,9 @@
     "type": "module",
     "main": "index.js",
     "scripts": {
-        "start": "webpack serve --mode development",
-        "build": "webpack --mode production",
-        "lint": "eslint src",
+        "start": "webpack serve --mode development --config webpack.config.mjs",
+        "build": "webpack --mode production --config webpack.config.mjs",
+        "lint": "eslint --config eslint.config.js .",
         "format": "prettier --write src"
     },
     "keywords": [],
@@ -26,6 +26,8 @@
         "@eslint/js": "^9.27.0",
         "@types/react": "^19.1.6",
         "@types/react-dom": "^19.1.5",
+        "@typescript-eslint/eslint-plugin": "^8.33.0",
+        "@typescript-eslint/parser": "^8.33.0",
         "babel-loader": "^10.0.0",
         "css-loader": "^7.1.2",
         "eslint": "^9.25.1",

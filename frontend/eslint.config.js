@@ -1,51 +1,47 @@
 import js from '@eslint/js';
-import globals from 'globals';
+import tsParser from '@typescript-eslint/parser';
+import tsPlugin from '@typescript-eslint/eslint-plugin';
 import reactPlugin from 'eslint-plugin-react';
-import reactHooks from 'eslint-plugin-react-hooks';
-import { FlatCompat } from '@eslint/eslintrc';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const compat = new FlatCompat({
-    baseDirectory: __dirname,
-});
+import reactHooksPlugin from 'eslint-plugin-react-hooks';
+import prettierPlugin from 'eslint-plugin-prettier';
+import globals from 'globals';
 
 export default [
     js.configs.recommended,
-    ...compat.config({
-        extends: ['plugin:react/recommended'],
-    }),
     {
-        files: ['**/*.{js,jsx}'],
+        files: ['**/*.{ts,tsx}'],
         languageOptions: {
+            parser: tsParser,
+            parserOptions: {
+                ecmaVersion: 'latest',
+                sourceType: 'module',
+                project: './tsconfig.json',
+            },
             globals: {
                 ...globals.browser,
                 ...globals.es2021,
             },
-            ecmaVersion: 'latest',
-            sourceType: 'module',
-            parserOptions: {
-                ecmaFeatures: {
-                    jsx: true,
-                },
-            },
         },
         plugins: {
+            '@typescript-eslint': tsPlugin,
             react: reactPlugin,
-            'react-hooks': reactHooks,
+            'react-hooks': reactHooksPlugin,
+            prettier: prettierPlugin,
+        },
+        rules: {
+            ...tsPlugin.configs.recommended.rules,
+            ...reactPlugin.configs.recommended.rules,
+            ...reactHooksPlugin.configs.recommended.rules,
+            'react/react-in-jsx-scope': 'off',
+            'prettier/prettier': 'error',
         },
         settings: {
             react: {
                 version: 'detect',
             },
         },
-        rules: {
-            'no-console': 'warn',
-            'no-unused-vars': 'error',
-            'react-hooks/rules-of-hooks': 'error',
-            'react-hooks/exhaustive-deps': 'warn',
-        },
+    },
+    {
+        ignores: ['node_modules/**', 'dist/**', 'build/**', 'coverage/**'],
     },
 ];

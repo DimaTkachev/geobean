@@ -3,133 +3,66 @@
 ## Prerequisites
 
 - Docker and Docker Compose
-- Node.js 18+ and npm (for local frontend development)
+- Node.js 18+ and npm
 
 ## Quick Start
 
-1. Clone the repository:
+```bash
+# 1. Start backend services (first time with build)
+docker-compose up -d --build
 
-   ```bash
-   git clone [repository-url]
-   cd geobean
-   ```
+# 2. Start frontend
+cd frontend
+npm install
+npm start
+```
 
-2. Start the backend services (database, API, and phpMyAdmin):
+## Access Points
 
-   ```bash
-   docker-compose up --build
-   ```
+- Frontend: http://localhost:3000
+- API: http://localhost:5001 (auto-reloads on changes)
+- Database Admin: http://localhost:8080 (root/password)
+- Database: localhost:3306 (devuser/devpass)
 
-3. In a new terminal, set up and start the frontend:
-   ```bash
-   cd frontend
-   npm install
-   npm start
-   ```
+## Database Info
 
-## Available Services
+- Name: geobean
+- Root User: root/password
+- Dev User: devuser/devpass
 
-Once the application is running, you can access:
+## Common Commands
 
-- **Frontend Application**: http://localhost:3000
-- **Backend API**: http://localhost:5001
-- **Database Management (phpMyAdmin)**: http://localhost:8080
-  - Username: `root`
-  - Password: `password`
+### Backend (Docker)
 
-## Development
-
-### Backend
-
-- The backend runs in Docker and auto-reloads when you make changes
-- Source code is located in `./backend/src`
-- API runs on port 5001
+```bash
+docker-compose up -d     # Start services
+docker-compose down      # Stop services
+docker-compose logs     # View logs
+docker-compose down -v  # Stop and remove volumes
+```
 
 ### Frontend
 
-- Built with React + TypeScript
-- Development server runs on port 3000
-- Available commands:
-  ```bash
-  npm start    # Start development server
-  npm run build # Build for production
-  npm run lint  # Run ESLint
-  npm run format # Format code with Prettier
-  ```
+```bash
+npm start               # Development server (with hot reload)
+npm run build          # Production build
+npm run lint           # Run linter
+npm run format         # Format code
+# Clean install (if having dependency issues):
+rm -rf node_modules package-lock.json && npm install
+```
 
-### Database
+### DTO Generation
 
-- MySQL 8.0
-- Default database name: `geobean`
-- Accessible on port 3306
-- Credentials:
-  - Root user: `root` / `password`
-  - Dev user: `devuser` / `devpass`
+```bash
+cd scripts
+npm install
+npm run generate       # Updates frontend/src/types/dtos.ts
+```
 
 ## Tech Stack
 
-- **Frontend**: React, TypeScript, Webpack
-- **Backend**: Node.js, Express, TypeScript
-- **Database**: MySQL 8.0
-- **Tools & DevOps**:
-  - Docker and Docker Compose for containerization
-  - ESLint and Prettier for code quality
-  - phpMyAdmin for database management
-
-## Quick Reference Commands
-
-### Docker Commands
-
-```bash
-# Start all services
-docker-compose up
-
-# Start all services in detached mode (background)
-docker-compose up -d
-
-# Rebuild and start all services
-docker-compose up --build
-
-# Stop all services
-docker-compose down
-
-# View logs
-docker-compose logs
-
-# View logs for specific service
-docker-compose logs backend
-docker-compose logs db
-
-# Remove all containers and volumes
-docker-compose down -v
-```
-
-### Frontend Commands
-
-```bash
-# Install dependencies
-cd frontend && npm install
-
-# Start development server
-cd frontend && npm start
-
-# Build for production
-cd frontend && npm run build
-
-# Run linter
-cd frontend && npm run lint
-
-# Format code
-cd frontend && npm run format
-
-# Clean install (remove node_modules and reinstall)
-cd frontend && rm -rf node_modules package-lock.json && npm install
-```
-
-### Combined Quick Start Commands
-
-```bash
-# Start everything in one go (run these in separate terminals)
-Terminal 1: docker-compose up --build
-Terminal 2: cd frontend && npm install && npm start
-```
+- Frontend: React + TypeScript
+- Backend: Node.js + Express
+- Database: MySQL 8.0
+- Tools: Docker, ESLint, Prettier

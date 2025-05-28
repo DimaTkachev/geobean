@@ -11,7 +11,7 @@ import {
     Weight,
 } from '../models';
 
-export const getAllMarkers = async (req: Request, res: Response) => {
+export const getAllMarkers = async (_req: Request, res: Response) => {
     try {
         // Set headers to prevent caching
         res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');

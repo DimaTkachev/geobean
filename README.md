@@ -1,44 +1,135 @@
-## Development Setup
+# GeoBean Application
 
-### Prerequisites
+## Prerequisites
 
 - Docker and Docker Compose
-- Node.js (for local development without Docker)
+- Node.js 18+ and npm (for local frontend development)
 
-### Running
+## Quick Start
 
-1. Start the backend in root folder:
+1. Clone the repository:
+
+   ```bash
+   git clone [repository-url]
+   cd geobean
+   ```
+
+2. Start the backend services (database, API, and phpMyAdmin):
 
    ```bash
    docker-compose up --build
    ```
 
-2. Start the frontend in another terminal:
+3. In a new terminal, set up and start the frontend:
    ```bash
    cd frontend
-   npm run start
+   npm install
+   npm start
    ```
 
-## urls
+## Available Services
 
-Access the application:
+Once the application is running, you can access:
 
-Frontend: http://localhost:3000
+- **Frontend Application**: http://localhost:3000
+- **Backend API**: http://localhost:5001
+- **Database Management (phpMyAdmin)**: http://localhost:8080
+  - Username: `root`
+  - Password: `password`
 
-Backend API: http://localhost:5001
+## Development
 
-phpMyAdmin: http://localhost:8080 (username: root, password: password)
+### Backend
 
-## Stack
+- The backend runs in Docker and auto-reloads when you make changes
+- Source code is located in `./backend/src`
+- API runs on port 5001
 
-This setup provides a complete full-stack environment with:
+### Frontend
 
-Backend: Node.js + Express + MySQL
+- Built with React + TypeScript
+- Development server runs on port 3000
+- Available commands:
+  ```bash
+  npm start    # Start development server
+  npm run build # Build for production
+  npm run lint  # Run ESLint
+  npm run format # Format code with Prettier
+  ```
 
-Frontend: React + Webpack
+### Database
 
-Development tools: ESLint + Prettier
+- MySQL 8.0
+- Default database name: `geobean`
+- Accessible on port 3306
+- Credentials:
+  - Root user: `root` / `password`
+  - Dev user: `devuser` / `devpass`
 
-Containerization: Docker for all services
+## Tech Stack
 
-Database management: phpMyAdmin
+- **Frontend**: React, TypeScript, Webpack
+- **Backend**: Node.js, Express, TypeScript
+- **Database**: MySQL 8.0
+- **Tools & DevOps**:
+  - Docker and Docker Compose for containerization
+  - ESLint and Prettier for code quality
+  - phpMyAdmin for database management
+
+## Quick Reference Commands
+
+### Docker Commands
+
+```bash
+# Start all services
+docker-compose up
+
+# Start all services in detached mode (background)
+docker-compose up -d
+
+# Rebuild and start all services
+docker-compose up --build
+
+# Stop all services
+docker-compose down
+
+# View logs
+docker-compose logs
+
+# View logs for specific service
+docker-compose logs backend
+docker-compose logs db
+
+# Remove all containers and volumes
+docker-compose down -v
+```
+
+### Frontend Commands
+
+```bash
+# Install dependencies
+cd frontend && npm install
+
+# Start development server
+cd frontend && npm start
+
+# Build for production
+cd frontend && npm run build
+
+# Run linter
+cd frontend && npm run lint
+
+# Format code
+cd frontend && npm run format
+
+# Clean install (remove node_modules and reinstall)
+cd frontend && rm -rf node_modules package-lock.json && npm install
+```
+
+### Combined Quick Start Commands
+
+```bash
+# Start everything in one go (run these in separate terminals)
+Terminal 1: docker-compose up --build
+Terminal 2: cd frontend && npm install && npm start
+```

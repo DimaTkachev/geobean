@@ -1,6 +1,7 @@
-const sequelize = require('./db');
+import { Sequelize } from 'sequelize';
+import { sequelize } from './sequelize';
 
-const initializeDatabase = async () => {
+export const initializeDatabase = async (): Promise<Sequelize> => {
     try {
         await sequelize.authenticate();
         console.log('✅ Connection to DB established');
@@ -14,5 +15,3 @@ const initializeDatabase = async () => {
         throw error;
     }
 };
-
-module.exports = { initializeDatabase };

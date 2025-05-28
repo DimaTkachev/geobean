@@ -1,9 +1,9 @@
-const app = require('./app');
-const { initializeDatabase } = require('./config/database');
+import app from './app';
+import { initializeDatabase } from './config/database';
 
-const PORT = process.env.PORT || 5001;
+const PORT: number = process.env.PORT ? parseInt(process.env.PORT, 10) : 5001;
 
-const startServer = async () => {
+const startServer = async (): Promise<void> => {
     try {
         await initializeDatabase();
 

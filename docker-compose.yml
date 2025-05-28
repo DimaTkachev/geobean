@@ -12,6 +12,7 @@ services:
       - DB_NAME=geobean
     volumes:
       - ./backend/src:/app/src
+      - ./backend/tsconfig.json:/app/tsconfig.json
     depends_on:
       db:
         condition: service_healthy

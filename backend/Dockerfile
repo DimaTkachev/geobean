@@ -10,10 +10,8 @@ RUN chmod +x /wait-for-db.sh
 COPY package*.json ./
 RUN npm install
 
-COPY ../.env ./
-
 COPY ./src ./src
 
 EXPOSE 5001
 
-CMD ["/wait-for-db.sh", "db", "node", "src/app.js"]
+CMD ["/wait-for-db.sh", "db", "node", "src/server.js"]

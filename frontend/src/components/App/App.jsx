@@ -6,11 +6,10 @@ export const App = () => {
     const [dbMessage, setDbMessage] = useState('');
 
     useEffect(() => {
-        fetch('/api/test')
+        fetch('/api/map/all')
             .then((res) => res.json())
             .then((data) => {
-                setMessage(data.apiMessage);
-                setDbMessage(data.dbMessage);
+                console.log(data);
             })
             .catch((err) => console.error('Error fetching data:', err));
     }, []);

@@ -1,8 +1,7 @@
-import dotenv from 'dotenv';
 import { Sequelize } from 'sequelize';
 import type { Options as SequelizeOptions } from 'sequelize';
 
-dotenv.config();
+import { config } from './env';
 
 interface DbConfig extends SequelizeOptions {
     database: string;
@@ -22,23 +21,23 @@ interface PoolConfig {
 }
 
 const dbConfig: DbConfig = {
-  database: process.env.DB_NAME || 'geobean',
-  username: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || 'password',
-  host: process.env.DB_HOST || 'localhost',
-  port: parseInt(process.env.DB_PORT || '3306', 10),
-  dialect: 'mysql',
-  logging: false,
+    database: config.database.name,
+    username: config.database.user,
+    password: config.database.password,
+    host: config.database.host,
+    port: config.database.port,
+    dialect: 'mysql',
+    logging: !config.isProduction,
 };
 
 const poolConfig: PoolConfig = {
-  max: 10,
-  min: 0,
-  acquire: 20000,
-  idle: 10000,
+    max: 10,
+    min: 0,
+    acquire: 20000,
+    idle: 10000,
 };
 
 export const sequelize = new Sequelize({
-  ...dbConfig,
-  pool: poolConfig,
+    ...dbConfig,
+    pool: poolConfig,
 });

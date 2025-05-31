@@ -1,7 +1,19 @@
+# Dependencies
 node_modules/
 dist/
+
+# Environment files
 .env
+.env.local
+.env.*.local
+!.env.example
+
+# Logs and databases
 *.log
-.DS_Store
-docker-compose.override.yml
 mysql-data/
+
+# OS files
+.DS_Store
+
+# Docker
+docker-compose.override.yml

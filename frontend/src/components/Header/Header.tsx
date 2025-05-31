@@ -1,19 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { Link, useNavigate } from 'react-router-dom';
 
 import { useAuth, useShop } from '../../contexts';
 
 import styles from './Header.module.css';
+import { ProfileOptionsModal } from '../ProfileOptionsModal/ProfileOptionsModal';
 
 export const Header: React.FC = () => {
   const { user, logout, isAuthenticated } = useAuth();
   const { currentShop } = useShop();
   const navigate = useNavigate();
+  const [showProfileOptions, setShowProfileOptions] = useState(false);
 
   const handleLogout = () => {
     logout();
     navigate('/');
+  };
+
+  const handleEmailClick = () => {
+    setShowProfileOptions(!showProfileOptions);
   };
 
   return (
@@ -26,16 +32,15 @@ export const Header: React.FC = () => {
 
         <nav className={styles.nav}>
           {isAuthenticated ? (
-            <div className={styles.userSection}>
-              <span className={styles.userEmail}>
+            <div className={styles.userSection} style={{ position: 'relative' }}>
+              <span className={styles.userEmail} onClick={handleEmailClick} style={{ cursor: 'pointer' }}>
                 {user?.email}
               </span>
-              <button
-                onClick={handleLogout}
-                className={styles.logoutButton}
-              >
-                Выйти
-              </button>
+
+              <ProfileOptionsModal
+                isOpen={showProfileOptions}
+                onClose={() => setShowProfileOptions(false)}
+              />
             </div>
           ) : (
             <div className={styles.authButtons}>

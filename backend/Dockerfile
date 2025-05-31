@@ -1,18 +1,20 @@
 FROM node:16-alpine
 
-# Установка зависимостей
 RUN apk add --no-cache mysql-client bash
 
 WORKDIR /app
 
-# Копируем скрипт ожидания
 COPY wait-for-db.sh /wait-for-db.sh
 RUN chmod +x /wait-for-db.sh
 
 COPY package*.json ./
+COPY tsconfig.json ./
 RUN npm install
-COPY . .
+
+COPY ./src ./src
+COPY start.sh ./
+RUN chmod +x start.sh
 
 EXPOSE 5001
 
-CMD ["/wait-for-db.sh", "db", "node", "src/server.js"]
+CMD ["/wait-for-db.sh", "db", "./start.sh"]

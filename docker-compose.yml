@@ -10,6 +10,9 @@ services:
       - DB_USER=root
       - DB_PASSWORD=password
       - DB_NAME=geobean
+    volumes:
+      - ./backend/src:/app/src
+      - ./backend/tsconfig.json:/app/tsconfig.json
     depends_on:
       db:
         condition: service_healthy

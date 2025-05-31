@@ -1,0 +1,16 @@
+{
+  "name": "dto-generator",
+  "version": "1.0.0",
+  "description": "Script to generate DTOs from backend interfaces",
+  "main": "generateDTOs.ts",
+  "scripts": {
+    "generate": "ts-node generateDTOs.ts"
+  },
+  "dependencies": {
+    "@typescript-eslint/parser": "^6.0.0",
+    "@typescript-eslint/types": "^6.0.0",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "ts-node": "^10.9.1"
+  }
+}

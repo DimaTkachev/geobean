@@ -1,5 +1,5 @@
-import * as fs from "node:fs";
-import * as path from "node:path";
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 
 const createEnvFile = (
   targetPath: string,
@@ -71,33 +71,33 @@ VITE_GOOGLE_MAPS_API_KEY=your_google_maps_api_key
 const main = (): void => {
   // Create backend environment files
   createEnvFile(
-    path.resolve(__dirname, "../backend/.env.example"),
+    path.resolve(__dirname, '../backend/.env.example'),
     backendEnvExample,
-    "Backend .env.example",
+    'Backend .env.example',
   );
   createEnvFile(
-    path.resolve(__dirname, "../backend/.env.development"),
+    path.resolve(__dirname, '../backend/.env.development'),
     backendEnvDev,
-    "Backend .env.development",
+    'Backend .env.development',
   );
 
   // Create frontend environment files
   createEnvFile(
-    path.resolve(__dirname, "../frontend/.env.example"),
+    path.resolve(__dirname, '../frontend/.env.example'),
     frontendEnvExample,
-    "Frontend .env.example",
+    'Frontend .env.example',
   );
   createEnvFile(
-    path.resolve(__dirname, "../frontend/.env.development"),
+    path.resolve(__dirname, '../frontend/.env.development'),
     frontendEnvDev,
-    "Frontend .env.development",
+    'Frontend .env.development',
   );
 
-  console.log("\n🎉 Environment setup complete!");
-  console.log("\nNext steps:");
-  console.log("1. Review the created .env files");
-  console.log("2. Update any sensitive values in .env.development");
-  console.log("3. Never commit .env.development to version control\n");
+  console.log('\n🎉 Environment setup complete!');
+  console.log('\nNext steps:');
+  console.log('1. Review the created .env files');
+  console.log('2. Update any sensitive values in .env.development');
+  console.log('3. Never commit .env.development to version control\n');
 };
 
 main();

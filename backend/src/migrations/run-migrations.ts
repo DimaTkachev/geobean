@@ -4,26 +4,23 @@ import path from 'path';
 import { sequelize } from '../config/sequelize';
 
 interface DatabaseError extends Error {
-    code?: string;
-    errno?: number;
-    sqlState?: string;
-    sqlMessage?: string;
+  code?: string;
+  errno?: number;
+  sqlState?: string;
+  sqlMessage?: string;
 }
 
 const runMigrations = async (): Promise<void> => {
   try {
     // Run schema migrations
-    const schemaMigrationFile = path.join(
-      __dirname,
-      '001_initial_schema.sql',
-    );
+    const schemaMigrationFile = path.join(__dirname, '001_initial_schema.sql');
     const schemaSql = fs.readFileSync(schemaMigrationFile, 'utf8');
 
     // Split the SQL file into individual statements
     const schemaStatements = schemaSql
       .split(';')
-      .map(s => s.trim())
-      .filter(s => s.length > 0);
+      .map((s) => s.trim())
+      .filter((s) => s.length > 0);
 
     // Execute each schema statement separately
     for (const statement of schemaStatements) {
@@ -36,7 +33,7 @@ const runMigrations = async (): Promise<void> => {
         // Log the error but continue with other statements
         console.error(
           'Error executing schema statement:',
-          (error as DatabaseError).message,
+          (error as DatabaseError).message
         );
       }
     }
@@ -48,8 +45,8 @@ const runMigrations = async (): Promise<void> => {
     // Split the SQL file into individual statements
     const dataStatements = dataSql
       .split(';')
-      .map(s => s.trim())
-      .filter(s => s.length > 0);
+      .map((s) => s.trim())
+      .filter((s) => s.length > 0);
 
     // Execute each data statement separately
     for (const statement of dataStatements) {
@@ -59,7 +56,33 @@ const runMigrations = async (): Promise<void> => {
         // Log the error but continue with other statements
         console.error(
           'Error executing data statement:',
-          (error as DatabaseError).message,
+          (error as DatabaseError).message
+        );
+      }
+    }
+
+    // Run table rename migration
+    const renameMigrationFile = path.join(
+      __dirname,
+      '003_rename_markers_table.sql'
+    );
+    const renameSql = fs.readFileSync(renameMigrationFile, 'utf8');
+
+    // Split the SQL file into individual statements
+    const renameStatements = renameSql
+      .split(';')
+      .map((s) => s.trim())
+      .filter((s) => s.length > 0);
+
+    // Execute each rename statement separately
+    for (const statement of renameStatements) {
+      try {
+        await sequelize.query(`${statement};`);
+      } catch (error) {
+        // Log the error but continue with other statements
+        console.error(
+          'Error executing rename statement:',
+          (error as DatabaseError).message
         );
       }
     }

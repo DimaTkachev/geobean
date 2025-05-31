@@ -1,23 +1,24 @@
-import express, { Request, Response } from 'express';
 import cors from 'cors';
-import { testRoutes } from './routes/testRoutes';
+import express, { json, Request, Response } from 'express';
+
 import { mapRoutes } from './routes/mapRoutes';
+import { testRoutes } from './routes/testRoutes';
 
 const app = express();
 
 const corsOptions = {
-    origin: 'http://localhost:3000',
-    optionsSuccessStatus: 200,
+  origin: 'http://localhost:3000',
+  optionsSuccessStatus: 200,
 };
 
 app.use(cors(corsOptions));
-app.use(express.json());
+app.use(json());
 
 app.use('/api/test', testRoutes);
 app.use('/api/map', mapRoutes);
 
-app.get('/health', (_req: Request, res: Response) => {
-    res.status(200).json({ status: 'OK' });
+app.get('/health', (_req: Request, res: Response): void => {
+  res.status(200).json({ status: 'OK' });
 });
 
 export default app;

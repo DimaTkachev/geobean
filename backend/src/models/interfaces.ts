@@ -1,10 +1,10 @@
-import { Model } from 'sequelize';
+import type { Model } from 'sequelize';
 
 export interface IMarker {
-    id?: number;
-    latitude: number | null;
+    markerID?: number;
+    lotID: number;
     longitude: number | null;
-    coffee_lot_id: number;
+    latitude: number | null;
     createdAt?: Date;
     updatedAt?: Date;
 }
@@ -88,14 +88,42 @@ export interface IWeight {
 export interface ICoffeeLotTag {
     lotID: number;
     tagID: number;
-    createdAt?: Date;
-    updatedAt?: Date;
 }
 
 export interface ISupplier {
     supplierID?: number;
     name: string;
     url: string | null;
+    createdAt?: Date;
+    updatedAt?: Date;
+}
+
+export interface IUser {
+    userID?: number;
+    email: string;
+    passwordHash: string;
+    createdAt?: Date;
+    updatedAt?: Date;
+}
+
+export interface IShop {
+    shopID?: number;
+    userID: number;
+    name: string;
+    image: string | null;
+    theme: 'beige' | 'purple' | 'blue';
+    shareUrl: string | null;
+    qrPath: string | null;
+    qrEnabled: boolean;
+    createdAt?: Date;
+    updatedAt?: Date;
+}
+
+export interface IInventory {
+    inventoryID?: number;
+    shopID: number;
+    lotID: number;
+    stock: number;
     createdAt?: Date;
     updatedAt?: Date;
 }
@@ -116,3 +144,6 @@ export interface CoffeeLotTagModel
     extends Model<ICoffeeLotTag>,
         ICoffeeLotTag {}
 export interface SupplierModel extends Model<ISupplier>, ISupplier {}
+export interface UserModel extends Model<IUser>, IUser {}
+export interface ShopModel extends Model<IShop>, IShop {}
+export interface InventoryModel extends Model<IInventory>, IInventory {}

@@ -1,4 +1,5 @@
 import { Router } from 'express';
+
 import { getAllMarkers } from '../controllers/mapController';
 
 const router = Router();

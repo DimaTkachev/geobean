@@ -1,4 +1,5 @@
 import { Router } from 'express';
+
 import { getTestMessage } from '../controllers/testController';
 
 const router = Router();

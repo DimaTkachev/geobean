@@ -1,27 +1,27 @@
 export interface MarkerDTO {
-    id?: number;
-    latitude: null | null;
-    longitude: null | null;
-    coffee_lot_id: number;
+    markerID?: number;
+    lotID: number;
+    longitude: number | null;
+    latitude: number | null;
     createdAt?: string;
     updatedAt?: string;
 }
 
 export interface CoffeeLotDTO {
     lotID?: number;
-    name: null | null;
-    description: null | null;
+    name: string | null;
+    description: string | null;
     regionID: number;
-    taste: null | null;
-    tasteFilter: null | null;
-    qRate: null | null;
+    taste: string | null;
+    tasteFilter: string | null;
+    qRate: number | null;
     roastingID: number;
     methodID: number;
     supplierID: number;
-    height: null | null;
+    height: string | null;
     weightID: number;
-    image: null | null;
-    link: null | null;
+    image: string | null;
+    link: string | null;
     createdAt?: string;
     updatedAt?: string;
 }
@@ -30,7 +30,7 @@ export interface RegionDTO {
     regionID?: number;
     name: string;
     countryID: number;
-    description: null | null;
+    description: string | null;
     createdAt?: string;
     updatedAt?: string;
 }
@@ -40,7 +40,7 @@ export interface CountryDTO {
     name: string;
     iso3: string;
     continentID: number;
-    description: null | null;
+    description: string | null;
     createdAt?: string;
     updatedAt?: string;
 }
@@ -55,7 +55,7 @@ export interface ContinentDTO {
 export interface RoastingDTO {
     roastingID?: number;
     name: string;
-    description: null | null;
+    description: string | null;
     createdAt?: string;
     updatedAt?: string;
 }
@@ -63,7 +63,7 @@ export interface RoastingDTO {
 export interface ProcessingMethodDTO {
     methodID?: number;
     name: string;
-    description: null | null;
+    description: string | null;
     createdAt?: string;
     updatedAt?: string;
 }
@@ -71,7 +71,7 @@ export interface ProcessingMethodDTO {
 export interface TasteTagDTO {
     tagID?: number;
     name: string;
-    description: null | null;
+    description: string | null;
     createdAt?: string;
     updatedAt?: string;
 }
@@ -86,14 +86,42 @@ export interface WeightDTO {
 export interface CoffeeLotTagDTO {
     lotID: number;
     tagID: number;
-    createdAt?: string;
-    updatedAt?: string;
 }
 
 export interface SupplierDTO {
     supplierID?: number;
     name: string;
-    url: null | null;
+    url: string | null;
+    createdAt?: string;
+    updatedAt?: string;
+}
+
+export interface UserDTO {
+    userID?: number;
+    email: string;
+    passwordHash: string;
+    createdAt?: string;
+    updatedAt?: string;
+}
+
+export interface ShopDTO {
+    shopID?: number;
+    userID: number;
+    name: string;
+    image: string | null;
+    theme: 'beige' | 'purple' | 'blue';
+    shareUrl: string | null;
+    qrPath: string | null;
+    qrEnabled: boolean;
+    createdAt?: string;
+    updatedAt?: string;
+}
+
+export interface InventoryDTO {
+    inventoryID?: number;
+    shopID: number;
+    lotID: number;
+    stock: number;
     createdAt?: string;
     updatedAt?: string;
 }

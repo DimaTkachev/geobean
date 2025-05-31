@@ -1,9 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { fetchApi } from '../utils/api';
 
 interface User {
-    id: string;
+    userID: number;
     email: string;
-    name?: string;
 }
 
 interface AuthContextType {
@@ -12,6 +12,12 @@ interface AuthContextType {
     logout: () => void;
     isLoading: boolean;
     isAuthenticated: boolean;
+}
+
+interface AuthResponse {
+    message: string;
+    token: string;
+    user: User;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -27,7 +33,10 @@ export const useAuth = () => {
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     children,
 }) => {
-    const [user, setUser] = useState<User | null>(null);
+    const [user, setUser] = useState<User | null>(() => {
+        const savedUser = localStorage.getItem('user');
+        return savedUser ? JSON.parse(savedUser) : null;
+    });
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -41,47 +50,47 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
     const validateToken = async (token: string) => {
         try {
-            const response = await fetch('/api/auth/me', {
+            const response = await fetchApi<{ user: User }>('/api/auth/me', {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
 
-            if (response.ok) {
-                const userData = await response.json();
-                setUser(userData);
-            } else {
-                localStorage.removeItem('authToken');
-            }
+            setUser(response.user);
+            localStorage.setItem('user', JSON.stringify(response.user));
         } catch (error) {
             console.error('Token validation failed:', error);
             localStorage.removeItem('authToken');
+            localStorage.removeItem('user');
+            setUser(null);
         } finally {
             setIsLoading(false);
         }
     };
 
     const login = async (email: string, password: string) => {
-        const response = await fetch('/api/auth/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email, password }),
-        });
+        try {
+            const response = await fetchApi<AuthResponse>('/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password }),
+            });
 
-        if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.message || 'Login failed');
+            const { token, user } = response;
+            localStorage.setItem('authToken', token);
+            localStorage.setItem('user', JSON.stringify(user));
+            setUser(user);
+        } catch (error) {
+            console.error('Login failed:', error);
+            throw new Error('Неверный email или пароль');
         }
-
-        const { token, user } = await response.json();
-        localStorage.setItem('authToken', token);
-        setUser(user);
     };
 
     const logout = () => {
         localStorage.removeItem('authToken');
+        localStorage.removeItem('user');
         setUser(null);
     };
 

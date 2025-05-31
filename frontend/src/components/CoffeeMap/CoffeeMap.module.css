@@ -1,0 +1,281 @@
+.container {
+    display: flex;
+    height: 100vh;
+    background-color: #f5f1eb;
+    font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        sans-serif;
+}
+
+.sidebar {
+    width: 300px;
+    background-color: #8b4513;
+    color: white;
+    padding: 20px;
+    overflow-y: auto;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+    margin-bottom: 30px;
+}
+
+.title {
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0 0 20px;
+    color: #f5f1eb;
+}
+
+.searchContainer {
+    margin-bottom: 20px;
+}
+
+.searchInput {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: rgba(245, 241, 235, 0.9);
+    color: #333;
+    box-sizing: border-box;
+}
+
+.searchInput::placeholder {
+    color: #666;
+}
+
+.searchInput:focus {
+    outline: none;
+    background-color: #f5f1eb;
+    box-shadow: 0 0 0 2px rgba(245, 241, 235, 0.5);
+}
+
+.filters {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.filterTitle {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+    color: #f5f1eb;
+    border-bottom: 2px solid rgba(245, 241, 235, 0.3);
+    padding-bottom: 8px;
+}
+
+.filterSection {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border-bottom: 1px solid rgba(245, 241, 235, 0.2);
+    padding-bottom: 15px;
+}
+
+.filterSubtitle {
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0;
+    color: #f5f1eb;
+    opacity: 0.9;
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 0;
+}
+
+.filterSubtitle::after {
+    content: '▼';
+    font-size: 12px;
+    color: rgba(245, 241, 235, 0.7);
+    transition: transform 0.2s ease;
+}
+
+.filterSubtitle:hover::after {
+    color: #f5f1eb;
+}
+
+.filterOptions {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.filterOption {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 4px 0;
+    font-size: 13px;
+    transition: opacity 0.2s ease;
+}
+
+.filterOption:hover {
+    opacity: 0.8;
+}
+
+.filterOption input[type='checkbox'] {
+    width: 16px;
+    height: 16px;
+    accent-color: #f5f1eb;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+.filterOption span {
+    color: rgba(245, 241, 235, 0.9);
+    line-height: 1.4;
+    font-size: 13px;
+}
+
+.filterOption input[type='checkbox']:checked + span {
+    color: #f5f1eb;
+    font-weight: 500;
+}
+
+.supplierSearch {
+    margin-top: 8px;
+    position: relative;
+}
+
+.supplierInput {
+    width: 100%;
+    padding: 8px 12px 8px 35px;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    background-color: rgba(245, 241, 235, 0.9);
+    color: #333;
+    box-sizing: border-box;
+}
+
+.supplierSearch::before {
+    content: '🔍';
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    opacity: 0.6;
+}
+
+.supplierInput::placeholder {
+    color: #666;
+    font-size: 13px;
+}
+
+.supplierInput:focus {
+    outline: none;
+    background-color: #f5f1eb;
+    box-shadow: 0 0 0 2px rgba(245, 241, 235, 0.5);
+}
+
+.clearButton {
+    margin-top: 20px;
+    padding: 12px 16px;
+    background-color: rgba(245, 241, 235, 0.1);
+    color: #f5f1eb;
+    border: 2px solid rgba(245, 241, 235, 0.3);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    width: 100%;
+}
+
+.clearButton:hover {
+    background-color: rgba(245, 241, 235, 0.2);
+    border-color: rgba(245, 241, 235, 0.5);
+}
+
+.mapContainer {
+    flex: 1;
+    position: relative;
+    background-color: #f5f1eb;
+}
+
+.map {
+    width: 100%;
+    height: 100%;
+}
+
+.geography {
+    fill: #d4c4a8;
+    stroke: #8b4513;
+    stroke-width: 0.5;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.geography:hover {
+    fill: #c9b896;
+    stroke-width: 1;
+}
+
+.geography.hasMarkers {
+    fill: #b8a082;
+}
+
+.geography.hasMarkers:hover {
+    fill: #a68f73;
+}
+
+.marker {
+    cursor: pointer;
+}
+
+.markerCircle {
+    fill: #8b4513;
+    stroke: #f5f1eb;
+    stroke-width: 2;
+    transition: all 0.2s ease;
+}
+
+.markerCircle:hover {
+    fill: #a0522d;
+    stroke-width: 3;
+}
+
+.loading,
+.error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    font-size: 18px;
+    color: #8b4513;
+    background-color: #f5f1eb;
+}
+
+.error {
+    color: #d32f2f;
+}
+
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .sidebar {
+        width: 100%;
+        height: auto;
+        max-height: 50vh;
+        order: 2;
+    }
+
+    .mapContainer {
+        height: 50vh;
+        order: 1;
+    }
+}

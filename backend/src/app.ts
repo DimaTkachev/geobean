@@ -1,15 +1,16 @@
 import cors from 'cors';
 import express, { json, Request, Response } from 'express';
 
+import authRoutes from './routes/authRoutes';
 import { mapRoutes } from './routes/mapRoutes';
 import { testRoutes } from './routes/testRoutes';
-import authRoutes from './routes/authRoutes';
 
 const app = express();
 
 const corsOptions = {
-  origin: 'http://localhost:3000',
+  origin: ['http://localhost:3000', 'http://localhost:8080'],
   optionsSuccessStatus: 200,
+  credentials: true,
 };
 
 app.use(cors(corsOptions));

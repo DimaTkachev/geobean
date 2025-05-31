@@ -1,0 +1,14 @@
+.test-class {
+    color: red;
+    margin: 0 10px;
+    background-color: #f00;
+}
+
+.another-class {
+    font-weight: 700;
+    padding-left: 20px;
+}
+
+.badly-formatted {
+    color: blue;
+}

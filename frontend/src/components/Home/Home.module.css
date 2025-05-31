@@ -1,96 +1,120 @@
 .container {
-    min-height: 100vh;
+    min-height: calc(100vh - 64px);
     display: flex;
     align-items: center;
     justify-content: center;
-    background:
-        linear-gradient(rgba(38, 14, 6, 0.5), rgba(38, 14, 6, 0.5)),
-        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23d4a574"/></svg>');
-    background-size: cover;
-    background-position: center;
-    padding: 20px;
+    background: linear-gradient(135deg, #f5deb3 0%, #d2b48c 100%);
+    padding: 40px 20px;
 }
 
 .content {
-    background: #ffe2d0;
-    border-radius: 0;
-    box-shadow: 0 4px 30px rgba(60, 31, 12, 0.15);
-    padding: 60px;
-    width: 100%;
-    max-width: 600px;
     text-align: center;
-    display: flex;
-    flex-direction: column;
-    gap: 32px;
+    max-width: 800px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 16px;
+    padding: 60px 40px;
+    box-shadow: 0 8px 32px rgba(139, 69, 19, 0.2);
+    backdrop-filter: blur(10px);
 }
 
 .title {
-    color: #3c1f0c;
+    color: #8b4513;
     font-size: 36px;
     font-weight: 600;
-    margin: 0;
-    font-family: Arial, sans-serif;
+    margin: 0 0 20px;
+    line-height: 1.2;
 }
 
 .description {
-    color: rgb(118, 84, 62);
+    color: #666;
     font-size: 18px;
-    line-height: 1.5;
-    margin: 0;
-    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0 0 40px;
 }
 
 .actions {
     display: flex;
-    gap: 20px;
+    gap: 16px;
     justify-content: center;
     flex-wrap: wrap;
 }
 
-.registerButton,
-.loginButton {
-    padding: 16px 32px;
+.primaryButton {
+    background: linear-gradient(135deg, #d2691e 0%, #cd853f 100%);
+    color: white;
+    border: none;
+    padding: 14px 28px;
+    border-radius: 10px;
     font-size: 16px;
     font-weight: 600;
-    border: none;
     cursor: pointer;
-    text-decoration: none;
-    border-radius: 0;
     transition: all 0.2s ease;
-    min-width: 180px;
-    display: inline-block;
-    text-align: center;
-    font-family: Arial, sans-serif;
+    box-shadow: 0 4px 12px rgba(210, 105, 30, 0.3);
 }
 
-.registerButton {
-    background: #c19653;
-    color: white;
-
-    &:hover {
-        background: #a67c3a;
-    }
+.primaryButton:hover {
+    background: linear-gradient(135deg, #ff7f50 0%, #d2691e 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(210, 105, 30, 0.4);
 }
 
-.loginButton {
+.secondaryButton {
     background: transparent;
-    color: #c19653;
-    border: 2px solid #c19653;
+    color: #8b4513;
+    border: 2px solid #8b4513;
+    padding: 14px 28px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
 
-    &:hover {
-        background: #c19653;
-        color: white;
-    }
+.secondaryButton:hover {
+    background: #8b4513;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.feature {
+    text-align: center;
+    padding: 20px;
+}
+
+.featureIcon {
+    font-size: 48px;
+    display: block;
+    margin-bottom: 16px;
+}
+
+.feature h3 {
+    color: #8b4513;
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 12px;
+}
+
+.feature p {
+    color: #666;
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0;
 }
 
 @media (max-width: 768px) {
     .container {
-        padding: 16px;
+        padding: 20px 16px;
     }
 
     .content {
         padding: 40px 24px;
-        gap: 24px;
     }
 
     .title {
@@ -106,9 +130,14 @@
         align-items: center;
     }
 
-    .registerButton,
-    .loginButton {
+    .primaryButton,
+    .secondaryButton {
         width: 100%;
-        max-width: 300px;
+        max-width: 280px;
+    }
+
+    .features {
+        grid-template-columns: 1fr;
+        gap: 20px;
     }
 }

@@ -34,6 +34,27 @@ export default [
             ...reactHooksPlugin.configs.recommended.rules,
             'react/react-in-jsx-scope': 'off',
             'prettier/prettier': 'error',
+            // Enforce arrow functions
+            'func-style': ['error', 'expression'],
+            'prefer-arrow-callback': 'error',
+            'arrow-body-style': ['error', 'as-needed'],
+            // Enforce const
+            'prefer-const': 'error',
+            'no-var': 'error',
+            // TypeScript specific rules
+            '@typescript-eslint/prefer-function-type': 'error',
+            '@typescript-eslint/ban-types': [
+                'error',
+                {
+                    types: {
+                        Function: {
+                            message:
+                                'Avoid using the Function type. Prefer arrow function types.',
+                            fixWith: '() => void',
+                        },
+                    },
+                },
+            ],
         },
         settings: {
             react: {

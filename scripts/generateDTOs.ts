@@ -1,11 +1,11 @@
-import * as fs from 'node:fs';
-import * as path from 'node:path';
+import * as fs from "node:fs";
+import * as path from "node:path";
 
-import { parse } from '@typescript-eslint/parser';
-import type { TSESTree } from '@typescript-eslint/types';
+import { parse } from "@typescript-eslint/parser";
+import type { TSESTree } from "@typescript-eslint/types";
 
-const BACKEND_INTERFACES_PATH = '../backend/src/models/interfaces.ts';
-const FRONTEND_DTOS_PATH = '../frontend/src/types/dtos.ts';
+const BACKEND_INTERFACES_PATH = "../backend/src/models/interfaces.ts";
+const FRONTEND_DTOS_PATH = "../frontend/src/types/dtos.ts";
 
 interface InterfaceInfo {
   name: string;
@@ -16,69 +16,60 @@ interface InterfaceInfo {
   }>;
 }
 
-function extractInterfaces(ast: TSESTree.Program): InterfaceInfo[] {
+const extractInterfaces = (ast: TSESTree.Program): InterfaceInfo[] => {
   const interfaces: InterfaceInfo[] = [];
 
-  function visit(node: TSESTree.Node): void {
-    if (node.type === 'TSInterfaceDeclaration') {
+  const visit = (node: TSESTree.Node): void => {
+    if (node.type === "TSInterfaceDeclaration") {
       const interfaceName = node.id.name;
-      if (interfaceName.startsWith('I') && !interfaceName.includes('Model')) {
+      if (interfaceName.startsWith("I") && !interfaceName.includes("Model")) {
         const properties = node.body.body
           .map((prop: TSESTree.TypeElement) => {
-            if (prop.type === 'TSPropertySignature') {
-              const {name} = (prop.key as TSESTree.Identifier);
+            if (prop.type === "TSPropertySignature") {
+              const { name } = prop.key as TSESTree.Identifier;
               const typeNode = prop.typeAnnotation?.typeAnnotation;
-              let type = '';
+              let type = "";
 
               if (typeNode) {
-                if (typeNode.type === 'TSUnionType') {
+                if (typeNode.type === "TSUnionType") {
                   type = typeNode.types
                     .map((t: TSESTree.TypeNode) => {
-                      if (t.type === 'TSLiteralType') {
+                      if (t.type === "TSLiteralType") {
                         return `'${
                           (t.literal as TSESTree.StringLiteral).value
                         }'`;
-                      } else if (t.type === 'TSNumberKeyword') {
-                        return 'number';
-                      } else if (t.type === 'TSStringKeyword') {
-                        return 'string';
-                      } else if (t.type === 'TSBooleanKeyword') {
-                        return 'boolean';
-                      } else if (t.type === 'TSNullKeyword') {
-                        return 'null';
-                      } else if (t.type === 'TSTypeReference') {
+                      }
+                      if (t.type === "TSNumberKeyword") return "number";
+                      if (t.type === "TSStringKeyword") return "string";
+                      if (t.type === "TSBooleanKeyword") return "boolean";
+                      if (t.type === "TSNullKeyword") return "null";
+                      if (t.type === "TSTypeReference") {
                         const typeName = (t.typeName as TSESTree.Identifier)
                           .name;
-                        if (typeName === 'Date') {
-                          return 'string';
-                        }
-                        return typeName;
+                        return typeName === "Date" ? "string" : typeName;
                       }
-                      return 'unknown';
+                      return "unknown";
                     })
-                    .join(' | ');
-                } else if (typeNode.type === 'TSNumberKeyword') {
-                  type = 'number';
-                } else if (typeNode.type === 'TSStringKeyword') {
-                  type = 'string';
-                } else if (typeNode.type === 'TSBooleanKeyword') {
-                  type = 'boolean';
-                } else if (typeNode.type === 'TSNullKeyword') {
-                  type = 'null';
-                } else if (typeNode.type === 'TSTypeReference') {
-                  if (
-                    (typeNode.typeName as TSESTree.Identifier).name === 'Date'
-                  ) {
-                    type = 'string'; // Convert Date to string for DTOs
-                  } else {
-                    type = (typeNode.typeName as TSESTree.Identifier).name;
-                  }
+                    .join(" | ");
+                } else if (typeNode.type === "TSNumberKeyword") {
+                  type = "number";
+                } else if (typeNode.type === "TSStringKeyword") {
+                  type = "string";
+                } else if (typeNode.type === "TSBooleanKeyword") {
+                  type = "boolean";
+                } else if (typeNode.type === "TSNullKeyword") {
+                  type = "null";
+                } else if (typeNode.type === "TSTypeReference") {
+                  type =
+                    (typeNode.typeName as TSESTree.Identifier).name === "Date"
+                      ? "string"
+                      : (typeNode.typeName as TSESTree.Identifier).name;
                 }
               }
 
               return {
                 name,
-                type: type || 'unknown',
+                type: type || "unknown",
                 optional: !!prop.optional,
               };
             }
@@ -95,46 +86,45 @@ function extractInterfaces(ast: TSESTree.Program): InterfaceInfo[] {
 
     for (const key in node) {
       const child = node[key as keyof typeof node];
-      if (child && typeof child === 'object') {
+      if (child && typeof child === "object") {
         visit(child as TSESTree.Node);
       }
     }
-  }
+  };
 
   visit(ast);
   return interfaces;
-}
+};
 
-function generateDTOContent(interfaces: InterfaceInfo[]): string {
-  return interfaces
-    .map(int => {
+const generateDTOContent = (interfaces: InterfaceInfo[]): string =>
+  interfaces
+    .map((int) => {
       const properties = int.properties
-        .map(prop => {
-          const optional = prop.optional ? '?' : '';
+        .map((prop) => {
+          const optional = prop.optional ? "?" : "";
           // Convert backend types to DTO types
           const type = prop.type
-            .replace(/^I([A-Z])/g, '$1DTO') // Convert IType to TypeDTO
-            .replace('Date', 'string');
+            .replace(/^I([A-Z])/g, "$1DTO") // Convert IType to TypeDTO
+            .replace("Date", "string");
           return `    ${prop.name}${optional}: ${type};`;
         })
-        .join('\n');
+        .join("\n");
 
       return `export interface ${int.name} {\n${properties}\n}`;
     })
-    .join('\n\n');
-}
+    .join("\n\n");
 
-async function main(): Promise<void> {
+const main = async (): Promise<void> => {
   try {
     // Read backend interfaces file
     const interfacesContent = fs.readFileSync(
       path.resolve(process.cwd(), BACKEND_INTERFACES_PATH),
-      'utf-8',
+      "utf-8",
     );
 
     // Parse TypeScript code
     const ast = parse(interfacesContent, {
-      sourceType: 'module',
+      sourceType: "module",
       ecmaVersion: 2020,
       ecmaFeatures: {
         jsx: true,
@@ -151,14 +141,14 @@ async function main(): Promise<void> {
     fs.writeFileSync(
       path.resolve(process.cwd(), FRONTEND_DTOS_PATH),
       dtoContent,
-      'utf-8',
+      "utf-8",
     );
 
-    console.log('✅ DTOs generated successfully!');
+    console.log("✅ DTOs generated successfully!");
   } catch (error) {
-    console.error('Error generating DTOs:', error);
+    console.error("Error generating DTOs:", error);
     process.exit(1);
   }
-}
+};
 
 main();

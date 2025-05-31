@@ -1,7 +1,8 @@
 import { Sequelize } from 'sequelize';
-import type { Options as SequelizeOptions } from 'sequelize';
 
 import { config } from './env';
+
+import type { Options as SequelizeOptions } from 'sequelize';
 
 interface DbConfig extends SequelizeOptions {
     database: string;

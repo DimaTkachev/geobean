@@ -16,7 +16,7 @@
   "parserOptions": {
     "ecmaVersion": 2022,
     "sourceType": "module",
-    "project": "./tsconfig.json"
+    "project": ["./tsconfig.json", "./scripts/tsconfig.json"]
   },
   "settings": {
     "import/resolver": {
@@ -25,7 +25,11 @@
       },
       "typescript": {
         "alwaysTryTypes": true,
-        "project": ["./backend/tsconfig.json", "./frontend/tsconfig.json"]
+        "project": [
+          "./backend/tsconfig.json",
+          "./frontend/tsconfig.json",
+          "./scripts/tsconfig.json"
+        ]
       }
     }
   },
@@ -71,6 +75,16 @@
 
     // Import rules
     "import/no-duplicates": "error",
+    "sort-imports": [
+      "error",
+      {
+        "ignoreCase": true,
+        "ignoreDeclarationSort": true,
+        "ignoreMemberSort": false,
+        "memberSyntaxSortOrder": ["none", "all", "multiple", "single"],
+        "allowSeparatedGroups": true
+      }
+    ],
     "import/order": [
       "error",
       {
@@ -80,8 +94,23 @@
           "internal",
           "parent",
           "sibling",
-          "index"
+          "index",
+          "object",
+          "type"
         ],
+        "pathGroups": [
+          {
+            "pattern": "react",
+            "group": "builtin",
+            "position": "before"
+          },
+          {
+            "pattern": "@/**",
+            "group": "internal",
+            "position": "after"
+          }
+        ],
+        "pathGroupsExcludedImportTypes": ["react", "builtin"],
         "newlines-between": "always",
         "alphabetize": {
           "order": "asc",

@@ -2,6 +2,7 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 
 import { parse } from "@typescript-eslint/parser";
+
 import type { TSESTree } from "@typescript-eslint/types";
 
 const BACKEND_INTERFACES_PATH = "../backend/src/models/interfaces.ts";

@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
+
+import { MarkerDTO } from '@/types/dtos';
 import { fetchApi } from '@/utils/api';
 import './App.css';
-import { MarkerDTO } from '@/types/dtos';
 
 export const App: React.FC = () => {
     useEffect(() => {

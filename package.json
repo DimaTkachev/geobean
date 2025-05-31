@@ -14,8 +14,8 @@
     "lint-staged": "lint-staged"
   },
   "lint-staged": {
-    "*.{ts,tsx}": [
-      "eslint --fix",
+    "**/*.{ts,tsx}": [
+      "eslint --fix --max-warnings=0",
       "prettier --write"
     ]
   },

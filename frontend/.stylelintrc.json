@@ -1,0 +1,12 @@
+{
+    "extends": ["stylelint-config-standard"],
+    "rules": {
+        "selector-id-pattern": null,
+        "declaration-empty-line-before": null,
+        "font-weight-notation": "numeric",
+        "property-no-vendor-prefix": true,
+        "value-no-vendor-prefix": true,
+        "at-rule-no-vendor-prefix": true
+    },
+    "ignoreFiles": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"]
+}

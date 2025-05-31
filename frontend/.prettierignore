@@ -1,0 +1,12 @@
+node_modules
+dist
+build
+coverage
+*.config.js
+*.config.mjs
+*.config.ts
+.eslintrc.*
+.stylelintrc.*
+.prettierrc.*
+package-lock.json
+yarn.lock 

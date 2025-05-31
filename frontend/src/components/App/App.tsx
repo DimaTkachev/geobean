@@ -1,23 +1,19 @@
-import React, { useEffect } from 'react';
+import React from 'react';
+import useSWR from 'swr';
 
 import { MarkerDTO } from '@/types/dtos';
 import { fetchApi } from '@/utils/api';
-import './App.css';
+import styles from './App.module.css';
 
 export const App: React.FC = () => {
-    useEffect(() => {
-        fetchApi<MarkerDTO[]>('/api/map/all')
-            .then((data: MarkerDTO[]) => {
-                console.log(data);
-            })
-            .catch((error: Error) => {
-                console.error('Error fetching data:', error);
-            });
-    }, []);
+    const { data, error } = useSWR<MarkerDTO[]>('/api/map/all', fetchApi);
+
+    if (error) return <div>Failed to load</div>;
+    if (!data) return <div>Loading...</div>;
 
     return (
-        <div className='app'>
-            <h1>Fullstack Project</h1>
+        <div className={styles.app}>
+            <h1 className={styles.title}>Fullstack Project</h1>
         </div>
     );
 };

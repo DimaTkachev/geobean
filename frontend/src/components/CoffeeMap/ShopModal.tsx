@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
+import { ConfirmationModal } from '../ConfirmationModal';
+
 const themes = [
   { value: 'beige', color: '#8b6a4a' },
   { value: 'purple', color: '#6c4a8b' },
@@ -29,6 +31,7 @@ export const ShopModal: React.FC<ShopModalProps> = ({
 }) => {
   const [name, setName] = useState(initialName);
   const [theme, setTheme] = useState<'beige' | 'purple' | 'blue'>(initialTheme);
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
 
   useEffect(() => {
     setName(initialName);
@@ -36,6 +39,20 @@ export const ShopModal: React.FC<ShopModalProps> = ({
   }, [initialName, initialTheme, open]);
 
   if (!open) return null;
+
+  const handleDeleteClick = () => {
+    setShowConfirmationModal(true);
+  };
+
+  const handleConfirmDelete = () => {
+    onDelete?.();
+    setShowConfirmationModal(false);
+    onClose(); // Close the shop modal after deletion
+  };
+
+  const handleCancelDelete = () => {
+    setShowConfirmationModal(false);
+  };
 
   return (
     <div style={{
@@ -123,7 +140,7 @@ export const ShopModal: React.FC<ShopModalProps> = ({
         <div style={{ display: 'flex', gap: 16, width: '100%', justifyContent: 'center' }}>
           {mode === 'edit' && (
             <button
-              onClick={onDelete}
+              onClick={handleDeleteClick}
               style={{
                 background: 'none',
                 border: '1px solid #a67c3a',
@@ -157,6 +174,13 @@ export const ShopModal: React.FC<ShopModalProps> = ({
           </button>
         </div>
       </div>
+
+      <ConfirmationModal
+        isOpen={showConfirmationModal}
+        message="Вы уверены, что хотите удалить данный магазин?"
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
+      />
     </div>
   );
 }; 

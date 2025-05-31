@@ -372,27 +372,27 @@ export const CoffeeMap: React.FC = () => {
               )}
             </div>
           ))}
-          <div style={{ display: 'flex', alignItems: 'center', gap: isSidebarExpanded ? 12 : 0, marginTop: 8 }}>
-            <button
-              style={{
-                width: 36,
-                height: 36,
-                borderRadius: '50%',
-                background: shops.length >= maxShops ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.2)',
-                color: '#fff',
-                fontSize: 24,
-                border: '2px dashed #fff',
-                cursor: shops.length >= maxShops ? 'not-allowed' : 'pointer',
-                opacity: shops.length >= maxShops ? 0.5 : 1,
-              }}
-              title={shops.length >= maxShops ? 'Можно создать не более 3 кофеен' : 'Добавить кофейню'}
-              onClick={shops.length < maxShops ? handleAddShop : undefined}
-              disabled={shops.length >= maxShops}
-            >
-              +
-            </button>
-            {isSidebarExpanded && <span style={{ color: '#fff', opacity: shops.length >= maxShops ? 0.5 : 1 }}>Добавить ещё</span>}
-          </div>
+          {shops.length < maxShops && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: isSidebarExpanded ? 12 : 0, marginTop: 8 }}>
+              <button
+                style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: '50%',
+                  background: 'rgba(255,255,255,0.2)',
+                  color: '#fff',
+                  fontSize: 24,
+                  border: '2px dashed #fff',
+                  cursor: 'pointer',
+                }}
+                title={'Добавить кофейню'}
+                onClick={handleAddShop}
+              >
+                +
+              </button>
+              {isSidebarExpanded && <span style={{ color: '#fff' }}>Добавить ещё</span>}
+            </div>
+          )}
         </div>
         <div className={styles.header}>
           <h2 className={styles.title}>Карта мира</h2>

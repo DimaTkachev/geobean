@@ -6,6 +6,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 
 import styles from './Registration.module.css';
+import { useAuth } from '../../contexts';
 
 interface RegistrationFormData {
     email: string;
@@ -40,6 +41,7 @@ const validationSchema = yup
 
 export const Registration: React.FC = () => {
   const navigate = useNavigate();
+  const { user, isAuthenticated, login } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [submitError, setSubmitError] = useState<string>('');
@@ -77,11 +79,13 @@ export const Registration: React.FC = () => {
       });
 
       if (response.ok) {
-        console.log('Регистрация успешна');
-        // Keep loading state while redirecting
-        setTimeout(() => {
-          navigate('/login');
-        }, 1000); // Small delay to show success state
+        const result = await response.json();
+        localStorage.setItem('authToken', result.token);
+        localStorage.setItem('user', JSON.stringify(result.user));
+        if (login) {
+          await login(data.email, data.password);
+        }
+        navigate('/create-shop');
       } else {
         setIsLoading(false);
         const errorData = await response.json();

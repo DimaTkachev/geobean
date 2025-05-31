@@ -9,6 +9,7 @@ import {
 } from 'react-simple-maps';
 
 import { fetchApi } from '../../utils/api';
+import { useShop } from '../../contexts';
 
 import styles from './CoffeeMap.module.css';
 
@@ -23,6 +24,7 @@ import type {
   TasteTagDTO,
   WeightDTO,
 } from '../../types/dtos';
+import { ShopModal } from './ShopModal';
 
 const geoUrl = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json';
 
@@ -69,6 +71,14 @@ export const CoffeeMap: React.FC = () => {
     processingMethods: [] as string[],
     tasteTags: [] as string[],
   });
+
+  const { shops, currentShop, setCurrentShop, refreshShops } = useShop();
+  const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalMode, setModalMode] = useState<'add' | 'edit'>('add');
+  const [modalShop, setModalShop] = useState<any>(null);
+  const [modalLoading, setModalLoading] = useState(false);
+  const maxShops = 3;
 
   useEffect(() => {
     const fetchMarkers = async (): Promise<void> => {
@@ -224,6 +234,69 @@ export const CoffeeMap: React.FC = () => {
     setSelectedContinent(null);
   };
 
+  const handleAddShop = () => {
+    setModalMode('add');
+    setModalShop(null);
+    setModalOpen(true);
+  };
+
+  const handleEditShop = (shop: any) => {
+    setModalMode('edit');
+    setModalShop(shop);
+    setModalOpen(true);
+  };
+
+  const handleModalApply = async (name: string, theme: 'beige' | 'purple' | 'blue') => {
+    setModalLoading(true);
+    const token = localStorage.getItem('authToken');
+    try {
+      if (modalMode === 'add') {
+        await fetch('/api/shops', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ name, theme }),
+        });
+      } else if (modalMode === 'edit' && modalShop) {
+        await fetch(`/api/shops/${modalShop.shopID}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ name, theme }),
+        });
+      }
+      await refreshShops();
+      setModalOpen(false);
+    } catch (e) {
+      alert('Ошибка при сохранении кофейни');
+    } finally {
+      setModalLoading(false);
+    }
+  };
+
+  const handleModalDelete = async () => {
+    if (!modalShop) return;
+    if (!window.confirm('Удалить кофейню?')) return;
+    setModalLoading(true);
+    const token = localStorage.getItem('authToken');
+    try {
+      await fetch(`/api/shops/${modalShop.shopID}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      await refreshShops();
+      setModalOpen(false);
+    } catch (e) {
+      alert('Ошибка при удалении кофейни');
+    } finally {
+      setModalLoading(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className={styles.container}>
@@ -242,7 +315,85 @@ export const CoffeeMap: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.sidebar}>
+      <div
+        className={styles.sidebar}
+        style={{
+          width: isSidebarExpanded ? 300 : 60,
+          transition: 'width 0.2s',
+          overflowY: 'auto',
+          maxHeight: '100vh',
+          overflowX: 'hidden',
+        }}
+      >
+        <button
+          style={{ background: 'none', border: 'none', cursor: 'pointer', marginBottom: 16, marginLeft: 4 }}
+          onClick={() => setIsSidebarExpanded(exp => !exp)}
+          aria-label={isSidebarExpanded ? 'Свернуть' : 'Развернуть'}
+        >
+          <span style={{ fontSize: 24 }}>{isSidebarExpanded ? '←' : '→'}</span>
+        </button>
+        <div style={{ marginBottom: 24 }}>
+          {shops.map(shop => (
+            <div
+              key={shop.shopID}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: isSidebarExpanded ? 12 : 0,
+                marginBottom: 8,
+                cursor: 'pointer',
+                background: currentShop?.shopID === shop.shopID ? 'rgba(255,255,255,0.1)' : 'transparent',
+                borderRadius: 8,
+                padding: 4,
+                position: 'relative',
+              }}
+              onClick={() => setCurrentShop(shop)}
+            >
+              <div
+                style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: '50%',
+                  background: shop.theme === 'beige' ? '#8b6a4a' : shop.theme === 'purple' ? '#6c4a8b' : '#4a6a8b',
+                  backgroundImage: shop.image ? `url(${shop.image})` : undefined,
+                  backgroundSize: 'cover',
+                  border: currentShop?.shopID === shop.shopID ? '2px solid #fff' : '2px solid #ccc',
+                }}
+              />
+              {isSidebarExpanded && <span style={{ color: '#fff', fontWeight: 500 }}>{shop.name}</span>}
+              {isSidebarExpanded && (
+                <button
+                  onClick={e => { e.stopPropagation(); handleEditShop(shop); }}
+                  style={{ background: 'none', border: 'none', marginLeft: 'auto', color: '#fff', cursor: 'pointer', fontSize: 14 }}
+                  title="Редактировать"
+                >
+                  Ред.
+                </button>
+              )}
+            </div>
+          ))}
+          <div style={{ display: 'flex', alignItems: 'center', gap: isSidebarExpanded ? 12 : 0, marginTop: 8 }}>
+            <button
+              style={{
+                width: 36,
+                height: 36,
+                borderRadius: '50%',
+                background: shops.length >= maxShops ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.2)',
+                color: '#fff',
+                fontSize: 24,
+                border: '2px dashed #fff',
+                cursor: shops.length >= maxShops ? 'not-allowed' : 'pointer',
+                opacity: shops.length >= maxShops ? 0.5 : 1,
+              }}
+              title={shops.length >= maxShops ? 'Можно создать не более 3 кофеен' : 'Добавить кофейню'}
+              onClick={shops.length < maxShops ? handleAddShop : undefined}
+              disabled={shops.length >= maxShops}
+            >
+              +
+            </button>
+            {isSidebarExpanded && <span style={{ color: '#fff', opacity: shops.length >= maxShops ? 0.5 : 1 }}>Добавить ещё</span>}
+          </div>
+        </div>
         <div className={styles.header}>
           <h2 className={styles.title}>Карта мира</h2>
           <div className={styles.searchContainer}>
@@ -382,6 +533,16 @@ export const CoffeeMap: React.FC = () => {
                         Очистить фильтры
           </button>
         </div>
+        <ShopModal
+          open={modalOpen}
+          mode={modalMode}
+          initialName={modalShop?.name}
+          initialTheme={modalShop?.theme}
+          onApply={handleModalApply}
+          onDelete={modalMode === 'edit' ? handleModalDelete : undefined}
+          onClose={() => setModalOpen(false)}
+          isApplyDisabled={modalLoading}
+        />
       </div>
 
       <div className={styles.mapContainer}>

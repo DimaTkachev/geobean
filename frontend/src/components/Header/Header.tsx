@@ -2,12 +2,13 @@ import React from 'react';
 
 import { Link, useNavigate } from 'react-router-dom';
 
-import { useAuth } from '../../contexts';
+import { useAuth, useShop } from '../../contexts';
 
 import styles from './Header.module.css';
 
 export const Header: React.FC = () => {
   const { user, logout, isAuthenticated } = useAuth();
+  const { currentShop } = useShop();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -20,7 +21,7 @@ export const Header: React.FC = () => {
       <div className={styles.container}>
         <Link to='/' className={styles.logo}>
           <span className={styles.logoIcon}>☕</span>
-          <span className={styles.logoText}>GeoBean</span>
+          <span className={styles.logoText}>{currentShop ? currentShop.name : 'GeoBean'}</span>
         </Link>
 
         <nav className={styles.nav}>
@@ -33,19 +34,19 @@ export const Header: React.FC = () => {
                 onClick={handleLogout}
                 className={styles.logoutButton}
               >
-                                Выйти
+                Выйти
               </button>
             </div>
           ) : (
             <div className={styles.authButtons}>
               <Link to='/login' className={styles.loginButton}>
-                                Войти
+                Войти
               </Link>
               <Link
                 to='/register'
                 className={styles.registerButton}
               >
-                                Регистрация
+                Регистрация
               </Link>
             </div>
           )}

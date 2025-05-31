@@ -2,6 +2,7 @@ import cors from 'cors';
 import express, { json, Request, Response } from 'express';
 
 import authRoutes from './routes/authRoutes';
+import coffeeLotRoutes from './routes/coffeeLotRoutes';
 import { mapRoutes } from './routes/mapRoutes';
 import shopRoutes from './routes/shopRoutes';
 import { testRoutes } from './routes/testRoutes';
@@ -21,6 +22,7 @@ app.use('/api/test', testRoutes);
 app.use('/api/map', mapRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/shops', shopRoutes);
+app.use('/api/coffee-lots', coffeeLotRoutes);
 
 app.get('/health', (_req: Request, res: Response): void => {
   res.status(200).json({ status: 'OK' });

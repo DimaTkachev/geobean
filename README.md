@@ -39,6 +39,14 @@ docker-compose up -d     # Start services
 docker-compose down      # Stop services
 docker-compose logs     # View logs
 docker-compose down -v  # Stop and remove volumes
+docker-compose exec api npm run migrate  # Run migrations (when Docker is running)
+```
+
+### Backend (Local)
+
+```bash
+cd backend
+npm run migrate         # Run migrations directly
 ```
 
 ### Frontend

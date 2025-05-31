@@ -1,0 +1,23 @@
+.app {
+    --primary-color: #333;
+    --spacing-large: 50px;
+
+    text-align: center;
+    margin-block-start: var(--spacing-large);
+    font-family: Arial, sans-serif;
+
+    &:hover {
+        transform: scale(1.02);
+    }
+}
+
+.title {
+    color: var(--primary-color);
+    font-weight: 600;
+
+    @media (width >= 768px) {
+        font-size: 2rem;
+    }
+}
+
+/* Test comment */

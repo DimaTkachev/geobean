@@ -2,13 +2,8 @@
     --primary-color: #333;
     --spacing-large: 50px;
 
-    text-align: center;
-    margin-block-start: var(--spacing-large);
+    min-height: 100vh;
     font-family: Arial, sans-serif;
-
-    &:hover {
-        transform: scale(1.02);
-    }
 }
 
 .title {

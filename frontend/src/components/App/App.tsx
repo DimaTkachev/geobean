@@ -1,19 +1,20 @@
 import React from 'react';
-import useSWR from 'swr';
-
-import { MarkerDTO } from '@/types/dtos';
-import { fetchApi } from '@/utils/api';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Home } from '../Home';
+import { Registration } from '../Registration';
+import { Login } from '../Login';
 import styles from './App.module.css';
 
 export const App: React.FC = () => {
-    const { data, error } = useSWR<MarkerDTO[]>('/api/map/all', fetchApi);
-
-    if (error) return <div>Failed to load</div>;
-    if (!data) return <div>Loading...</div>;
-
     return (
         <div className={styles.app}>
-            <h1 className={styles.title}>Fullstack Project</h1>
+            <Router>
+                <Routes>
+                    <Route path='/' element={<Home />} />
+                    <Route path='/register' element={<Registration />} />
+                    <Route path='/login' element={<Login />} />
+                </Routes>
+            </Router>
         </div>
     );
 };

@@ -125,3 +125,22 @@ export interface InventoryDTO {
     createdAt?: string;
     updatedAt?: string;
 }
+
+export interface RegistrationRequestDTO {
+    email: string;
+    password: string;
+}
+
+export interface LoginRequestDTO {
+    email: string;
+    password: string;
+}
+
+export interface AuthResponseDTO {
+    message: string;
+    token: string;
+    user: {
+        userID: number;
+        email: string;
+    };
+}

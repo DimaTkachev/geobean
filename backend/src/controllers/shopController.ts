@@ -3,7 +3,6 @@ import { Response } from 'express';
 import { AuthenticatedRequest } from '../middleware/auth';
 import { Inventory, Shop } from '../models';
 
-// Create a new shop
 export const createShop = async (req: AuthenticatedRequest, res: Response) => {
   if (!req.user) {
     return res.status(401).json({ message: 'User not authenticated' });
@@ -24,7 +23,6 @@ export const createShop = async (req: AuthenticatedRequest, res: Response) => {
   }
 };
 
-// Get all shops for the authenticated user
 export const getShops = async (req: AuthenticatedRequest, res: Response) => {
   if (!req.user) {
     return res.status(401).json({ message: 'User not authenticated' });
@@ -38,7 +36,6 @@ export const getShops = async (req: AuthenticatedRequest, res: Response) => {
   }
 };
 
-// Update a shop
 export const updateShop = async (req: AuthenticatedRequest, res: Response) => {
   if (!req.user) {
     return res.status(401).json({ message: 'User not authenticated' });
@@ -56,7 +53,6 @@ export const updateShop = async (req: AuthenticatedRequest, res: Response) => {
   }
 };
 
-// Delete a shop
 export const deleteShop = async (req: AuthenticatedRequest, res: Response) => {
   if (!req.user) {
     return res.status(401).json({ message: 'User not authenticated' });
@@ -66,6 +62,8 @@ export const deleteShop = async (req: AuthenticatedRequest, res: Response) => {
     const { userID } = req.user;
     const shop = await Shop.findOne({ where: { shopID, userID } });
     if (!shop) return res.status(404).json({ message: 'Shop not found' });
+
+    await Inventory.destroy({ where: { shopID } });
     await shop.destroy();
     res.json({ message: 'Shop deleted' });
   } catch (error) {
@@ -73,7 +71,6 @@ export const deleteShop = async (req: AuthenticatedRequest, res: Response) => {
   }
 };
 
-// Add coffee lot to shop inventory
 export const addCoffeeLotToInventory = async (
   req: AuthenticatedRequest,
   res: Response
@@ -86,7 +83,6 @@ export const addCoffeeLotToInventory = async (
     const { coffeeLotID, quantity } = req.body;
     const { userID } = req.user;
 
-    // Find the shop and ensure it belongs to the user
     const shop = await Shop.findOne({ where: { shopID, userID } });
     if (!shop) {
       return res
@@ -94,20 +90,18 @@ export const addCoffeeLotToInventory = async (
         .json({ message: 'Shop not found or does not belong to user' });
     }
 
-    // Find existing inventory entry or create a new one
     const [inventoryItem, created] = await Inventory.findOrCreate({
       where: {
-        shopID: parseInt(shopID, 10), // Ensure shopID is a number
+        shopID: parseInt(shopID, 10),
         lotID: coffeeLotID,
       },
       defaults: {
         shopID: parseInt(shopID, 10),
         lotID: coffeeLotID,
-        stock: quantity, // Use the quantity from the request body (should be 1)
+        stock: quantity,
       },
     });
 
-    // If the item already existed, increment the stock
     if (!created) {
       await inventoryItem.increment('stock', { by: quantity });
     }
@@ -122,5 +116,92 @@ export const addCoffeeLotToInventory = async (
     res
       .status(500)
       .json({ message: 'Failed to add coffee lot to inventory', error });
+  }
+};
+
+export const getInventoryItem = async (
+  req: AuthenticatedRequest,
+  res: Response
+) => {
+  if (!req.user) {
+    return res.status(401).json({ message: 'User not authenticated' });
+  }
+  try {
+    const { shopID, lotID } = req.params;
+    const { userID } = req.user;
+
+    const shop = await Shop.findOne({ where: { shopID, userID } });
+    if (!shop) {
+      return res
+        .status(404)
+        .json({ message: 'Shop not found or does not belong to user' });
+    }
+
+    const inventoryItem = await Inventory.findOne({
+      where: {
+        shopID: parseInt(shopID, 10),
+        lotID: parseInt(lotID, 10),
+      },
+    });
+
+    if (!inventoryItem) {
+      return res.json({ stock: 0 });
+    }
+
+    res.json({ stock: inventoryItem.stock });
+  } catch (error) {
+    console.error('Error fetching inventory item:', error);
+    res.status(500).json({ message: 'Failed to fetch inventory item', error });
+  }
+};
+
+export const updateInventoryItem = async (
+  req: AuthenticatedRequest,
+  res: Response
+) => {
+  if (!req.user) {
+    return res.status(401).json({ message: 'User not authenticated' });
+  }
+  try {
+    const { shopID, lotID } = req.params;
+    const { stock } = req.body;
+    const { userID } = req.user;
+
+    const shop = await Shop.findOne({ where: { shopID, userID } });
+    if (!shop) {
+      return res
+        .status(404)
+        .json({ message: 'Shop not found or does not belong to user' });
+    }
+
+    if (stock === 0) {
+      await Inventory.destroy({
+        where: {
+          shopID: parseInt(shopID, 10),
+          lotID: parseInt(lotID, 10),
+        },
+      });
+    } else {
+      const [inventoryItem] = await Inventory.findOrCreate({
+        where: {
+          shopID: parseInt(shopID, 10),
+          lotID: parseInt(lotID, 10),
+        },
+        defaults: {
+          shopID: parseInt(shopID, 10),
+          lotID: parseInt(lotID, 10),
+          stock,
+        },
+      });
+
+      if (inventoryItem.stock !== stock) {
+        await inventoryItem.update({ stock });
+      }
+    }
+
+    res.json({ message: 'Inventory updated successfully', stock });
+  } catch (error) {
+    console.error('Error updating inventory item:', error);
+    res.status(500).json({ message: 'Failed to update inventory item', error });
   }
 };

@@ -17,6 +17,7 @@ interface ShopModalProps {
   onDelete?: () => void;
   onClose: () => void;
   isApplyDisabled?: boolean;
+  isDeleteDisabled?: boolean;
 }
 
 export const ShopModal: React.FC<ShopModalProps> = ({
@@ -28,6 +29,7 @@ export const ShopModal: React.FC<ShopModalProps> = ({
   onDelete,
   onClose,
   isApplyDisabled,
+  isDeleteDisabled,
 }) => {
   const [name, setName] = useState(initialName);
   const [theme, setTheme] = useState<'beige' | 'purple' | 'blue'>(initialTheme);
@@ -141,6 +143,7 @@ export const ShopModal: React.FC<ShopModalProps> = ({
           {mode === 'edit' && (
             <button
               onClick={handleDeleteClick}
+              disabled={isDeleteDisabled}
               style={{
                 background: 'none',
                 border: '1px solid #a67c3a',
@@ -148,9 +151,11 @@ export const ShopModal: React.FC<ShopModalProps> = ({
                 padding: '10px 24px',
                 borderRadius: 4,
                 fontWeight: 500,
-                cursor: 'pointer',
+                cursor: isDeleteDisabled ? 'not-allowed' : 'pointer',
                 minWidth: 100,
+                opacity: isDeleteDisabled ? 0.6 : 1,
               }}
+              title={isDeleteDisabled ? 'Нельзя удалить последнюю кофейню' : ''}
             >
               Удалить
             </button>

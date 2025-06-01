@@ -1,11 +1,16 @@
 import { Router } from 'express';
 
-import { getCoffeeLots } from '../controllers/coffeeLotController';
-import { authenticateToken } from '../middleware/auth'; // Assuming authenticateToken is needed
+import {
+  getAttributeInfo,
+  getCoffeeLotById,
+  getCoffeeLots,
+} from '../controllers/coffeeLotController';
+import { authenticateToken } from '../middleware/auth';
 
 const router = Router();
 
-// GET /api/coffee-lots
 router.get('/', authenticateToken, getCoffeeLots);
+router.get('/attribute-info', getAttributeInfo);
+router.get('/:lotID', getCoffeeLotById);
 
 export default router;

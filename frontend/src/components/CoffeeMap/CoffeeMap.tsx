@@ -280,7 +280,6 @@ export const CoffeeMap: React.FC = () => {
 
   const handleModalDelete = async () => {
     if (!modalShop) return;
-    if (!window.confirm('Удалить кофейню?')) return;
     setModalLoading(true);
     const token = localStorage.getItem('authToken');
     try {
@@ -542,6 +541,7 @@ export const CoffeeMap: React.FC = () => {
           onDelete={modalMode === 'edit' ? handleModalDelete : undefined}
           onClose={() => setModalOpen(false)}
           isApplyDisabled={modalLoading}
+          isDeleteDisabled={shops.length <= 1}
         />
       </div>
 

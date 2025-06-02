@@ -306,3 +306,66 @@
     z-index: 1000;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
+
+.markerPopup {
+    display: flex;
+    align-items: flex-start;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+    padding: 20px 28px;
+    min-width: 380px;
+    max-width: 440px;
+    min-height: 100px;
+    gap: 24px;
+    pointer-events: auto;
+}
+
+.markerPopupImage {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    border-radius: 8px;
+    background: #f5e0d1;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.04);
+}
+
+.markerPopupInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+}
+
+.markerPopupName {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #3c1f0c;
+    margin-bottom: 2px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: text-decoration 0.2s;
+}
+
+.markerPopupName:hover {
+    text-decoration: underline;
+}
+
+.markerPopupRoasting {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 2px;
+}
+
+.markerPopupTasteTitle {
+    font-weight: 600;
+    color: #3c1f0c;
+    margin-top: 4px;
+    margin-bottom: 0;
+}
+
+.markerPopupTaste {
+    color: #3c1f0c;
+    font-size: 1rem;
+    margin-bottom: 0;
+}

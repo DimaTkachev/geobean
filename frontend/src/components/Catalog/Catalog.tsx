@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // Import necessary hooks and contexts
 import { useShop } from '../../contexts';
@@ -30,6 +31,7 @@ export const Catalog: React.FC = () => {
   // State and context hooks, similar to CoffeeMap
   const { shops, currentShop, setCurrentShop, refreshShops } = useShop();
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   const [coffeeLots, setCoffeeLots] = useState<CoffeeLot[]>([]);
   const [filteredCoffeeLots, setFilteredCoffeeLots] = useState<CoffeeLot[]>([]);
@@ -460,21 +462,33 @@ export const Catalog: React.FC = () => {
                 borderRadius: '8px',
                 textAlign: 'center',
                 background: '#fff',
-                position: 'relative', // Needed for absolute positioning of the button
-                overflow: 'hidden', // Hide button overflow initially
+                position: 'relative',
+                overflow: 'hidden',
               }}
-              className={styles.coffeeLotCard} // Add a class for hover effects
+              className={styles.coffeeLotCard}
             >
               {/* Image */}
               {lot.imageFilename && (
                 <img
                   src={`/src/assets/images/${lot.imageFilename}`}
                   alt={lot.name}
-                  style={{ width: '100%', height: '150px', objectFit: 'contain', borderRadius: '4px', marginBottom: '10px' }}
+                  style={{ width: '100%', height: '150px', objectFit: 'contain', borderRadius: '4px', marginBottom: '10px', cursor: 'pointer', transition: 'box-shadow 0.2s' }}
+                  onClick={() => navigate(`/coffee-lots/${lot.coffeeLotID}`)}
+                  onKeyDown={e => { if (e.key === 'Enter') navigate(`/coffee-lots/${lot.coffeeLotID}`); }}
+                  tabIndex={0}
+                  className={styles.coffeeLotImage}
                 />
               )}
               {/* Info */}
-              <h4 style={{ marginBottom: '5px', color: '#3c1f0c' }}>{lot.name}</h4>
+              <h4
+                style={{ marginBottom: '5px', color: '#3c1f0c', cursor: 'pointer', textDecoration: 'none', transition: 'text-decoration 0.2s' }}
+                onClick={() => navigate(`/coffee-lots/${lot.coffeeLotID}`)}
+                onKeyDown={e => { if (e.key === 'Enter') navigate(`/coffee-lots/${lot.coffeeLotID}`); }}
+                tabIndex={0}
+                className={styles.coffeeLotName}
+              >
+                {lot.name}
+              </h4>
               <div style={{ fontSize: '0.9em', color: '#555', marginBottom: '5px' }}>
                 <span>под {lot.roasting}</span>
                 {lot.weight && <span> - {lot.weight}</span>}
@@ -509,10 +523,10 @@ export const Catalog: React.FC = () => {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  opacity: 0, // Initially hidden
-                  transition: 'opacity 0.2s ease-in-out', // Smooth transition
+                  opacity: 0,
+                  transition: 'opacity 0.2s ease-in-out',
                 }}
-                className={styles.addToInventoryButton} // Add class for hover effect
+                className={styles.addToInventoryButton}
                 onClick={() => handleAddToInventory(lot.coffeeLotID)}
               >
                 +

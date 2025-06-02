@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import {
   ComposableMap,
@@ -79,6 +80,9 @@ export const CoffeeMap: React.FC = () => {
   const [modalShop, setModalShop] = useState<any>(null);
   const [modalLoading, setModalLoading] = useState(false);
   const maxShops = 3;
+  const navigate = useNavigate();
+  const [hoveredMarkerID, setHoveredMarkerID] = useState<number | null>(null);
+  const [popupPosition, setPopupPosition] = useState<{ x: number; y: number } | null>(null);
 
   useEffect(() => {
     const fetchMarkers = async (): Promise<void> => {
@@ -294,6 +298,19 @@ export const CoffeeMap: React.FC = () => {
     } finally {
       setModalLoading(false);
     }
+  };
+
+  // Handler for marker mouse events
+  const handleMarkerMouseEnter = (markerID: number) => (e: React.MouseEvent) => {
+    setHoveredMarkerID(markerID);
+    setPopupPosition({ x: e.clientX, y: e.clientY });
+  };
+  const handleMarkerMouseMove = (e: React.MouseEvent) => {
+    setPopupPosition({ x: e.clientX, y: e.clientY });
+  };
+  const handleMarkerMouseLeave = (markerID: number) => () => {
+    setHoveredMarkerID(id => (id === markerID ? null : id));
+    setPopupPosition(null);
   };
 
   if (loading) {
@@ -545,7 +562,7 @@ export const CoffeeMap: React.FC = () => {
         />
       </div>
 
-      <div className={styles.mapContainer}>
+      <div className={styles.mapContainer} style={{ cursor: 'pointer' }}>
         <ComposableMap
           projectionConfig={{
             scale: 147,
@@ -580,24 +597,62 @@ export const CoffeeMap: React.FC = () => {
               }
             </Geographies>
             {filteredMarkers.map(marker => (
-              <Marker
-                key={marker.markerID}
-                coordinates={[
-                  marker.longitude || 0,
-                  marker.latitude || 0,
-                ]}
-                className={styles.marker}
-              >
-                <circle r={6} className={styles.markerCircle} />
-                <title>
-                  {marker.CoffeeLot.name ||
-                                        'Безымянная партия'}{' '}
-                                    - {marker.CoffeeLot.Region.Country.name}
-                </title>
-              </Marker>
+              <g key={marker.markerID}>
+                <Marker
+                  coordinates={[
+                    marker.longitude || 0,
+                    marker.latitude || 0,
+                  ]}
+                  className={styles.marker}
+                  onMouseEnter={handleMarkerMouseEnter(marker.markerID!)}
+                  onMouseMove={handleMarkerMouseMove}
+                  onMouseLeave={handleMarkerMouseLeave(marker.markerID!)}
+                  onClick={() => navigate(`/coffee-lots/${marker.lotID}`)}
+                >
+                  <circle r={10} className={styles.markerCircle} />
+                </Marker>
+              </g>
             ))}
           </ZoomableGroup>
         </ComposableMap>
+        {/* Render popup outside SVG for correct positioning */}
+        {hoveredMarkerID !== null && popupPosition && (() => {
+          const marker = filteredMarkers.find(m => m.markerID === hoveredMarkerID);
+          if (!marker) return null;
+          return (
+            <div
+              className={styles.markerPopup}
+              style={{
+                position: 'fixed',
+                left: popupPosition.x + 16,
+                top: popupPosition.y - 40,
+                zIndex: 1000,
+                pointerEvents: 'none',
+              }}
+            >
+              <img
+                src={marker.CoffeeLot.image || '/placeholder.png'}
+                alt={marker.CoffeeLot.name || ''}
+                className={styles.markerPopupImage}
+              />
+              <div className={styles.markerPopupInfo}>
+                <div
+                  className={styles.markerPopupName}
+                  style={{ pointerEvents: 'auto' }}
+                  onClick={() => navigate(`/coffee-lots/${marker.lotID}`)}
+                  tabIndex={0}
+                  role="button"
+                  onKeyDown={e => { if (e.key === 'Enter') navigate(`/coffee-lots/${marker.lotID}`); }}
+                >
+                  {marker.CoffeeLot.name}
+                </div>
+                <div className={styles.markerPopupRoasting}>под {marker.CoffeeLot.Roasting?.name}</div>
+                <div className={styles.markerPopupTasteTitle}>Вкусовые ноты:</div>
+                <div className={styles.markerPopupTaste}>{marker.CoffeeLot.tasteFilter}</div>
+              </div>
+            </div>
+          );
+        })()}
       </div>
     </div>
   );

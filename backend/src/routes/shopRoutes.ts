@@ -5,6 +5,7 @@ import {
   createShop,
   deleteShop,
   getInventoryItem,
+  getShopInventory,
   getShops,
   updateInventoryItem,
   updateShop,
@@ -24,5 +25,6 @@ router.patch(
   authenticateToken,
   updateInventoryItem
 );
+router.get('/:shopID/inventory', authenticateToken, getShopInventory);
 
 export default router;

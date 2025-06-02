@@ -205,3 +205,29 @@ export const updateInventoryItem = async (
     res.status(500).json({ message: 'Failed to update inventory item', error });
   }
 };
+
+export const getShopInventory = async (
+  req: AuthenticatedRequest,
+  res: Response
+) => {
+  if (!req.user) {
+    return res.status(401).json({ message: 'User not authenticated' });
+  }
+  try {
+    const { shopID } = req.params;
+    const { userID } = req.user;
+    const shop = await Shop.findOne({ where: { shopID, userID } });
+    if (!shop) {
+      return res
+        .status(404)
+        .json({ message: 'Shop not found or does not belong to user' });
+    }
+    const inventory = await Inventory.findAll({
+      where: { shopID },
+      attributes: ['lotID', 'stock'],
+    });
+    res.json(inventory);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to get inventory', error });
+  }
+};

@@ -10,7 +10,7 @@ import {
 } from 'react-simple-maps';
 
 import { fetchApi } from '../../utils/api';
-import { useShop } from '../../contexts';
+import { useShop, useAuth } from '../../contexts';
 
 import styles from './CoffeeMap.module.css';
 
@@ -83,6 +83,28 @@ export const CoffeeMap: React.FC = () => {
   const navigate = useNavigate();
   const [hoveredMarkerID, setHoveredMarkerID] = useState<number | null>(null);
   const [popupPosition, setPopupPosition] = useState<{ x: number; y: number } | null>(null);
+  const { isAuthenticated } = useAuth();
+
+  // Placeholder for inventory lotIDs for the current shop
+  const [inventoryLotIDs, setInventoryLotIDs] = useState<number[] | null>(null);
+
+  // Fetch inventory for current shop if authenticated
+  useEffect(() => {
+    if (isAuthenticated && currentShop && currentShop.shopID) {
+      const token = localStorage.getItem('authToken');
+      fetch(`/api/shops/${currentShop.shopID}/inventory`, {
+        headers: { 'Authorization': `Bearer ${token}` },
+      })
+        .then(res => res.json())
+        .then(data => {
+          // data should be an array of inventory items with lotID
+          setInventoryLotIDs(Array.isArray(data) ? data.map(item => item.lotID) : []);
+        })
+        .catch(() => setInventoryLotIDs([]));
+    } else {
+      setInventoryLotIDs(null);
+    }
+  }, [isAuthenticated, currentShop]);
 
   useEffect(() => {
     const fetchMarkers = async (): Promise<void> => {
@@ -137,6 +159,16 @@ export const CoffeeMap: React.FC = () => {
   useEffect(() => {
     let filtered = markers;
 
+    if (isAuthenticated && currentShop && currentShop.shopID) {
+      if (inventoryLotIDs) {
+        if (inventoryLotIDs.length === 0) {
+          filtered = [];
+        } else {
+          filtered = filtered.filter(marker => inventoryLotIDs.includes(marker.lotID));
+        }
+      }
+    }
+
     if (filters.continents.length > 0) {
       filtered = filtered.filter(marker =>
         filters.continents.includes(
@@ -182,7 +214,7 @@ export const CoffeeMap: React.FC = () => {
     }
 
     setFilteredMarkers(filtered);
-  }, [filters, markers]);
+  }, [filters, markers, isAuthenticated, currentShop, inventoryLotIDs]);
 
   const handleFilterChange = (
     filterType: keyof Filters,
@@ -331,7 +363,7 @@ export const CoffeeMap: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <div
+      <aside
         className={styles.sidebar}
         style={{
           width: isSidebarExpanded ? 300 : 60,
@@ -346,70 +378,72 @@ export const CoffeeMap: React.FC = () => {
           onClick={() => setIsSidebarExpanded(exp => !exp)}
           aria-label={isSidebarExpanded ? 'Свернуть' : 'Развернуть'}
         >
-          <span style={{ fontSize: 24 }}>{isSidebarExpanded ? '←' : '→'}</span>
+          <span style={{ fontSize: 24, color: '#8b6a4a' }}>{isSidebarExpanded ? '←' : '→'}</span>
         </button>
-        <div style={{ marginBottom: 24 }}>
-          {shops.map(shop => (
-            <div
-              key={shop.shopID}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: isSidebarExpanded ? 12 : 0,
-                marginBottom: 8,
-                cursor: 'pointer',
-                background: currentShop?.shopID === shop.shopID ? 'rgba(255,255,255,0.1)' : 'transparent',
-                borderRadius: 8,
-                padding: 4,
-                position: 'relative',
-              }}
-              onClick={() => setCurrentShop(shop)}
-            >
+        {isAuthenticated && (
+          <div style={{ marginBottom: 24 }}>
+            {shops.map(shop => (
               <div
+                key={shop.shopID}
                 style={{
-                  width: 36,
-                  height: 36,
-                  borderRadius: '50%',
-                  background: shop.theme === 'beige' ? '#8b6a4a' : shop.theme === 'purple' ? '#6c4a8b' : '#4a6a8b',
-                  backgroundImage: shop.image ? `url(${shop.image})` : undefined,
-                  backgroundSize: 'cover',
-                  border: currentShop?.shopID === shop.shopID ? '2px solid #fff' : '2px solid #ccc',
-                }}
-              />
-              {isSidebarExpanded && <span style={{ color: '#fff', fontWeight: 500 }}>{shop.name}</span>}
-              {isSidebarExpanded && (
-                <button
-                  onClick={e => { e.stopPropagation(); handleEditShop(shop); }}
-                  style={{ background: 'none', border: 'none', marginLeft: 'auto', color: '#fff', cursor: 'pointer', fontSize: 14 }}
-                  title="Редактировать"
-                >
-                  Ред.
-                </button>
-              )}
-            </div>
-          ))}
-          {shops.length < maxShops && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: isSidebarExpanded ? 12 : 0, marginTop: 8 }}>
-              <button
-                style={{
-                  width: 36,
-                  height: 36,
-                  borderRadius: '50%',
-                  background: 'rgba(255,255,255,0.2)',
-                  color: '#fff',
-                  fontSize: 24,
-                  border: '2px dashed #fff',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: isSidebarExpanded ? 12 : 0,
+                  marginBottom: 8,
                   cursor: 'pointer',
+                  background: currentShop?.shopID === shop.shopID ? 'rgba(139, 106, 74, 0.2)' : 'transparent',
+                  borderRadius: 8,
+                  padding: 4,
+                  position: 'relative',
                 }}
-                title={'Добавить кофейню'}
-                onClick={handleAddShop}
+                onClick={() => setCurrentShop(shop)}
               >
-                +
-              </button>
-              {isSidebarExpanded && <span style={{ color: '#fff' }}>Добавить ещё</span>}
-            </div>
-          )}
-        </div>
+                <div
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: '50%',
+                    background: shop.theme === 'beige' ? '#8b6a4a' : shop.theme === 'purple' ? '#6c4a8b' : '#4a6a8b',
+                    backgroundImage: shop.image ? `url(${shop.image})` : undefined,
+                    backgroundSize: 'cover',
+                    border: currentShop?.shopID === shop.shopID ? '2px solid #8b6a4a' : '2px solid #ccc',
+                  }}
+                />
+                {isSidebarExpanded && <span style={{ color: '#3c1f0c', fontWeight: 500 }}>{shop.name}</span>}
+                {isSidebarExpanded && (
+                  <button
+                    onClick={e => { e.stopPropagation(); handleEditShop(shop); }}
+                    style={{ background: 'none', border: 'none', marginLeft: 'auto', color: '#8b6a4a', cursor: 'pointer', fontSize: 14 }}
+                    title="Редактировать"
+                  >
+                    Ред.
+                  </button>
+                )}
+              </div>
+            ))}
+            {shops.length < maxShops && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: isSidebarExpanded ? 12 : 0, marginTop: 8 }}>
+                <button
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: '50%',
+                    background: 'rgba(139, 106, 74, 0.3)',
+                    color: '#8b6a4a',
+                    fontSize: 24,
+                    border: '2px dashed #8b6a4a',
+                    cursor: 'pointer',
+                  }}
+                  title={'Добавить кофейню'}
+                  onClick={handleAddShop}
+                >
+                  +
+                </button>
+                {isSidebarExpanded && <span style={{ color: '#3c1f0c' }}>Добавить ещё</span>}
+              </div>
+            )}
+          </div>
+        )}
         <div className={styles.header}>
           <h2 className={styles.title}>Карта мира</h2>
           <div className={styles.searchContainer}>
@@ -549,18 +583,20 @@ export const CoffeeMap: React.FC = () => {
                         Очистить фильтры
           </button>
         </div>
-        <ShopModal
-          open={modalOpen}
-          mode={modalMode}
-          initialName={modalShop?.name}
-          initialTheme={modalShop?.theme}
-          onApply={handleModalApply}
-          onDelete={modalMode === 'edit' ? handleModalDelete : undefined}
-          onClose={() => setModalOpen(false)}
-          isApplyDisabled={modalLoading}
-          isDeleteDisabled={shops.length <= 1}
-        />
-      </div>
+        {isAuthenticated && (
+          <ShopModal
+            open={modalOpen}
+            mode={modalMode}
+            initialName={modalShop?.name}
+            initialTheme={modalShop?.theme}
+            onApply={handleModalApply}
+            onDelete={modalMode === 'edit' ? handleModalDelete : undefined}
+            onClose={() => setModalOpen(false)}
+            isApplyDisabled={modalLoading}
+            isDeleteDisabled={shops.length <= 1}
+          />
+        )}
+      </aside>
 
       <div className={styles.mapContainer} style={{ cursor: 'pointer' }}>
         <ComposableMap

@@ -11,6 +11,7 @@ import { Registration } from '../Registration';
 import { CreateShop } from '../CreateShop';
 import { Catalog } from '../Catalog';
 import CoffeeLotCardPage from '../../pages/CoffeeLotCardPage';
+import { CoffeeMap } from '../CoffeeMap';
 
 import styles from './App.module.css';
 
@@ -22,7 +23,7 @@ export const App: React.FC = () => (
           <Header />
           <main className={styles.main}>
             <Routes>
-              <Route path='/' element={<Home />} />
+              <Route path='/' element={<CoffeeMap />} />
               <Route
                 path='/register'
                 element={<Registration />}

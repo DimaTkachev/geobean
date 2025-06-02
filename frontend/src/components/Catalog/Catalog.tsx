@@ -470,7 +470,7 @@ export const Catalog: React.FC = () => {
               {/* Image */}
               {lot.imageFilename && (
                 <img
-                  src={`/src/assets/images/${lot.imageFilename}`}
+                  src={`/images/${lot.imageFilename}`}
                   alt={lot.name}
                   style={{ width: '100%', height: '150px', objectFit: 'contain', borderRadius: '4px', marginBottom: '10px', cursor: 'pointer', transition: 'box-shadow 0.2s' }}
                   onClick={() => navigate(`/coffee-lots/${lot.coffeeLotID}`)}

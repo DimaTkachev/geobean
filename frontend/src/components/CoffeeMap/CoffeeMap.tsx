@@ -631,7 +631,7 @@ export const CoffeeMap: React.FC = () => {
               }}
             >
               <img
-                src={marker.CoffeeLot.image || '/placeholder.png'}
+                src={marker.CoffeeLot.image ? `/images/${marker.CoffeeLot.image}` : '/images/placeholder.png'}
                 alt={marker.CoffeeLot.name || ''}
                 className={styles.markerPopupImage}
               />

@@ -266,7 +266,7 @@ export const CoffeeLotCardPage: React.FC = () => {
       <div className={styles.cardWrapper}>
         <div className={styles.topSection}>
           <div className={styles.imageSection}>
-            {lot.image && <img src={lot.image} alt={lot.name} className={styles.image} />}
+            {lot.image && <img src={`/images/${lot.image}`} alt={lot.name} className={styles.image} />}
             {isAuthenticated && (
               <div className={styles.inventoryControls}>
                 <button className={styles.quantityBtn} onClick={() => handleQuantity(-1)} disabled={inventory === 0}>-</button>

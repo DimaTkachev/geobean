@@ -1,3 +1,5 @@
+import path from 'path';
+
 import cors from 'cors';
 import express, { json, Request, Response } from 'express';
 
@@ -8,6 +10,9 @@ import shopRoutes from './routes/shopRoutes';
 import { testRoutes } from './routes/testRoutes';
 
 const app = express();
+
+// Serve static files from frontend/public
+app.use(express.static(path.join(__dirname, '../../frontend/public')));
 
 const corsOptions = {
   origin: ['http://localhost:3000', 'http://localhost:8080'],

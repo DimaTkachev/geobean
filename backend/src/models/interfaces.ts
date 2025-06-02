@@ -114,6 +114,7 @@ export interface IShop {
   theme: 'beige' | 'purple' | 'blue';
   shareUrl: string | null;
   qrPath: string | null;
+  qrBase64: string | null;
   qrEnabled: boolean;
   createdAt?: Date;
   updatedAt?: Date;

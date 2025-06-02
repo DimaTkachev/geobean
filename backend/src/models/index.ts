@@ -375,6 +375,10 @@ const Shop = sequelize.define<ShopModel>(
       type: DataTypes.STRING(255),
       allowNull: true,
     },
+    qrBase64: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
     qrEnabled: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,

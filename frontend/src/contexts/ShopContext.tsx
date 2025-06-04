@@ -5,6 +5,8 @@ export interface Shop {
   name: string;
   image: string | null;
   theme: 'beige' | 'purple' | 'blue';
+  shareUrl?: string | null;
+  qrBase64?: string | null;
 }
 
 interface ShopContextType {

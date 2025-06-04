@@ -12,6 +12,8 @@ import { CreateShop } from '../CreateShop';
 import { Catalog } from '../Catalog';
 import CoffeeLotCardPage from '../../pages/CoffeeLotCardPage';
 import { CoffeeMap } from '../CoffeeMap';
+import GuestAccess from '../../pages/GuestAccess';
+import GuestInventory from '../../pages/GuestInventory';
 
 import styles from './App.module.css';
 
@@ -32,6 +34,8 @@ export const App: React.FC = () => (
               <Route path='/create-shop' element={<CreateShop />} />
               <Route path='/catalog' element={<Catalog />} />
               <Route path='/coffee-lots/:lotID' element={<CoffeeLotCardPage />} />
+              <Route path='/guest-access' element={<GuestAccess />} />
+              <Route path='/guest-inventory/:shareUrl' element={<GuestInventory />} />
             </Routes>
           </main>
         </Router>

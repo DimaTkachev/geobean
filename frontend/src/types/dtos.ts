@@ -112,6 +112,7 @@ export interface ShopDTO {
     theme: 'beige' | 'purple' | 'blue';
     shareUrl: string | null;
     qrPath: string | null;
+    qrBase64?: string | null;
     qrEnabled: boolean;
     createdAt?: string;
     updatedAt?: string;

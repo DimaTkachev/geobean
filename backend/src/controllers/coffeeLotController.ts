@@ -13,7 +13,7 @@ import {
 
 export const getCoffeeLots = async (
   req: AuthenticatedRequest,
-  res: Response
+  res: Response,
 ) => {
   if (!req.user) {
     return res.status(401).json({ message: 'User not authenticated' });
@@ -28,7 +28,7 @@ export const getCoffeeLots = async (
       ],
     });
 
-    const formattedCoffeeLots = coffeeLots.map((lot) => ({
+    const formattedCoffeeLots = coffeeLots.map(lot => ({
       coffeeLotID: lot.lotID,
       name: lot.name,
       roasting: lot.Roasting?.name,
@@ -56,9 +56,21 @@ export const getCoffeeLotById = async (req: Request, res: Response) => {
         {
           model: Region,
           attributes: ['name', 'countryID'],
-          include: [{ model: Country, attributes: ['name'] }],
+          include: [{
+            model: Country,
+            attributes: ['name', 'continentID'],
+            include: [{
+              model: require('../models').Continent,
+              attributes: ['name'],
+            }],
+          }],
         },
         { model: ProcessingMethod, attributes: ['name'] },
+        {
+          model: require('../models').TasteTag,
+          attributes: ['name'],
+          through: { attributes: [] },
+        },
       ],
     });
     if (!lot) return res.status(404).json({ message: 'Not found' });
@@ -71,10 +83,12 @@ export const getCoffeeLotById = async (req: Request, res: Response) => {
       supplierLink: lot.Supplier?.url,
       country: lot.Region?.Country?.name,
       region: lot.Region?.name,
+      continent: lot.Region?.Country && (lot.Region.Country as any).Continent ? (lot.Region.Country as any).Continent.name : undefined,
       height: lot.height,
       qRate: lot.qRate,
       processingMethod: lot.ProcessingMethod?.name,
       flavorNotes: lot.taste ? lot.taste.split(',') : [],
+      tasteTags: (lot as any).TasteTags ? (lot as any).TasteTags.map((tag: any) => tag.name) : [],
       description: lot.description,
       weight: lot.Weight?.value,
       roasting: lot.Roasting?.name,

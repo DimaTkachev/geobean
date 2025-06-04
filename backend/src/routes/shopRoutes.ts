@@ -9,6 +9,8 @@ import {
   getShops,
   updateInventoryItem,
   updateShop,
+  generateShopQr,
+  getGuestInventory,
 } from '../controllers/shopController';
 import { authenticateToken } from '../middleware/auth';
 
@@ -26,5 +28,7 @@ router.patch(
   updateInventoryItem
 );
 router.get('/:shopID/inventory', authenticateToken, getShopInventory);
+router.post('/:shopID/generate-qr', authenticateToken, generateShopQr);
+router.get('/guest-inventory/:shareUrl', getGuestInventory);
 
 export default router;

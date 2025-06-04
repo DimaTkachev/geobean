@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useAuth } from '../../contexts'; // Import useAuth
+import { useAuth } from '../../contexts'; 
 
 interface ProfileOptionsModalProps {
   isOpen: boolean;
@@ -13,7 +13,7 @@ export const ProfileOptionsModal: React.FC<ProfileOptionsModalProps> = ({
   onClose,
 }) => {
   const navigate = useNavigate();
-  const { logout } = useAuth(); // Use the useAuth hook
+  const { logout } = useAuth(); 
 
   if (!isOpen) {
     return null;
@@ -25,18 +25,18 @@ export const ProfileOptionsModal: React.FC<ProfileOptionsModalProps> = ({
   };
 
   const handleLogoutClick = () => {
-    logout(); // Call the logout function
-    onClose(); // Close the modal
-    navigate('/'); // Navigate to the home page after logout
+    logout(); 
+    onClose(); 
+    navigate('/'); 
   };
 
   return (
     <div
       style={{
-        position: 'absolute', // Position relative to the header or a container
-        top: 'calc(100% + 10px)', // Position below the email/profile name
+        position: 'absolute', 
+        top: 'calc(100% + 10px)', 
         right: 0,
-        backgroundColor: '#ffe2d0', // Light brown background
+        backgroundColor: '#ffe2d0', 
         borderRadius: '8px',
         boxShadow: '0 4px 16px rgba(0, 0, 0, 0.2)',
         padding: '10px 0',
@@ -51,7 +51,7 @@ export const ProfileOptionsModal: React.FC<ProfileOptionsModalProps> = ({
             cursor: 'pointer',
             color: '#3c1f0c',
           }}
-          onClick={() => handleNavigation('/catalog')} // Replace with actual path
+          onClick={() => handleNavigation('/catalog')} 
         >
           Каталог зерен
         </li>
@@ -61,7 +61,7 @@ export const ProfileOptionsModal: React.FC<ProfileOptionsModalProps> = ({
             cursor: 'pointer',
             color: '#3c1f0c',
           }}
-          onClick={() => handleNavigation('/inventory')} // Replace with actual path
+          onClick={() => handleNavigation('/inventory')} 
         >
           Инвентарь кофейни
         </li>
@@ -71,7 +71,7 @@ export const ProfileOptionsModal: React.FC<ProfileOptionsModalProps> = ({
             cursor: 'pointer',
             color: '#3c1f0c',
           }}
-          onClick={() => handleNavigation('/guest-access')} // Replace with actual path
+          onClick={() => handleNavigation('/guest-access')} 
         >
           Гостевой доступ
         </li>
@@ -80,11 +80,11 @@ export const ProfileOptionsModal: React.FC<ProfileOptionsModalProps> = ({
             padding: '10px 20px',
             cursor: 'pointer',
             color: '#3c1f0c',
-            borderTop: '1px solid #d4a88c', // Separator line
+            borderTop: '1px solid #d4a88c', 
             marginTop: '5px',
             paddingTop: '15px',
           }}
-          onClick={handleLogoutClick} // Call the new handler
+          onClick={handleLogoutClick} 
         >
           Выйти
         </li>

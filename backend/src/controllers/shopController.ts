@@ -2,6 +2,10 @@ import { Response } from 'express';
 
 import { AuthenticatedRequest } from '../middleware/auth';
 import { Inventory, Shop } from '../models';
+import QRCode from 'qrcode';
+import { Op } from 'sequelize';
+
+const { nanoid } = require('nanoid');
 
 export const createShop = async (req: AuthenticatedRequest, res: Response) => {
   if (!req.user) {
@@ -229,5 +233,60 @@ export const getShopInventory = async (
     res.json(inventory);
   } catch (error) {
     res.status(500).json({ message: 'Failed to get inventory', error });
+  }
+};
+
+// Generate or regenerate shareUrl and QR code for a shop (authenticated)
+export const generateShopQr = async (req: AuthenticatedRequest, res: Response) => {
+  if (!req.user) {
+    console.error('User not authenticated');
+    return res.status(401).json({ message: 'User not authenticated' });
+  }
+  try {
+    const { shopID } = req.params;
+    const { userID } = req.user;
+    console.log('Generating QR for shopID:', shopID, 'userID:', userID);
+
+    const shop = await Shop.findOne({ where: { shopID, userID } });
+    if (!shop) {
+      console.error('Shop not found or does not belong to user', { shopID, userID });
+      return res.status(404).json({ message: 'Shop not found' });
+    }
+
+    // Generate a new shareUrl and QR code
+    const shareUrl = nanoid(16);
+    const guestUrl = `${process.env.FRONTEND_BASE_URL || 'http://localhost:3000'}/guest-inventory/${shareUrl}`;
+    console.log('Generated guestUrl:', guestUrl);
+
+    const qrBase64 = await QRCode.toDataURL(guestUrl);
+    console.log('Generated qrBase64 length:', qrBase64.length);
+
+    await shop.update({ shareUrl, qrBase64, qrEnabled: true });
+    console.log('Shop updated with new QR');
+
+    res.json({ shareUrl, qrBase64, guestUrl });
+  } catch (error) {
+    console.error('QR code generation error:', error);
+    res.status(500).json({ message: 'Failed to generate QR code', error });
+  }
+};
+
+// Public endpoint: get shop inventory by shareUrl (no auth)
+export const getGuestInventory = async (req: any, res: Response) => {
+  try {
+    const { shareUrl } = req.params;
+    const shop = await Shop.findOne({ where: { shareUrl, qrEnabled: true } });
+    if (!shop) return res.status(404).json({ message: 'Shop not found' });
+    const inventory = await Inventory.findAll({
+      where: { shopID: shop.shopID },
+      attributes: ['lotID', 'stock'],
+    });
+    res.json({
+      shop: { name: shop.name, theme: shop.theme },
+      qrBase64: shop.qrBase64,
+      inventory,
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to get guest inventory', error });
   }
 };

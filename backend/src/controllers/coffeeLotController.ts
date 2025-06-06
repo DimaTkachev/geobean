@@ -9,6 +9,8 @@ import {
   Roasting,
   Supplier,
   Weight,
+  TasteTag,
+  Continent,
 } from '../models';
 
 export const getCoffeeLots = async (
@@ -20,11 +22,29 @@ export const getCoffeeLots = async (
   }
   try {
     const coffeeLots = await CoffeeLot.findAll({
-      attributes: ['lotID', 'name', 'image'],
+      attributes: ['lotID', 'name', 'image', 'taste'],
       include: [
         { model: Roasting, attributes: ['name'] },
         { model: Weight, attributes: ['value'] },
         { model: Supplier, attributes: ['name'] },
+        { model: ProcessingMethod, attributes: ['name'] },
+        {
+          model: TasteTag,
+          attributes: ['name'],
+          through: { attributes: [] },
+        },
+        {
+          model: Region,
+          attributes: ['name'],
+          include: [{
+            model: Country,
+            attributes: ['name'],
+            include: [{
+              model: Continent,
+              attributes: ['name'],
+            }],
+          }],
+        },
       ],
     });
 
@@ -35,6 +55,11 @@ export const getCoffeeLots = async (
       weight: lot.Weight?.value,
       supplier: lot.Supplier?.name,
       imageFilename: lot.image,
+      processingMethod: lot.ProcessingMethod?.name,
+      tasteTags: (lot as any).TasteTags?.map((tag: { name: string }) => tag.name) || [],
+      continent: lot.Region?.Country?.Continent?.name,
+      country: lot.Region?.Country?.name,
+      region: lot.Region?.name,
     }));
 
     res.json(formattedCoffeeLots);
@@ -113,4 +138,27 @@ export const getAttributeInfo = (_req: Request, res: Response) => {
     roasting:
       'Степень прожарки зерна напрямую определяет его вкусовой профиль: светлая обжарка сохраняет кислотность и фруктовые ноты, средняя даёт баланс сладости и сложности, а тёмная усиливает плотность тела и шоколадно-ореховые тона. Каждый метод заваривания требует своей оптимальной обжарки — фильтру подходит более светлая, а эспрессо традиционно обжаривают темнее. Контроль температуры и времени обжарки позволяет раскрыть лучшие качества конкретного лота, подчеркнув его уникальность.',
   });
+};
+
+export const getFilterOptions = async (_req: Request, res: Response) => {
+  try {
+    const [roastingTypes, processingMethods, tasteTags, continents, suppliers] = await Promise.all([
+      Roasting.findAll({ attributes: ['name'] }),
+      ProcessingMethod.findAll({ attributes: ['name'] }),
+      TasteTag.findAll({ attributes: ['name'] }),
+      Continent.findAll({ attributes: ['name'] }),
+      Supplier.findAll({ attributes: ['name'] }),
+    ]);
+
+    res.json({
+      roastingTypes: roastingTypes.map(r => r.name),
+      processingMethods: processingMethods.map(p => p.name),
+      tasteTags: tasteTags.map((t: { name: string }) => t.name),
+      continents: continents.map((c: { name: string }) => c.name),
+      suppliers: suppliers.map(s => s.name),
+    });
+  } catch (error) {
+    console.error('Error fetching filter options:', error);
+    res.status(500).json({ message: 'Failed to fetch filter options', error });
+  }
 };

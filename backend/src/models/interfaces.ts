@@ -141,7 +141,9 @@ export interface CoffeeLotModel extends Model<ICoffeeLot>, ICoffeeLot {
 export interface RegionModel extends Model<IRegion>, IRegion {
   Country?: CountryModel;
 }
-export interface CountryModel extends Model<ICountry>, ICountry {}
+export interface CountryModel extends Model<ICountry>, ICountry {
+  Continent?: ContinentModel;
+}
 export interface ContinentModel extends Model<IContinent>, IContinent {}
 export interface RoastingModel extends Model<IRoasting>, IRoasting {}
 export interface ProcessingMethodModel

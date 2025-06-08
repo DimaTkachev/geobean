@@ -5,7 +5,6 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from '@contexts/index';
 import { ShopProvider } from '@contexts/index';
 import { Header } from '@components/Header';
-import { Home } from '@components/Home';
 import { Login } from '@components/Login';
 import { Registration } from '@components/Registration';
 import { CreateShop } from '@components/CreateShop';

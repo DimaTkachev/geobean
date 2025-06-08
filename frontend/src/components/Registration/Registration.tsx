@@ -6,7 +6,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 
 import styles from './Registration.module.css';
-import { useAuth } from '@contexts/index';
 
 interface RegistrationFormData {
     email: string;
@@ -41,29 +40,22 @@ const validationSchema = yup
 
 export const Registration: React.FC = () => {
     const navigate = useNavigate();
-    const { user, isAuthenticated, login } = useAuth();
+    const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    const [submitError, setSubmitError] = useState<string>('');
-    const [isLoading, setIsLoading] = useState(false);
 
     const {
-        register,
+        register: formRegister,
         handleSubmit,
         formState: { errors },
-        setError,
+        setError: formSetError,
     } = useForm<RegistrationFormData>({
         resolver: yupResolver(validationSchema),
-        defaultValues: {
-            email: '',
-            password: '',
-            confirmPassword: '',
-            agreeToPrivacy: false,
-        },
     });
 
     const onSubmit = async (data: RegistrationFormData) => {
-        setSubmitError('');
+        setError('');
         setIsLoading(true);
 
         try {
@@ -82,24 +74,21 @@ export const Registration: React.FC = () => {
                 const result = await response.json();
                 localStorage.setItem('authToken', result.token);
                 localStorage.setItem('user', JSON.stringify(result.user));
-                if (login) {
-                    await login(data.email, data.password);
-                }
                 navigate('/create-shop');
             } else {
                 setIsLoading(false);
                 const errorData = await response.json();
                 if (errorData.message?.includes('User already exists')) {
-                    setError('email', {
+                    formSetError('email', {
                         message: 'Пользователь с таким email уже существует',
                     });
                 } else {
-                    setSubmitError(errorData.message || 'Ошибка регистрации');
+                    setError(errorData.message || 'Ошибка регистрации');
                 }
             }
         } catch (error) {
             setIsLoading(false);
-            setSubmitError('Ошибка сети. Попробуйте еще раз.');
+            setError('Ошибка сети. Попробуйте еще раз.');
         }
     };
 
@@ -119,13 +108,11 @@ export const Registration: React.FC = () => {
                 <h1 className={styles.title}>Создать аккаунт</h1>
 
                 <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
-                    {submitError && (
-                        <div className={styles.submitError}>{submitError}</div>
-                    )}
+                    {error && <div className={styles.submitError}>{error}</div>}
 
                     <div className={styles.inputGroup}>
                         <input
-                            {...register('email')}
+                            {...formRegister('email')}
                             type='email'
                             placeholder='Введите e-mail'
                             disabled={isLoading}
@@ -141,7 +128,7 @@ export const Registration: React.FC = () => {
                     <div className={styles.inputGroup}>
                         <div className={styles.passwordWrapper}>
                             <input
-                                {...register('password')}
+                                {...formRegister('password')}
                                 type={showPassword ? 'text' : 'password'}
                                 placeholder='Введите пароль'
                                 disabled={isLoading}
@@ -166,7 +153,7 @@ export const Registration: React.FC = () => {
                     <div className={styles.inputGroup}>
                         <div className={styles.passwordWrapper}>
                             <input
-                                {...register('confirmPassword')}
+                                {...formRegister('confirmPassword')}
                                 type={showConfirmPassword ? 'text' : 'password'}
                                 placeholder='Повторите пароль'
                                 disabled={isLoading}
@@ -193,7 +180,7 @@ export const Registration: React.FC = () => {
                     <div className={styles.checkboxGroup}>
                         <label className={styles.checkboxLabel}>
                             <input
-                                {...register('agreeToPrivacy')}
+                                {...formRegister('agreeToPrivacy')}
                                 type='checkbox'
                                 disabled={isLoading}
                                 className={styles.checkbox}

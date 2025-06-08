@@ -4,6 +4,7 @@ import { useAuth, useShop } from '@contexts/index';
 import { Tooltip } from '@components/Tooltip/Tooltip';
 import { ShopModal } from '@components/CoffeeMap/ShopModal';
 import styles from '@styles/CoffeeLotCard.module.css';
+import { Shop } from '@/contexts/ShopContext';
 
 interface CoffeeLot {
     lotID: number;
@@ -20,6 +21,8 @@ interface CoffeeLot {
     description: string;
     weight: string;
     roasting: string;
+    price: number;
+    shopId: number;
 }
 
 interface AttributeInfo {
@@ -27,10 +30,10 @@ interface AttributeInfo {
 }
 
 export const CoffeeLotCardPage: React.FC = () => {
-    const { lotID } = useParams<{ lotID: string }>();
-    const { isAuthenticated } = useAuth();
-    const { shops, currentShop, setCurrentShop, refreshShops } = useShop();
-    const [lot, setLot] = useState<CoffeeLot | null>(null);
+    const { id } = useParams<{ id: string }>();
+    const { user } = useAuth();
+    const { currentShop, setCurrentShop, refreshShops, shops } = useShop();
+    const [coffeeLot, setCoffeeLot] = useState<CoffeeLot | null>(null);
     const [attrInfo, setAttrInfo] = useState<AttributeInfo>({});
     const [inventory, setInventory] = useState<number | null>(null);
     const [isSidebarExpanded, setIsSidebarExpanded] = useState(() => {
@@ -39,20 +42,36 @@ export const CoffeeLotCardPage: React.FC = () => {
     });
     const [modalOpen, setModalOpen] = useState(false);
     const [modalMode, setModalMode] = useState<'add' | 'edit'>('add');
-    const [modalShop, setModalShop] = useState<any>(null);
+    const [modalShop, setModalShop] = useState<Shop | null>(null);
     const [modalLoading, setModalLoading] = useState(false);
     const maxShops = 3;
 
     useEffect(() => {
-        fetch(`/api/coffee-lots/${lotID}`)
-            .then((res) => res.json())
-            .then(setLot);
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`/api/coffee-lots/${id}`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch coffee lot');
+                }
+                const data = await response.json();
+                setCoffeeLot(data);
+            } catch (error) {
+                if (error instanceof Error) {
+                    console.error('Error fetching coffee lot:', error.message);
+                }
+            }
+        };
+
+        fetchData();
+    }, [id]);
+
+    useEffect(() => {
         fetch('/api/coffee-lots/attribute-info')
             .then((res) => res.json())
             .then(setAttrInfo);
-        if (isAuthenticated && currentShop) {
+        if (user && currentShop) {
             const token = localStorage.getItem('authToken');
-            fetch(`/api/shops/${currentShop.shopID}/inventory/${lotID}`, {
+            fetch(`/api/shops/${currentShop.shopID}/inventory/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -65,16 +84,16 @@ export const CoffeeLotCardPage: React.FC = () => {
                 })
                 .then((data) => setInventory(data.stock || 0));
         }
-    }, [lotID, isAuthenticated, currentShop]);
+    }, [id, user, currentShop]);
 
     const handleQuantity = async (change: number) => {
-        if (!currentShop || !isAuthenticated || !lot) return;
+        if (!currentShop || !user || !coffeeLot) return;
         const newQuantity = Math.max(0, (inventory || 0) + change);
         const token = localStorage.getItem('authToken');
 
         try {
             const response = await fetch(
-                `/api/shops/${currentShop.shopID}/inventory/${lot.lotID}`,
+                `/api/shops/${currentShop.shopID}/inventory/${coffeeLot.lotID}`,
                 {
                     method: 'PATCH',
                     headers: {
@@ -94,8 +113,8 @@ export const CoffeeLotCardPage: React.FC = () => {
     };
 
     const handleSupplierClick = () => {
-        if (lot?.supplierLink) {
-            window.open(lot.supplierLink, '_blank');
+        if (coffeeLot?.supplierLink) {
+            window.open(coffeeLot.supplierLink, '_blank');
         }
     };
 
@@ -105,7 +124,7 @@ export const CoffeeLotCardPage: React.FC = () => {
         setModalOpen(true);
     };
 
-    const handleEditShop = (shop: any) => {
+    const handleEditShop = (shop: Shop) => {
         setModalMode('edit');
         setModalShop(shop);
         setModalOpen(true);
@@ -173,11 +192,11 @@ export const CoffeeLotCardPage: React.FC = () => {
         );
     };
 
-    if (!lot) return <div>Загрузка...</div>;
+    if (!coffeeLot) return <div>Загрузка...</div>;
 
     return (
         <div className={styles.pageWrapper}>
-            {isAuthenticated && (
+            {user && (
                 <aside
                     className={styles.sidebar}
                     style={{
@@ -330,14 +349,14 @@ export const CoffeeLotCardPage: React.FC = () => {
             <div className={styles.cardWrapper}>
                 <div className={styles.topSection}>
                     <div className={styles.imageSection}>
-                        {lot.image && (
+                        {coffeeLot.image && (
                             <img
-                                src={`/images/${lot.image}`}
-                                alt={lot.name}
+                                src={`/images/${coffeeLot.image}`}
+                                alt={coffeeLot.name}
                                 className={styles.image}
                             />
                         )}
-                        {isAuthenticated && (
+                        {user && (
                             <div className={styles.inventoryControls}>
                                 <button
                                     className={styles.quantityBtn}
@@ -359,9 +378,9 @@ export const CoffeeLotCardPage: React.FC = () => {
                         )}
                     </div>
                     <div className={styles.infoSection}>
-                        <h2 className={styles.name}>{lot.name}</h2>
+                        <h2 className={styles.name}>{coffeeLot.name}</h2>
                         <div className={styles.roastingWeight}>
-                            под {lot.roasting}, {lot.weight}
+                            под {coffeeLot.roasting}, {coffeeLot.weight}
                         </div>
                         <div className={styles.supplierSection}>
                             Поставщик:{' '}
@@ -369,12 +388,12 @@ export const CoffeeLotCardPage: React.FC = () => {
                                 className={styles.supplierLink}
                                 onClick={handleSupplierClick}
                                 style={{
-                                    cursor: lot.supplierLink
+                                    cursor: coffeeLot.supplierLink
                                         ? 'pointer'
                                         : 'default',
                                 }}
                             >
-                                {lot.supplier}
+                                {coffeeLot.supplier}
                             </span>
                         </div>
 
@@ -383,45 +402,45 @@ export const CoffeeLotCardPage: React.FC = () => {
                             <Tooltip text={attrInfo['country'] || ''}>
                                 <span className={styles.infoIcon}>i</span>
                             </Tooltip>
-                            <span>{lot.country}</span>
+                            <span>{coffeeLot.country}</span>
                         </div>
                         <div className={styles.paramRow}>
                             <span>Регион:</span>
                             <Tooltip text={attrInfo['region'] || ''}>
                                 <span className={styles.infoIcon}>i</span>
                             </Tooltip>
-                            <span>{lot.region}</span>
+                            <span>{coffeeLot.region}</span>
                         </div>
                         <div className={styles.paramRow}>
                             <span>Высота:</span>
                             <Tooltip text={attrInfo['height'] || ''}>
                                 <span className={styles.infoIcon}>i</span>
                             </Tooltip>
-                            <span>{lot.height}</span>
+                            <span>{coffeeLot.height}</span>
                         </div>
                         <div className={styles.paramRow}>
                             <span>Q-рейтинг:</span>
                             <Tooltip text={attrInfo['qRate'] || ''}>
                                 <span className={styles.infoIcon}>i</span>
                             </Tooltip>
-                            <span>{lot.qRate}</span>
+                            <span>{coffeeLot.qRate}</span>
                         </div>
                         <div className={styles.paramRow}>
                             <span>Способ обработки:</span>
                             <Tooltip text={attrInfo['processingMethod'] || ''}>
                                 <span className={styles.infoIcon}>i</span>
                             </Tooltip>
-                            <span>{lot.processingMethod}</span>
+                            <span>{coffeeLot.processingMethod}</span>
                         </div>
                         <div className={styles.paramRow}>
                             <span>Вкусовые ноты:</span>
-                            <span>{lot.flavorNotes.join(', ')}</span>
+                            <span>{coffeeLot.flavorNotes.join(', ')}</span>
                         </div>
                     </div>
                 </div>
                 <div className={styles.descriptionSection}>
                     <h4>Описание:</h4>
-                    <p>{lot.description}</p>
+                    <p>{coffeeLot.description}</p>
                 </div>
             </div>
         </div>

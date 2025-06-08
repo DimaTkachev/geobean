@@ -1,19 +1,13 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuth, useShop } from '@contexts/index';
 import styles from './Header.module.css';
 import { ProfileOptionsModal } from '@components/ProfileOptionsModal/ProfileOptionsModal';
 
 export const Header: React.FC = () => {
-    const { user, logout, isAuthenticated } = useAuth();
+    const { user, isAuthenticated } = useAuth();
     const { currentShop } = useShop();
-    const navigate = useNavigate();
     const [showProfileOptions, setShowProfileOptions] = useState(false);
-
-    const handleLogout = () => {
-        logout();
-        navigate('/');
-    };
 
     const handleEmailClick = () => {
         setShowProfileOptions(!showProfileOptions);

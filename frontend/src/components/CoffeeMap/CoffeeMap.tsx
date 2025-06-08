@@ -11,6 +11,7 @@ import {
 
 import { fetchApi } from '@utils/api';
 import { useShop, useAuth } from '@contexts/index';
+import { Shop } from '@contexts/ShopContext';
 
 import styles from './CoffeeMap.module.css';
 
@@ -77,7 +78,7 @@ export const CoffeeMap: React.FC = () => {
     const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
     const [modalOpen, setModalOpen] = useState(false);
     const [modalMode, setModalMode] = useState<'add' | 'edit'>('add');
-    const [modalShop, setModalShop] = useState<any>(null);
+    const [modalShop, setModalShop] = useState<Shop | null>(null);
     const [modalLoading, setModalLoading] = useState(false);
     const maxShops = 3;
     const navigate = useNavigate();
@@ -287,7 +288,7 @@ export const CoffeeMap: React.FC = () => {
         setModalOpen(true);
     };
 
-    const handleEditShop = (shop: any) => {
+    const handleEditShop = (shop: Shop) => {
         setModalMode('edit');
         setModalShop(shop);
         setModalOpen(true);
@@ -359,6 +360,8 @@ export const CoffeeMap: React.FC = () => {
         setHoveredMarkerID((id) => (id === markerID ? null : id));
         setPopupPosition(null);
     };
+
+    const markerSize = 8;
 
     if (loading) {
         return (
@@ -709,18 +712,18 @@ export const CoffeeMap: React.FC = () => {
                                     ]}
                                     className={styles.marker}
                                     onMouseEnter={handleMarkerMouseEnter(
-                                        marker.markerID!
+                                        marker.markerID || 0
                                     )}
                                     onMouseMove={handleMarkerMouseMove}
                                     onMouseLeave={handleMarkerMouseLeave(
-                                        marker.markerID!
+                                        marker.markerID || 0
                                     )}
                                     onClick={() =>
                                         navigate(`/coffee-lots/${marker.lotID}`)
                                     }
                                 >
                                     <circle
-                                        r={10}
+                                        r={markerSize}
                                         className={styles.markerCircle}
                                     />
                                 </Marker>

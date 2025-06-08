@@ -9,6 +9,7 @@ import styles from '@components/CoffeeMap/CoffeeMap.module.css';
 interface CoffeeLot {
     coffeeLotID: number;
     name: string;
+    description: string;
     roasting: string;
     weight: string | null;
     supplier: string;
@@ -18,6 +19,8 @@ interface CoffeeLot {
     continent: string;
     country: string;
     region: string;
+    price: number;
+    shopId: number;
 }
 
 interface Filters {
@@ -30,7 +33,7 @@ interface Filters {
 }
 
 export const Catalog: React.FC = () => {
-    const { shops, currentShop, setCurrentShop, refreshShops } = useShop();
+    const { shops, currentShop, setCurrentShop } = useShop();
     const { user } = useAuth();
     const navigate = useNavigate();
 
@@ -102,8 +105,10 @@ export const Catalog: React.FC = () => {
                 const data: CoffeeLot[] = await response.json();
                 setCoffeeLots(data);
                 setFilteredCoffeeLots(data);
-            } catch (err: any) {
-                setError(err.message);
+            } catch (err: unknown) {
+                const errorMessage =
+                    err instanceof Error ? err.message : 'Unknown error';
+                setError(errorMessage);
                 console.error('Error fetching coffee lots:', err);
                 setCoffeeLots([]);
                 setFilteredCoffeeLots([]);
@@ -233,10 +238,16 @@ export const Catalog: React.FC = () => {
                 setShowSuccessPopup(false);
                 setSuccessMessage('');
             }, 3000);
-        } catch (error: any) {
+        } catch (error: unknown) {
+            const errorMessage =
+                error instanceof Error ? error.message : 'Unknown error';
             console.error('Error adding to inventory:', error);
-            alert('Ошибка при добавлении в инвентарь: ' + error.message);
+            alert('Ошибка при добавлении в инвентарь: ' + errorMessage);
         }
+    };
+
+    const handleCoffeeLotClick = (coffeeLot: CoffeeLot): void => {
+        navigate(`/coffee-lot/${coffeeLot.coffeeLotID}`);
     };
 
     if (loading) {
@@ -606,16 +617,10 @@ export const Catalog: React.FC = () => {
                                         marginBottom: '10px',
                                         cursor: 'pointer',
                                     }}
-                                    onClick={() =>
-                                        navigate(
-                                            `/coffee-lots/${lot.coffeeLotID}`
-                                        )
-                                    }
+                                    onClick={() => handleCoffeeLotClick(lot)}
                                     onKeyDown={(e) => {
                                         if (e.key === 'Enter')
-                                            navigate(
-                                                `/coffee-lots/${lot.coffeeLotID}`
-                                            );
+                                            handleCoffeeLotClick(lot);
                                     }}
                                     tabIndex={0}
                                     className={styles.coffeeLotImage}
@@ -627,14 +632,10 @@ export const Catalog: React.FC = () => {
                                     color: '#3c1f0c',
                                     cursor: 'pointer',
                                 }}
-                                onClick={() =>
-                                    navigate(`/coffee-lots/${lot.coffeeLotID}`)
-                                }
+                                onClick={() => handleCoffeeLotClick(lot)}
                                 onKeyDown={(e) => {
                                     if (e.key === 'Enter')
-                                        navigate(
-                                            `/coffee-lots/${lot.coffeeLotID}`
-                                        );
+                                        handleCoffeeLotClick(lot);
                                 }}
                                 tabIndex={0}
                                 className={styles.coffeeLotName}

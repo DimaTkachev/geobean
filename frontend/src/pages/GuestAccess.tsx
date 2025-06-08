@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useShop, useAuth } from '@contexts/index';
+import { useShop } from '@contexts/index';
+import { Shop } from '@contexts/ShopContext';
 import styles from '@styles/CoffeeLotCard.module.css';
 import { ShopModal } from '@components/CoffeeMap/ShopModal';
 
@@ -9,11 +10,9 @@ const blue = '#4a6a8b';
 
 const GuestAccess: React.FC = () => {
     const { shops, currentShop, setCurrentShop, refreshShops } = useShop();
-    const { isAuthenticated } = useAuth();
     const [qrData, setQrData] = useState<{
         shareUrl: string;
-        qrBase64: string;
-        guestUrl: string;
+        qrCode: string;
     } | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -23,7 +22,7 @@ const GuestAccess: React.FC = () => {
     });
     const [modalOpen, setModalOpen] = useState(false);
     const [modalMode, setModalMode] = useState<'add' | 'edit'>('add');
-    const [modalShop, setModalShop] = useState<any>(null);
+    const [modalShop, setModalShop] = useState<Shop | null>(null);
     const [modalLoading, setModalLoading] = useState(false);
     const maxShops = 3;
 
@@ -31,8 +30,7 @@ const GuestAccess: React.FC = () => {
         if (currentShop && currentShop.qrBase64 && currentShop.shareUrl) {
             setQrData({
                 shareUrl: currentShop.shareUrl,
-                qrBase64: currentShop.qrBase64,
-                guestUrl: `${window.location.origin}/guest-inventory/${currentShop.shareUrl}`,
+                qrCode: currentShop.qrBase64,
             });
         } else {
             setQrData(null);
@@ -56,8 +54,9 @@ const GuestAccess: React.FC = () => {
             const data = await res.json();
             setQrData(data);
             await refreshShops();
-        } catch (e: any) {
-            setError(e.message || 'Ошибка');
+        } catch (e: unknown) {
+            const error = e as Error;
+            setError(error.message || 'Ошибка');
         } finally {
             setLoading(false);
         }
@@ -78,7 +77,7 @@ const GuestAccess: React.FC = () => {
         setModalOpen(true);
     };
 
-    const handleEditShop = (shop: any) => {
+    const handleEditShop = (shop: Shop) => {
         setModalMode('edit');
         setModalShop(shop);
         setModalOpen(true);
@@ -141,7 +140,6 @@ const GuestAccess: React.FC = () => {
         <div
             style={{ display: 'flex', height: '100vh', background: '#f5e0d1' }}
         >
-            {/* Sidebar with shop selector */}
             <aside
                 className={styles.sidebar}
                 style={{
@@ -287,7 +285,6 @@ const GuestAccess: React.FC = () => {
                     isDeleteDisabled={shops.length <= 1}
                 />
             </aside>
-            {/* Main content */}
             <main
                 style={{
                     flex: 1,
@@ -329,7 +326,7 @@ const GuestAccess: React.FC = () => {
                 {qrData ? (
                     <>
                         <img
-                            src={qrData.qrBase64}
+                            src={qrData.qrCode}
                             alt='QR code'
                             style={{
                                 width: 220,
@@ -349,7 +346,7 @@ const GuestAccess: React.FC = () => {
                         >
                             <input
                                 type='text'
-                                value={qrData.guestUrl}
+                                value={qrData.shareUrl}
                                 readOnly
                                 style={{
                                     width: 340,
@@ -364,7 +361,7 @@ const GuestAccess: React.FC = () => {
                             <button
                                 onClick={() =>
                                     navigator.clipboard.writeText(
-                                        qrData.guestUrl
+                                        qrData.shareUrl
                                     )
                                 }
                                 style={{

@@ -9,18 +9,36 @@ const themes = [
     { value: 'blue', label: 'Синий', color: '#4a6a8b' },
 ];
 
+interface ApiError {
+    message: string;
+}
+
+interface ApiResponse {
+    success: boolean;
+    message?: string;
+}
+
+type ErrorType = Error | ApiError;
+
 export const CreateShop: React.FC = () => {
     const navigate = useNavigate();
     const [name, setName] = useState('');
-    const [theme, setTheme] = useState('beige');
-    const [image, setImage] = useState('');
+    const [selectedTheme, setSelectedTheme] = useState('beige');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
 
+    const handleError = (error: ErrorType): void => {
+        const errorMessage =
+            error instanceof Error ? error.message : error.message;
+        setError(errorMessage);
+        setIsLoading(false);
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setError('');
         setIsLoading(true);
+        setError('');
+
         try {
             const token = localStorage.getItem('authToken');
             const response = await fetch('/api/shops', {
@@ -29,17 +47,22 @@ export const CreateShop: React.FC = () => {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify({ name, theme, image }),
+                body: JSON.stringify({ name, theme: selectedTheme }),
             });
+
+            const data = (await response.json()) as ApiResponse;
+
             if (!response.ok) {
-                const data = await response.json();
-                throw new Error(data.message || 'Ошибка создания кофейни');
+                throw new Error(data.message || 'Failed to create shop');
             }
+
             navigate('/');
-        } catch (err: any) {
-            setError(err.message);
-        } finally {
-            setIsLoading(false);
+        } catch (err) {
+            if (err instanceof Error) {
+                handleError(err);
+            } else {
+                handleError(new Error('An unexpected error occurred'));
+            }
         }
     };
 
@@ -63,7 +86,7 @@ export const CreateShop: React.FC = () => {
                                 height: 80,
                                 borderRadius: '50%',
                                 background: themes.find(
-                                    (t) => t.value === theme
+                                    (t) => t.value === selectedTheme
                                 )?.color,
                                 marginBottom: 12,
                             }}
@@ -99,12 +122,12 @@ export const CreateShop: React.FC = () => {
                                         borderRadius: '50%',
                                         background: t.color,
                                         border:
-                                            theme === t.value
+                                            selectedTheme === t.value
                                                 ? '3px solid #333'
                                                 : '2px solid #ccc',
                                         outline: 'none',
                                     }}
-                                    onClick={() => setTheme(t.value)}
+                                    onClick={() => setSelectedTheme(t.value)}
                                     aria-label={t.label}
                                 />
                             ))}

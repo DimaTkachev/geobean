@@ -11,16 +11,16 @@ import styles from '@components/CoffeeMap/CoffeeMap.module.css';
 const geoUrl = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json';
 
 const GuestInventory: React.FC = () => {
-    const { id } = useParams<{ id: string }>();
+    const { shareUrl } = useParams<{ shareUrl: string }>();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        if (!id) return;
+        if (!shareUrl) return;
         setLoading(true);
         setError(null);
 
-        fetch(`/api/shops/guest-inventory/${id}`)
+        fetch(`/api/shops/guest-inventory/${shareUrl}`)
             .then(async (res) => {
                 if (!res.ok) {
                     const errorData = await res.json();
@@ -32,7 +32,7 @@ const GuestInventory: React.FC = () => {
             })
             .catch((err: Error) => setError(err.message))
             .finally(() => setLoading(false));
-    }, [id]);
+    }, [shareUrl]);
 
     if (loading) return <div>Загрузка...</div>;
     if (error) return <div>Ошибка: {error}</div>;

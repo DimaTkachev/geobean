@@ -247,7 +247,7 @@ export const Catalog: React.FC = () => {
     };
 
     const handleCoffeeLotClick = (coffeeLot: CoffeeLot): void => {
-        navigate(`/coffee-lot/${coffeeLot.coffeeLotID}`);
+        navigate(`/coffee-lots/${coffeeLot.coffeeLotID}`);
     };
 
     if (loading) {

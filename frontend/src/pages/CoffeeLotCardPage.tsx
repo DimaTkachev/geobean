@@ -30,7 +30,7 @@ interface AttributeInfo {
 }
 
 export const CoffeeLotCardPage: React.FC = () => {
-    const { id } = useParams<{ id: string }>();
+    const { lotID } = useParams<{ lotID: string }>();
     const { user } = useAuth();
     const { currentShop, setCurrentShop, refreshShops, shops } = useShop();
     const [coffeeLot, setCoffeeLot] = useState<CoffeeLot | null>(null);
@@ -49,7 +49,7 @@ export const CoffeeLotCardPage: React.FC = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(`/api/coffee-lots/${id}`);
+                const response = await fetch(`/api/coffee-lots/${lotID}`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch coffee lot');
                 }
@@ -63,7 +63,7 @@ export const CoffeeLotCardPage: React.FC = () => {
         };
 
         fetchData();
-    }, [id]);
+    }, [lotID]);
 
     useEffect(() => {
         fetch('/api/coffee-lots/attribute-info')
@@ -71,7 +71,7 @@ export const CoffeeLotCardPage: React.FC = () => {
             .then(setAttrInfo);
         if (user && currentShop) {
             const token = localStorage.getItem('authToken');
-            fetch(`/api/shops/${currentShop.shopID}/inventory/${id}`, {
+            fetch(`/api/shops/${currentShop.shopID}/inventory/${lotID}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -84,7 +84,7 @@ export const CoffeeLotCardPage: React.FC = () => {
                 })
                 .then((data) => setInventory(data.stock || 0));
         }
-    }, [id, user, currentShop]);
+    }, [lotID, user, currentShop]);
 
     const handleQuantity = async (change: number) => {
         if (!currentShop || !user || !coffeeLot) return;

@@ -13,6 +13,7 @@ import CoffeeLotCardPage from '@pages/CoffeeLotCardPage';
 import { CoffeeMap } from '@components/CoffeeMap';
 import GuestAccess from '@pages/GuestAccess';
 import GuestInventory from '@pages/GuestInventory';
+import Inventory from '@pages/Inventory';
 
 import styles from './App.module.css';
 
@@ -35,6 +36,7 @@ export const App: React.FC = () => (
                                 element={<CreateShop />}
                             />
                             <Route path='/catalog' element={<Catalog />} />
+                            <Route path='/inventory' element={<Inventory />} />
                             <Route
                                 path='/coffee-lots/:lotID'
                                 element={<CoffeeLotCardPage />}

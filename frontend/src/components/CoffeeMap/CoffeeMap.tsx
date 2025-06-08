@@ -9,8 +9,8 @@ import {
     ZoomableGroup,
 } from 'react-simple-maps';
 
-import { fetchApi } from '../../utils/api';
-import { useShop, useAuth } from '../../contexts';
+import { fetchApi } from '@utils/api';
+import { useShop, useAuth } from '@contexts/index';
 
 import styles from './CoffeeMap.module.css';
 

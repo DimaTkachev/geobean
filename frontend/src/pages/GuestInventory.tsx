@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { fetchApi } from '../utils/api';
-import type { CoffeeLotDTO } from '../types/dtos';
+import { fetchApi } from '@utils/api';
+import type { CoffeeLotDTO } from '@types/dtos';
 import {
     ComposableMap,
     Geographies,
@@ -9,7 +9,7 @@ import {
     Marker as MapMarker,
     ZoomableGroup,
 } from 'react-simple-maps';
-import styles from '../components/CoffeeMap/CoffeeMap.module.css';
+import styles from '@components/CoffeeMap/CoffeeMap.module.css';
 
 const geoUrl = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json';
 

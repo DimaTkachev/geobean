@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { useAuth } from '../../contexts';
-import { CoffeeMap } from '../CoffeeMap';
+import { useAuth } from '@contexts/index';
+import { CoffeeMap } from '@components/CoffeeMap';
 
 import styles from './Home.module.css';
 

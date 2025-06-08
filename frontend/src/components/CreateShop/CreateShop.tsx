@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import styles from '../Registration/Registration.module.css';
+import styles from '@components/Registration/Registration.module.css';
 
 const themes = [
     { value: 'beige', label: 'Бежевый', color: '#8b6a4a' },

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useAuth, useShop } from '../contexts';
-import { Tooltip } from '../components/Tooltip/Tooltip';
-import { ShopModal } from '../components/CoffeeMap/ShopModal';
-import styles from '../styles/CoffeeLotCard.module.css';
+import { useAuth, useShop } from '@contexts/index';
+import { Tooltip } from '@components/Tooltip/Tooltip';
+import { ShopModal } from '@components/CoffeeMap/ShopModal';
+import styles from '@styles/CoffeeLotCard.module.css';
 
 interface CoffeeLot {
     lotID: number;

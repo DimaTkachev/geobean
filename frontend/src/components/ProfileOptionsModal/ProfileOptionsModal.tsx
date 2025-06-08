@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useAuth } from '../../contexts';
+import { useAuth } from '@contexts/index';
 
 interface ProfileOptionsModalProps {
     isOpen: boolean;

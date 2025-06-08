@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 
-import { useAuth } from '../../contexts';
+import { useAuth } from '@contexts/index';
 
 import styles from './Login.module.css';
 

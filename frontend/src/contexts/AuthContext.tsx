@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
-import { fetchApi } from '../utils/api';
+import { fetchApi } from '@utils/api';
 
 interface User {
     userID: number;

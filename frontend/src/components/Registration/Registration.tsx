@@ -6,7 +6,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 
 import styles from './Registration.module.css';
-import { useAuth } from '../../contexts';
+import { useAuth } from '@contexts/index';
 
 interface RegistrationFormData {
     email: string;

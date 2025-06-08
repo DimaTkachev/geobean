@@ -1,11 +1,8 @@
 import React, { useState } from 'react';
-
 import { Link, useNavigate } from 'react-router-dom';
-
-import { useAuth, useShop } from '../../contexts';
-
+import { useAuth, useShop } from '@contexts/index';
 import styles from './Header.module.css';
-import { ProfileOptionsModal } from '../ProfileOptionsModal/ProfileOptionsModal';
+import { ProfileOptionsModal } from '@components/ProfileOptionsModal/ProfileOptionsModal';
 
 export const Header: React.FC = () => {
     const { user, logout, isAuthenticated } = useAuth();
@@ -45,7 +42,6 @@ export const Header: React.FC = () => {
                             >
                                 {user?.email}
                             </span>
-
                             <ProfileOptionsModal
                                 isOpen={showProfileOptions}
                                 onClose={() => setShowProfileOptions(false)}

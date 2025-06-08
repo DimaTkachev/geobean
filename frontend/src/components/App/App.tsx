@@ -1,19 +1,19 @@
 import React from 'react';
 
-import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-import { AuthProvider } from '../../contexts';
-import { ShopProvider } from '../../contexts';
-import { Header } from '../Header';
-import { Home } from '../Home';
-import { Login } from '../Login';
-import { Registration } from '../Registration';
-import { CreateShop } from '../CreateShop';
-import { Catalog } from '../Catalog';
-import CoffeeLotCardPage from '../../pages/CoffeeLotCardPage';
-import { CoffeeMap } from '../CoffeeMap';
-import GuestAccess from '../../pages/GuestAccess';
-import GuestInventory from '../../pages/GuestInventory';
+import { AuthProvider } from '@contexts/index';
+import { ShopProvider } from '@contexts/index';
+import { Header } from '@components/Header';
+import { Home } from '@components/Home';
+import { Login } from '@components/Login';
+import { Registration } from '@components/Registration';
+import { CreateShop } from '@components/CreateShop';
+import { Catalog } from '@components/Catalog';
+import CoffeeLotCardPage from '@pages/CoffeeLotCardPage';
+import { CoffeeMap } from '@components/CoffeeMap';
+import GuestAccess from '@pages/GuestAccess';
+import GuestInventory from '@pages/GuestInventory';
 
 import styles from './App.module.css';
 

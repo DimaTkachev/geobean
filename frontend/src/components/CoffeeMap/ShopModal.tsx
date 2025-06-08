@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { ConfirmationModal } from '../ConfirmationModal';
+import { ConfirmationModal } from '@components/ConfirmationModal';
 
 const themes = [
     { value: 'beige', color: '#8b6a4a' },

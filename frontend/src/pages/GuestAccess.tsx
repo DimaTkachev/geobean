@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useShop, useAuth } from '../contexts';
-import styles from '../styles/CoffeeLotCard.module.css';
-import { ShopModal } from '../components/CoffeeMap/ShopModal';
+import { useShop, useAuth } from '@contexts/index';
+import styles from '@styles/CoffeeLotCard.module.css';
+import { ShopModal } from '@components/CoffeeMap/ShopModal';
 
 const accent = '#8b6a4a';
 const purple = '#6c4a8b';

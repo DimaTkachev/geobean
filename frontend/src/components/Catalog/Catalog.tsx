@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useShop } from '../../contexts';
-import { useAuth } from '../../contexts';
+import { useShop } from '@contexts/index';
+import { useAuth } from '@contexts/index';
 
-import styles from '../CoffeeMap/CoffeeMap.module.css';
+import styles from '@components/CoffeeMap/CoffeeMap.module.css';
 
 interface CoffeeLot {
     coffeeLotID: number;

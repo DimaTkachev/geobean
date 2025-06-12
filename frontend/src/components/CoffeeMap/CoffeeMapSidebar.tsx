@@ -3,10 +3,8 @@ import { useShop, useAuth } from '@contexts/index';
 import { Shop } from '@contexts/ShopContext';
 import { Button } from '../Button';
 import { ShopModal } from './ShopModal';
+import { FilterSection } from './FilterSection';
 import styles from './CoffeeMapSidebar.module.css';
-import { CaretDownIcon } from '@phosphor-icons/react';
-
-const toUpperCase = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
 
 interface Filters {
     continents: string[];
@@ -246,117 +244,49 @@ export const CoffeeMapSidebar: React.FC<CoffeeMapSidebarProps> = ({
             <div className={styles.filters}>
                 <h3 className={styles.filterTitle}>Фильтры</h3>
 
-                <div className={styles.filterSection}>
-                    <div className={styles.filterSubtitleContainer}>
-                        <h4 className={styles.filterSubtitle}>Тип зерна:</h4>
-                        <CaretDownIcon size={20} weight='bold' />
-                    </div>
-                    <div className={styles.filterOptions}>
-                        {availableFilters.roastingTypes.map((type) => (
-                            <label key={type} className={styles.filterOption}>
-                                <input
-                                    type='checkbox'
-                                    checked={filters.roastingTypes.includes(
-                                        type
-                                    )}
-                                    onChange={() =>
-                                        onFilterChange('roastingTypes', type)
-                                    }
-                                />
-                                <span>{toUpperCase(type)}</span>
-                            </label>
-                        ))}
-                    </div>
-                </div>
+                <FilterSection
+                    title='Тип зерна:'
+                    type='checkbox'
+                    options={availableFilters.roastingTypes}
+                    selectedOptions={filters.roastingTypes}
+                    onOptionChange={(type) =>
+                        onFilterChange('roastingTypes', type)
+                    }
+                />
 
-                <div className={styles.filterSection}>
-                    <div className={styles.filterSubtitleContainer}>
-                        <h4 className={styles.filterSubtitle}>
-                            Способ обработки:
-                        </h4>
-                        <CaretDownIcon size={20} weight='bold' />
-                    </div>
-                    <div className={styles.filterOptions}>
-                        {availableFilters.processingMethods.map((method) => (
-                            <label key={method} className={styles.filterOption}>
-                                <input
-                                    type='checkbox'
-                                    checked={filters.processingMethods.includes(
-                                        method
-                                    )}
-                                    onChange={() =>
-                                        onFilterChange(
-                                            'processingMethods',
-                                            method
-                                        )
-                                    }
-                                />
-                                <span>{toUpperCase(method)}</span>
-                            </label>
-                        ))}
-                    </div>
-                </div>
+                <FilterSection
+                    title='Способ обработки:'
+                    type='checkbox'
+                    options={availableFilters.processingMethods}
+                    selectedOptions={filters.processingMethods}
+                    onOptionChange={(method) =>
+                        onFilterChange('processingMethods', method)
+                    }
+                />
 
-                <div className={styles.filterSection}>
-                    <div className={styles.filterSubtitleContainer}>
-                        <h4 className={styles.filterSubtitle}>Вкус кофе:</h4>
-                        <CaretDownIcon size={20} weight='bold' />
-                    </div>
-                    <div className={styles.filterOptions}>
-                        {availableFilters.tasteTags.map((tag) => (
-                            <label key={tag} className={styles.filterOption}>
-                                <input
-                                    type='checkbox'
-                                    checked={filters.tasteTags.includes(tag)}
-                                    onChange={() =>
-                                        onFilterChange('tasteTags', tag)
-                                    }
-                                />
-                                <span>{toUpperCase(tag)}</span>
-                            </label>
-                        ))}
-                    </div>
-                </div>
+                <FilterSection
+                    title='Вкус кофе:'
+                    type='checkbox'
+                    options={availableFilters.tasteTags}
+                    selectedOptions={filters.tasteTags}
+                    onOptionChange={(tag) => onFilterChange('tasteTags', tag)}
+                />
 
-                <div className={styles.filterSection}>
-                    <div className={styles.filterSubtitleContainer}>
-                        <h4 className={styles.filterSubtitle}>Поставщик:</h4>
-                        <CaretDownIcon size={20} weight='bold' />
-                    </div>
-                    <div className={styles.supplierSearch}>
-                        <input
-                            type='text'
-                            placeholder='Найти поставщика...'
-                            className={styles.supplierInput}
-                        />
-                    </div>
-                </div>
+                <FilterSection
+                    title='Поставщик:'
+                    type='search'
+                    searchPlaceholder='Найти поставщика...'
+                />
 
-                <div className={styles.filterSection}>
-                    <div className={styles.filterSubtitleContainer}>
-                        <h4 className={styles.filterSubtitle}>Континент:</h4>
-                        <CaretDownIcon size={20} weight='bold' />
-                    </div>
-                    <div className={styles.filterOptions}>
-                        {availableFilters.continents.map((continent) => (
-                            <label
-                                key={continent}
-                                className={styles.filterOption}
-                            >
-                                <input
-                                    type='checkbox'
-                                    checked={filters.continents.includes(
-                                        continent
-                                    )}
-                                    onChange={() =>
-                                        onFilterChange('continents', continent)
-                                    }
-                                />
-                                <span>{toUpperCase(continent)}</span>
-                            </label>
-                        ))}
-                    </div>
-                </div>
+                <FilterSection
+                    title='Континент:'
+                    type='checkbox'
+                    options={availableFilters.continents}
+                    selectedOptions={filters.continents}
+                    onOptionChange={(continent) =>
+                        onFilterChange('continents', continent)
+                    }
+                />
 
                 <Button onClick={onClearFilters} active>
                     Очистить фильтры

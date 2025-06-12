@@ -13,10 +13,10 @@
 }
 
 .filterTitle {
-    font-size: 18px;
-    font-weight: 600;
+    font-size: 20px;
+    font-weight: 700;
     margin: 0;
-    border-bottom: 2px solid rgba(245, 241, 235, 0.3);
+    border-bottom: 2px solid var(--brown-100);
     padding-bottom: 8px;
 }
 
@@ -28,23 +28,16 @@
     padding-bottom: 15px;
 }
 
-.filterSubtitle {
-    font-size: 14px;
-    font-weight: 500;
-    margin: 0;
-    opacity: 0.9;
-    position: relative;
-    cursor: pointer;
+.filterSubtitleContainer {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 5px 0;
 }
 
-.filterSubtitle::after {
-    content: '▼';
-    font-size: 12px;
-    transition: transform 0.2s ease;
+.filterSubtitle {
+    font-size: 16px;
+    font-weight: 600;
+    position: relative;
 }
 
 .filterOptions {

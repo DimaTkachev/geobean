@@ -4,6 +4,7 @@ import { Shop } from '@contexts/ShopContext';
 import { Button } from '../Button';
 import { ShopModal } from './ShopModal';
 import styles from './CoffeeMapSidebar.module.css';
+import { CaretDownIcon } from '@phosphor-icons/react';
 
 interface Filters {
     continents: string[];
@@ -244,7 +245,10 @@ export const CoffeeMapSidebar: React.FC<CoffeeMapSidebarProps> = ({
                 <h3 className={styles.filterTitle}>Фильтры</h3>
 
                 <div className={styles.filterSection}>
-                    <h4 className={styles.filterSubtitle}>Тип зерна:</h4>
+                    <div className={styles.filterSubtitleContainer}>
+                        <h4 className={styles.filterSubtitle}>Тип зерна:</h4>
+                        <CaretDownIcon size={20} weight='bold' />
+                    </div>
                     <div className={styles.filterOptions}>
                         {availableFilters.roastingTypes.map((type) => (
                             <label key={type} className={styles.filterOption}>

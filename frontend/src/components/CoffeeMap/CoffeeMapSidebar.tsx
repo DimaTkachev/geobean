@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import cn from 'classnames';
 import { useShop, useAuth } from '@contexts/index';
 import { Shop } from '@contexts/ShopContext';
 import { Button } from '../Button';
@@ -110,68 +111,40 @@ export const CoffeeMapSidebar: React.FC<CoffeeMapSidebarProps> = ({
     return (
         <aside className={styles.sidebar}>
             {isAuthenticated && (
-                <div style={{ marginBottom: 24 }}>
+                <div className={styles.shopsContainer}>
                     {shops.map((shop) => (
                         <div
                             key={shop.shopID}
-                            style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 12,
-                                marginBottom: 8,
-                                cursor: 'pointer',
-                                background:
-                                    currentShop?.shopID === shop.shopID
-                                        ? 'rgba(139, 106, 74, 0.2)'
-                                        : 'transparent',
-                                borderRadius: 8,
-                                padding: 4,
-                                position: 'relative',
-                            }}
+                            className={cn(styles.shopItem, {
+                                [styles.shopItemSelected]:
+                                    currentShop?.shopID === shop.shopID,
+                            })}
                             onClick={() => setCurrentShop(shop)}
                         >
                             <div
+                                className={cn(styles.shopAvatar, {
+                                    [styles.shopAvatarBeige]:
+                                        shop.theme === 'beige',
+                                    [styles.shopAvatarPurple]:
+                                        shop.theme === 'purple',
+                                    [styles.shopAvatarBlue]:
+                                        shop.theme === 'blue',
+                                    [styles.shopAvatarSelected]:
+                                        currentShop?.shopID === shop.shopID,
+                                })}
                                 style={{
-                                    width: 36,
-                                    height: 36,
-                                    borderRadius: '50%',
-                                    background:
-                                        shop.theme === 'beige'
-                                            ? '#8b6a4a'
-                                            : shop.theme === 'purple'
-                                              ? '#6c4a8b'
-                                              : '#4a6a8b',
                                     backgroundImage: shop.image
                                         ? `url(${shop.image})`
                                         : undefined,
-                                    backgroundSize: 'cover',
-                                    border:
-                                        currentShop?.shopID === shop.shopID
-                                            ? '2px solid #8b6a4a'
-                                            : '2px solid #ccc',
                                 }}
                             />
-                            <span
-                                style={{
-                                    color: '#3c1f0c',
-                                    fontWeight: 500,
-                                }}
-                            >
-                                {shop.name}
-                            </span>
+                            <span className={styles.shopName}>{shop.name}</span>
                             <button
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     handleEditShop(shop);
                                 }}
-                                style={{
-                                    background: 'none',
-                                    border: 'none',
-                                    marginLeft: 'auto',
-                                    color: '#8b6a4a',
-                                    cursor: 'pointer',
-                                    fontSize: 14,
-                                }}
+                                className={styles.editButton}
                                 title='Редактировать'
                             >
                                 Ред.
@@ -179,31 +152,15 @@ export const CoffeeMapSidebar: React.FC<CoffeeMapSidebarProps> = ({
                         </div>
                     ))}
                     {shops.length < maxShops && (
-                        <div
-                            style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 12,
-                                marginTop: 8,
-                            }}
-                        >
+                        <div className={styles.addShopContainer}>
                             <button
-                                style={{
-                                    width: 36,
-                                    height: 36,
-                                    borderRadius: '50%',
-                                    background: 'rgba(139, 106, 74, 0.3)',
-                                    color: '#8b6a4a',
-                                    fontSize: 24,
-                                    border: '2px dashed #8b6a4a',
-                                    cursor: 'pointer',
-                                }}
+                                className={styles.addShopButton}
                                 title={'Добавить кофейню'}
                                 onClick={handleAddShop}
                             >
                                 +
                             </button>
-                            <span style={{ color: '#3c1f0c' }}>
+                            <span className={styles.addShopText}>
                                 Добавить ещё
                             </span>
                         </div>

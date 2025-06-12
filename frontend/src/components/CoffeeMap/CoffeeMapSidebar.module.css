@@ -20,6 +20,86 @@
     padding-bottom: 8px;
 }
 
+.shopsContainer {
+    margin-bottom: 24px;
+}
+
+.shopItem {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    background: transparent;
+    border-radius: 8px;
+    padding: 4px;
+    position: relative;
+}
+
+.shopItemSelected {
+    background: rgba(139, 106, 74, 0.2);
+}
+
+.shopAvatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-size: cover;
+    border: 2px solid #ccc;
+}
+
+.shopAvatarSelected {
+    border: 2px solid #8b6a4a;
+}
+
+.shopAvatarBeige {
+    background: #8b6a4a;
+}
+
+.shopAvatarPurple {
+    background: #6c4a8b;
+}
+
+.shopAvatarBlue {
+    background: #4a6a8b;
+}
+
+.shopName {
+    color: #3c1f0c;
+    font-weight: 500;
+}
+
+.editButton {
+    background: none;
+    border: none;
+    margin-left: auto;
+    color: #8b6a4a;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.addShopContainer {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.addShopButton {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(139, 106, 74, 0.3);
+    color: #8b6a4a;
+    font-size: 24px;
+    border: 2px dashed #8b6a4a;
+    cursor: pointer;
+}
+
+.addShopText {
+    color: #3c1f0c;
+}
+
 @media (max-width: 768px) {
     .sidebar {
         width: 100%;

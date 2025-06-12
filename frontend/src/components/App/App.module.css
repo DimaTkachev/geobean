@@ -26,5 +26,6 @@
     font-family: Inter, sans-serif;
     font-optical-sizing: auto;
     font-weight: 400;
+    color: var(--brown-100);
     font-style: normal;
 }

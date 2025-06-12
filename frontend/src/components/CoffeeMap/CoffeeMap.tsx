@@ -380,141 +380,309 @@ export const CoffeeMap: React.FC = () => {
     }
 
     return (
-        <div className={styles.container}>
-            <aside
-                className={styles.sidebar}
-                style={{
-                    width: isSidebarExpanded ? 300 : 60,
-                    transition: 'width 0.2s',
-                    overflowY: 'auto',
-                    maxHeight: '100vh',
-                    overflowX: 'hidden',
-                }}
-            >
-                <button
+        <section>
+            <div className={styles.header}>
+                <h2 className={styles.title}>Карта мира</h2>
+            </div>
+            <div className={styles.container}>
+                <aside
+                    className={styles.sidebar}
                     style={{
-                        background: 'none',
-                        border: 'none',
-                        cursor: 'pointer',
-                        marginBottom: 16,
-                        marginLeft: 4,
+                        width: isSidebarExpanded ? 300 : 60,
+                        transition: 'width 0.2s',
+                        overflowY: 'auto',
+                        maxHeight: '100vh',
+                        overflowX: 'hidden',
                     }}
-                    onClick={() => setIsSidebarExpanded((exp) => !exp)}
-                    aria-label={isSidebarExpanded ? 'Свернуть' : 'Развернуть'}
                 >
-                    <span style={{ fontSize: 24, color: '#8b6a4a' }}>
-                        {isSidebarExpanded ? '←' : '→'}
-                    </span>
-                </button>
-                {isAuthenticated && (
-                    <div style={{ marginBottom: 24 }}>
-                        {shops.map((shop) => (
-                            <div
-                                key={shop.shopID}
-                                style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: isSidebarExpanded ? 12 : 0,
-                                    marginBottom: 8,
-                                    cursor: 'pointer',
-                                    background:
-                                        currentShop?.shopID === shop.shopID
-                                            ? 'rgba(139, 106, 74, 0.2)'
-                                            : 'transparent',
-                                    borderRadius: 8,
-                                    padding: 4,
-                                    position: 'relative',
-                                }}
-                                onClick={() => setCurrentShop(shop)}
-                            >
+                    <button
+                        style={{
+                            background: 'none',
+                            border: 'none',
+                            cursor: 'pointer',
+                            marginBottom: 16,
+                            marginLeft: 4,
+                        }}
+                        onClick={() => setIsSidebarExpanded((exp) => !exp)}
+                        aria-label={
+                            isSidebarExpanded ? 'Свернуть' : 'Развернуть'
+                        }
+                    >
+                        <span style={{ fontSize: 24, color: '#8b6a4a' }}>
+                            {isSidebarExpanded ? '←' : '→'}
+                        </span>
+                    </button>
+                    {isAuthenticated && (
+                        <div style={{ marginBottom: 24 }}>
+                            {shops.map((shop) => (
+                                <div
+                                    key={shop.shopID}
+                                    style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: isSidebarExpanded ? 12 : 0,
+                                        marginBottom: 8,
+                                        cursor: 'pointer',
+                                        background:
+                                            currentShop?.shopID === shop.shopID
+                                                ? 'rgba(139, 106, 74, 0.2)'
+                                                : 'transparent',
+                                        borderRadius: 8,
+                                        padding: 4,
+                                        position: 'relative',
+                                    }}
+                                    onClick={() => setCurrentShop(shop)}
+                                >
+                                    <div
+                                        style={{
+                                            width: 36,
+                                            height: 36,
+                                            borderRadius: '50%',
+                                            background:
+                                                shop.theme === 'beige'
+                                                    ? '#8b6a4a'
+                                                    : shop.theme === 'purple'
+                                                      ? '#6c4a8b'
+                                                      : '#4a6a8b',
+                                            backgroundImage: shop.image
+                                                ? `url(${shop.image})`
+                                                : undefined,
+                                            backgroundSize: 'cover',
+                                            border:
+                                                currentShop?.shopID ===
+                                                shop.shopID
+                                                    ? '2px solid #8b6a4a'
+                                                    : '2px solid #ccc',
+                                        }}
+                                    />
+                                    {isSidebarExpanded && (
+                                        <span
+                                            style={{
+                                                color: '#3c1f0c',
+                                                fontWeight: 500,
+                                            }}
+                                        >
+                                            {shop.name}
+                                        </span>
+                                    )}
+                                    {isSidebarExpanded && (
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleEditShop(shop);
+                                            }}
+                                            style={{
+                                                background: 'none',
+                                                border: 'none',
+                                                marginLeft: 'auto',
+                                                color: '#8b6a4a',
+                                                cursor: 'pointer',
+                                                fontSize: 14,
+                                            }}
+                                            title='Редактировать'
+                                        >
+                                            Ред.
+                                        </button>
+                                    )}
+                                </div>
+                            ))}
+                            {shops.length < maxShops && (
                                 <div
                                     style={{
-                                        width: 36,
-                                        height: 36,
-                                        borderRadius: '50%',
-                                        background:
-                                            shop.theme === 'beige'
-                                                ? '#8b6a4a'
-                                                : shop.theme === 'purple'
-                                                  ? '#6c4a8b'
-                                                  : '#4a6a8b',
-                                        backgroundImage: shop.image
-                                            ? `url(${shop.image})`
-                                            : undefined,
-                                        backgroundSize: 'cover',
-                                        border:
-                                            currentShop?.shopID === shop.shopID
-                                                ? '2px solid #8b6a4a'
-                                                : '2px solid #ccc',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: isSidebarExpanded ? 12 : 0,
+                                        marginTop: 8,
                                     }}
-                                />
-                                {isSidebarExpanded && (
-                                    <span
-                                        style={{
-                                            color: '#3c1f0c',
-                                            fontWeight: 500,
-                                        }}
-                                    >
-                                        {shop.name}
-                                    </span>
-                                )}
-                                {isSidebarExpanded && (
-                                    <button
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            handleEditShop(shop);
-                                        }}
-                                        style={{
-                                            background: 'none',
-                                            border: 'none',
-                                            marginLeft: 'auto',
-                                            color: '#8b6a4a',
-                                            cursor: 'pointer',
-                                            fontSize: 14,
-                                        }}
-                                        title='Редактировать'
-                                    >
-                                        Ред.
-                                    </button>
-                                )}
-                            </div>
-                        ))}
-                        {shops.length < maxShops && (
-                            <div
-                                style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: isSidebarExpanded ? 12 : 0,
-                                    marginTop: 8,
-                                }}
-                            >
-                                <button
-                                    style={{
-                                        width: 36,
-                                        height: 36,
-                                        borderRadius: '50%',
-                                        background: 'rgba(139, 106, 74, 0.3)',
-                                        color: '#8b6a4a',
-                                        fontSize: 24,
-                                        border: '2px dashed #8b6a4a',
-                                        cursor: 'pointer',
-                                    }}
-                                    title={'Добавить кофейню'}
-                                    onClick={handleAddShop}
                                 >
-                                    +
-                                </button>
-                                {isSidebarExpanded && (
-                                    <span style={{ color: '#3c1f0c' }}>
-                                        Добавить ещё
-                                    </span>
+                                    <button
+                                        style={{
+                                            width: 36,
+                                            height: 36,
+                                            borderRadius: '50%',
+                                            background:
+                                                'rgba(139, 106, 74, 0.3)',
+                                            color: '#8b6a4a',
+                                            fontSize: 24,
+                                            border: '2px dashed #8b6a4a',
+                                            cursor: 'pointer',
+                                        }}
+                                        title={'Добавить кофейню'}
+                                        onClick={handleAddShop}
+                                    >
+                                        +
+                                    </button>
+                                    {isSidebarExpanded && (
+                                        <span style={{ color: '#3c1f0c' }}>
+                                            Добавить ещё
+                                        </span>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    )}
+                    <div className={styles.filters}>
+                        <h3 className={styles.filterTitle}>Фильтры</h3>
+
+                        <div className={styles.filterSection}>
+                            <h4 className={styles.filterSubtitle}>
+                                Тип зерна:
+                            </h4>
+                            <div className={styles.filterOptions}>
+                                {availableFilters.roastingTypes.map((type) => (
+                                    <label
+                                        key={type}
+                                        className={styles.filterOption}
+                                    >
+                                        <input
+                                            type='checkbox'
+                                            checked={filters.roastingTypes.includes(
+                                                type
+                                            )}
+                                            onChange={() =>
+                                                handleFilterChange(
+                                                    'roastingTypes',
+                                                    type
+                                                )
+                                            }
+                                        />
+                                        <span>{type}</span>
+                                    </label>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className={styles.filterSection}>
+                            <h4 className={styles.filterSubtitle}>
+                                Способ обработки:
+                            </h4>
+                            <div className={styles.filterOptions}>
+                                {availableFilters.processingMethods.map(
+                                    (method) => (
+                                        <label
+                                            key={method}
+                                            className={styles.filterOption}
+                                        >
+                                            <input
+                                                type='checkbox'
+                                                checked={filters.processingMethods.includes(
+                                                    method
+                                                )}
+                                                onChange={() =>
+                                                    handleFilterChange(
+                                                        'processingMethods',
+                                                        method
+                                                    )
+                                                }
+                                            />
+                                            <span>{method}</span>
+                                        </label>
+                                    )
                                 )}
                             </div>
-                        )}
+                        </div>
+
+                        <div className={styles.filterSection}>
+                            <h4 className={styles.filterSubtitle}>
+                                Вкус кофе:
+                            </h4>
+                            <div className={styles.filterOptions}>
+                                {availableFilters.tasteTags.map((tag) => (
+                                    <label
+                                        key={tag}
+                                        className={styles.filterOption}
+                                    >
+                                        <input
+                                            type='checkbox'
+                                            checked={filters.tasteTags.includes(
+                                                tag
+                                            )}
+                                            onChange={() =>
+                                                handleFilterChange(
+                                                    'tasteTags',
+                                                    tag
+                                                )
+                                            }
+                                        />
+                                        <span>{tag}</span>
+                                    </label>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className={styles.filterSection}>
+                            <h4 className={styles.filterSubtitle}>
+                                Поставщик:
+                            </h4>
+                            <div className={styles.supplierSearch}>
+                                <input
+                                    type='text'
+                                    placeholder='Найти поставщика...'
+                                    className={styles.supplierInput}
+                                />
+                            </div>
+                        </div>
+
+                        <div className={styles.filterSection}>
+                            <h4 className={styles.filterSubtitle}>
+                                Континент:
+                            </h4>
+                            <div className={styles.filterOptions}>
+                                {availableFilters.continents.map(
+                                    (continent) => (
+                                        <label
+                                            key={continent}
+                                            className={styles.filterOption}
+                                        >
+                                            <input
+                                                type='checkbox'
+                                                checked={filters.continents.includes(
+                                                    continent
+                                                )}
+                                                onChange={() =>
+                                                    handleFilterChange(
+                                                        'continents',
+                                                        continent
+                                                    )
+                                                }
+                                            />
+                                            <span>{continent}</span>
+                                        </label>
+                                    )
+                                )}
+                            </div>
+                        </div>
+
+                        <button
+                            onClick={clearFilters}
+                            className={styles.clearButton}
+                        >
+                            Очистить фильтры
+                        </button>
                     </div>
-                )}
-                <div className={styles.header}>
-                    <h2 className={styles.title}>Карта мира</h2>
+                    {isAuthenticated && (
+                        <ShopModal
+                            open={modalOpen}
+                            mode={modalMode}
+                            initialName={modalShop?.name}
+                            initialTheme={modalShop?.theme}
+                            onApply={handleModalApply}
+                            onDelete={
+                                modalMode === 'edit'
+                                    ? handleModalDelete
+                                    : undefined
+                            }
+                            onClose={() => setModalOpen(false)}
+                            isApplyDisabled={modalLoading}
+                            isDeleteDisabled={shops.length <= 1}
+                        />
+                    )}
+                </aside>
+
+                <div
+                    className={styles.mapContainer}
+                    style={{ cursor: 'pointer' }}
+                >
                     <div className={styles.searchContainer}>
                         <input
                             type='text'
@@ -524,277 +692,158 @@ export const CoffeeMap: React.FC = () => {
                             className={styles.searchInput}
                         />
                     </div>
-                </div>
+                    <div>
+                        {' '}
+                        <ComposableMap
+                            projectionConfig={{
+                                scale: 147,
+                            }}
+                            className={styles.map}
+                        >
+                            <ZoomableGroup>
+                                <Geographies geography={geoUrl}>
+                                    {({ geographies }) =>
+                                        geographies.map((geo) => {
+                                            const hasMarkers = markers.some(
+                                                (marker) =>
+                                                    marker.CoffeeLot.Region
+                                                        .Country.name ===
+                                                    geo.properties.NAME
+                                            );
 
-                <div className={styles.filters}>
-                    <h3 className={styles.filterTitle}>Фильтры</h3>
-
-                    <div className={styles.filterSection}>
-                        <h4 className={styles.filterSubtitle}>Тип зерна:</h4>
-                        <div className={styles.filterOptions}>
-                            {availableFilters.roastingTypes.map((type) => (
-                                <label
-                                    key={type}
-                                    className={styles.filterOption}
-                                >
-                                    <input
-                                        type='checkbox'
-                                        checked={filters.roastingTypes.includes(
-                                            type
-                                        )}
-                                        onChange={() =>
-                                            handleFilterChange(
-                                                'roastingTypes',
-                                                type
-                                            )
-                                        }
-                                    />
-                                    <span>{type}</span>
-                                </label>
-                            ))}
-                        </div>
-                    </div>
-
-                    <div className={styles.filterSection}>
-                        <h4 className={styles.filterSubtitle}>
-                            Способ обработки:
-                        </h4>
-                        <div className={styles.filterOptions}>
-                            {availableFilters.processingMethods.map(
-                                (method) => (
-                                    <label
-                                        key={method}
-                                        className={styles.filterOption}
-                                    >
-                                        <input
-                                            type='checkbox'
-                                            checked={filters.processingMethods.includes(
-                                                method
+                                            return (
+                                                <Geography
+                                                    key={geo.rsmKey}
+                                                    geography={geo}
+                                                    onClick={() =>
+                                                        handleGeographyClick(
+                                                            geo
+                                                        )
+                                                    }
+                                                    className={`${styles.geography} ${
+                                                        hasMarkers
+                                                            ? styles.hasMarkers
+                                                            : ''
+                                                    }`}
+                                                />
+                                            );
+                                        })
+                                    }
+                                </Geographies>
+                                {filteredMarkers.map((marker) => (
+                                    <g key={marker.markerID}>
+                                        <Marker
+                                            coordinates={[
+                                                marker.longitude || 0,
+                                                marker.latitude || 0,
+                                            ]}
+                                            className={styles.marker}
+                                            onMouseEnter={handleMarkerMouseEnter(
+                                                marker.markerID || 0
                                             )}
-                                            onChange={() =>
-                                                handleFilterChange(
-                                                    'processingMethods',
-                                                    method
-                                                )
-                                            }
-                                        />
-                                        <span>{method}</span>
-                                    </label>
-                                )
-                            )}
-                        </div>
-                    </div>
-
-                    <div className={styles.filterSection}>
-                        <h4 className={styles.filterSubtitle}>Вкус кофе:</h4>
-                        <div className={styles.filterOptions}>
-                            {availableFilters.tasteTags.map((tag) => (
-                                <label
-                                    key={tag}
-                                    className={styles.filterOption}
-                                >
-                                    <input
-                                        type='checkbox'
-                                        checked={filters.tasteTags.includes(
-                                            tag
-                                        )}
-                                        onChange={() =>
-                                            handleFilterChange('tasteTags', tag)
-                                        }
-                                    />
-                                    <span>{tag}</span>
-                                </label>
-                            ))}
-                        </div>
-                    </div>
-
-                    <div className={styles.filterSection}>
-                        <h4 className={styles.filterSubtitle}>Поставщик:</h4>
-                        <div className={styles.supplierSearch}>
-                            <input
-                                type='text'
-                                placeholder='Найти поставщика...'
-                                className={styles.supplierInput}
-                            />
-                        </div>
-                    </div>
-
-                    <div className={styles.filterSection}>
-                        <h4 className={styles.filterSubtitle}>Континент:</h4>
-                        <div className={styles.filterOptions}>
-                            {availableFilters.continents.map((continent) => (
-                                <label
-                                    key={continent}
-                                    className={styles.filterOption}
-                                >
-                                    <input
-                                        type='checkbox'
-                                        checked={filters.continents.includes(
-                                            continent
-                                        )}
-                                        onChange={() =>
-                                            handleFilterChange(
-                                                'continents',
-                                                continent
-                                            )
-                                        }
-                                    />
-                                    <span>{continent}</span>
-                                </label>
-                            ))}
-                        </div>
-                    </div>
-
-                    <button
-                        onClick={clearFilters}
-                        className={styles.clearButton}
-                    >
-                        Очистить фильтры
-                    </button>
-                </div>
-                {isAuthenticated && (
-                    <ShopModal
-                        open={modalOpen}
-                        mode={modalMode}
-                        initialName={modalShop?.name}
-                        initialTheme={modalShop?.theme}
-                        onApply={handleModalApply}
-                        onDelete={
-                            modalMode === 'edit' ? handleModalDelete : undefined
-                        }
-                        onClose={() => setModalOpen(false)}
-                        isApplyDisabled={modalLoading}
-                        isDeleteDisabled={shops.length <= 1}
-                    />
-                )}
-            </aside>
-
-            <div className={styles.mapContainer} style={{ cursor: 'pointer' }}>
-                <ComposableMap
-                    projectionConfig={{
-                        scale: 147,
-                    }}
-                    className={styles.map}
-                >
-                    <ZoomableGroup>
-                        <Geographies geography={geoUrl}>
-                            {({ geographies }) =>
-                                geographies.map((geo) => {
-                                    const hasMarkers = markers.some(
-                                        (marker) =>
-                                            marker.CoffeeLot.Region.Country
-                                                .name === geo.properties.NAME
-                                    );
-
-                                    return (
-                                        <Geography
-                                            key={geo.rsmKey}
-                                            geography={geo}
+                                            onMouseMove={handleMarkerMouseMove}
+                                            onMouseLeave={handleMarkerMouseLeave(
+                                                marker.markerID || 0
+                                            )}
                                             onClick={() =>
-                                                handleGeographyClick(geo)
-                                            }
-                                            className={`${styles.geography} ${
-                                                hasMarkers
-                                                    ? styles.hasMarkers
-                                                    : ''
-                                            }`}
-                                        />
-                                    );
-                                })
-                            }
-                        </Geographies>
-                        {filteredMarkers.map((marker) => (
-                            <g key={marker.markerID}>
-                                <Marker
-                                    coordinates={[
-                                        marker.longitude || 0,
-                                        marker.latitude || 0,
-                                    ]}
-                                    className={styles.marker}
-                                    onMouseEnter={handleMarkerMouseEnter(
-                                        marker.markerID || 0
-                                    )}
-                                    onMouseMove={handleMarkerMouseMove}
-                                    onMouseLeave={handleMarkerMouseLeave(
-                                        marker.markerID || 0
-                                    )}
-                                    onClick={() =>
-                                        navigate(`/coffee-lots/${marker.lotID}`)
-                                    }
-                                >
-                                    <circle
-                                        r={markerSize}
-                                        className={styles.markerCircle}
-                                    />
-                                </Marker>
-                            </g>
-                        ))}
-                    </ZoomableGroup>
-                </ComposableMap>
-                {/* Render popup outside SVG for correct positioning */}
-                {hoveredMarkerID !== null &&
-                    popupPosition &&
-                    (() => {
-                        const marker = filteredMarkers.find(
-                            (m) => m.markerID === hoveredMarkerID
-                        );
-                        if (!marker) return null;
-                        return (
-                            <div
-                                className={styles.markerPopup}
-                                style={{
-                                    position: 'fixed',
-                                    left: popupPosition.x + 16,
-                                    top: popupPosition.y - 40,
-                                    zIndex: 1000,
-                                    pointerEvents: 'none',
-                                }}
-                            >
-                                <img
-                                    src={
-                                        marker.CoffeeLot.image
-                                            ? `/images/${marker.CoffeeLot.image}`
-                                            : '/images/placeholder.png'
-                                    }
-                                    alt={marker.CoffeeLot.name || ''}
-                                    className={styles.markerPopupImage}
-                                />
-                                <div className={styles.markerPopupInfo}>
-                                    <div
-                                        className={styles.markerPopupName}
-                                        style={{ pointerEvents: 'auto' }}
-                                        onClick={() =>
-                                            navigate(
-                                                `/coffee-lots/${marker.lotID}`
-                                            )
-                                        }
-                                        tabIndex={0}
-                                        role='button'
-                                        onKeyDown={(e) => {
-                                            if (e.key === 'Enter')
                                                 navigate(
                                                     `/coffee-lots/${marker.lotID}`
-                                                );
+                                                )
+                                            }
+                                        >
+                                            <circle
+                                                r={markerSize}
+                                                className={styles.markerCircle}
+                                            />
+                                        </Marker>
+                                    </g>
+                                ))}
+                            </ZoomableGroup>
+                        </ComposableMap>
+                        {/* Render popup outside SVG for correct positioning */}
+                        {hoveredMarkerID !== null &&
+                            popupPosition &&
+                            (() => {
+                                const marker = filteredMarkers.find(
+                                    (m) => m.markerID === hoveredMarkerID
+                                );
+                                if (!marker) return null;
+                                return (
+                                    <div
+                                        className={styles.markerPopup}
+                                        style={{
+                                            position: 'fixed',
+                                            left: popupPosition.x + 16,
+                                            top: popupPosition.y - 40,
+                                            zIndex: 1000,
+                                            pointerEvents: 'none',
                                         }}
                                     >
-                                        {marker.CoffeeLot.name}
+                                        <img
+                                            src={
+                                                marker.CoffeeLot.image
+                                                    ? `/images/${marker.CoffeeLot.image}`
+                                                    : '/images/placeholder.png'
+                                            }
+                                            alt={marker.CoffeeLot.name || ''}
+                                            className={styles.markerPopupImage}
+                                        />
+                                        <div className={styles.markerPopupInfo}>
+                                            <div
+                                                className={
+                                                    styles.markerPopupName
+                                                }
+                                                style={{
+                                                    pointerEvents: 'auto',
+                                                }}
+                                                onClick={() =>
+                                                    navigate(
+                                                        `/coffee-lots/${marker.lotID}`
+                                                    )
+                                                }
+                                                tabIndex={0}
+                                                role='button'
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter')
+                                                        navigate(
+                                                            `/coffee-lots/${marker.lotID}`
+                                                        );
+                                                }}
+                                            >
+                                                {marker.CoffeeLot.name}
+                                            </div>
+                                            <div
+                                                className={
+                                                    styles.markerPopupRoasting
+                                                }
+                                            >
+                                                под{' '}
+                                                {
+                                                    marker.CoffeeLot.Roasting
+                                                        ?.name
+                                                }
+                                            </div>
+                                            <div
+                                                className={
+                                                    styles.markerPopupTasteTitle
+                                                }
+                                            >
+                                                Вкусовые ноты:
+                                            </div>
+                                            <div
+                                                className={
+                                                    styles.markerPopupTaste
+                                                }
+                                            >
+                                                {marker.CoffeeLot.tasteFilter}
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div className={styles.markerPopupRoasting}>
-                                        под {marker.CoffeeLot.Roasting?.name}
-                                    </div>
-                                    <div
-                                        className={styles.markerPopupTasteTitle}
-                                    >
-                                        Вкусовые ноты:
-                                    </div>
-                                    <div className={styles.markerPopupTaste}>
-                                        {marker.CoffeeLot.tasteFilter}
-                                    </div>
-                                </div>
-                            </div>
-                        );
-                    })()}
+                                );
+                            })()}
+                    </div>
+                </div>
             </div>
-        </div>
+        </section>
     );
 };

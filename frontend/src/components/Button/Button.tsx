@@ -10,6 +10,9 @@ export interface ButtonProps {
     onClick?: () => void;
     active?: boolean;
     to?: To;
+    disabled?: boolean;
+    htmlType?: 'button' | 'submit' | 'reset';
+    className?: string;
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -19,6 +22,9 @@ export const Button: React.FC<ButtonProps> = ({
     size = 'medium',
     active = false,
     to,
+    disabled = false,
+    htmlType = 'button',
+    className,
 }) => {
     const buttonClasses = classNames(
         styles.button,
@@ -26,7 +32,9 @@ export const Button: React.FC<ButtonProps> = ({
         styles[size],
         {
             [styles.active]: active,
-        }
+            [styles.disabled]: disabled,
+        },
+        className
     );
 
     return to ? (
@@ -34,7 +42,12 @@ export const Button: React.FC<ButtonProps> = ({
             {children}
         </Link>
     ) : (
-        <button onClick={onClick} className={buttonClasses}>
+        <button
+            onClick={onClick}
+            className={buttonClasses}
+            disabled={disabled}
+            type={htmlType}
+        >
             {children}
         </button>
     );

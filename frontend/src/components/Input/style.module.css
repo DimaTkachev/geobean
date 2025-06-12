@@ -32,7 +32,6 @@
     font-weight: 600;
     width: 100%;
     font-size: 14px;
-    border-radius: 4px;
 
     &:focus {
         border-color: var(--brown-60);

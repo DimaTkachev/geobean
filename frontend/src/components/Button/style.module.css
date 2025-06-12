@@ -6,8 +6,13 @@
     font-size: 14px;
     border: 1px solid transparent;
 
+    &.disabled {
+        opacity: 0.8;
+        cursor: not-allowed;
+    }
+
     &.medium {
-        padding: 8px 56px;
+        padding: 12px 56px;
     }
 
     &.small {

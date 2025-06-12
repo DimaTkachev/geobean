@@ -8,6 +8,9 @@ import * as yup from 'yup';
 import { useAuth } from '@contexts/index';
 
 import styles from './Login.module.css';
+import { Input } from '@components/Input';
+import cn from 'classnames';
+import { Button } from '../Button';
 
 interface LoginFormData {
     email: string;
@@ -73,12 +76,14 @@ export const Login: React.FC = () => {
                     )}
 
                     <div className={styles.inputGroup}>
-                        <input
+                        <Input
                             {...register('email')}
                             type='email'
                             placeholder='Введите e-mail'
                             disabled={isLoading}
-                            className={`${styles.input} ${errors.email ? styles.inputError : ''}`}
+                            className={cn(styles.input, {
+                                [styles.inputError]: errors.email,
+                            })}
                         />
                         {errors.email && (
                             <span className={styles.error}>
@@ -89,12 +94,14 @@ export const Login: React.FC = () => {
 
                     <div className={styles.inputGroup}>
                         <div className={styles.passwordWrapper}>
-                            <input
+                            <Input
                                 {...register('password')}
                                 type={showPassword ? 'text' : 'password'}
                                 placeholder='Введите пароль'
                                 disabled={isLoading}
-                                className={`${styles.input} ${errors.password ? styles.inputError : ''}`}
+                                className={cn(styles.input, {
+                                    [styles.inputError]: errors.password,
+                                })}
                             />
                             <button
                                 type='button'
@@ -112,22 +119,17 @@ export const Login: React.FC = () => {
                         )}
                     </div>
 
-                    <div className={styles.forgotPassword}>
-                        <Link
-                            to='/forgot-password'
-                            className={styles.forgotPasswordLink}
-                        >
-                            Забыли пароль?
-                        </Link>
-                    </div>
+                    <Link to='/forgot-password' className={styles.link}>
+                        Забыли пароль?
+                    </Link>
 
-                    <button
-                        type='submit'
+                    <Button
+                        htmlType='submit'
                         disabled={isLoading}
                         className={styles.submitButton}
                     >
                         {isLoading ? 'Вход...' : 'Войти'}
-                    </button>
+                    </Button>
                 </form>
 
                 <div className={styles.footer}>

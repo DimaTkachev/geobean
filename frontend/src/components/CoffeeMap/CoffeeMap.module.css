@@ -188,7 +188,7 @@
 }
 
 .geography {
-    fill: var(--brown-80);
+    fill: var(--brown-60);
     stroke: var(--brown-40);
     stroke-width: 0.5;
     cursor: pointer;
@@ -196,16 +196,16 @@
 }
 
 .geography:hover {
-    fill: var(--brown-100);
+    fill: var(--brown-80);
     stroke-width: 1;
 }
 
 .geography.hasMarkers {
-    fill: #b8a082;
+    fill: var(--brown-80);
 }
 
 .geography.hasMarkers:hover {
-    fill: #a68f73;
+    fill: var(--brown-80);
 }
 
 .marker {
@@ -213,14 +213,13 @@
 }
 
 .markerCircle {
-    fill: #8b4513;
-    stroke: #f5f1eb;
+    fill: var(--brown-80);
+    stroke: var(--brown-20);
     stroke-width: 2;
     transition: all 0.2s ease;
 }
 
 .markerCircle:hover {
-    fill: #a0522d;
     stroke-width: 3;
 }
 

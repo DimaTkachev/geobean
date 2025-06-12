@@ -19,133 +19,10 @@
     color: var(--brown-100);
 }
 
-.sidebar {
-    width: 300px;
-    background-color: var(--brown-0);
-    border-right: 1px solid var(--brown-40);
-    padding: 20px;
-    overflow-y: auto;
-}
-
 .searchContainer {
     background-color: var(--brown-0);
     padding: 18px;
     border-bottom: 1px solid var(--brown-40);
-}
-
-.filters {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.filterTitle {
-    font-size: 18px;
-    font-weight: 600;
-    margin: 0;
-    border-bottom: 2px solid rgba(245, 241, 235, 0.3);
-    padding-bottom: 8px;
-}
-
-.filterSection {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    border-bottom: 1px solid rgba(245, 241, 235, 0.2);
-    padding-bottom: 15px;
-}
-
-.filterSubtitle {
-    font-size: 14px;
-    font-weight: 500;
-    margin: 0;
-    opacity: 0.9;
-    position: relative;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 5px 0;
-}
-
-.filterSubtitle::after {
-    content: '▼';
-    font-size: 12px;
-    transition: transform 0.2s ease;
-}
-
-.filterOptions {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    margin-top: 8px;
-}
-
-.filterOption {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    padding: 4px 0;
-    font-size: 13px;
-    transition: opacity 0.2s ease;
-}
-
-.filterOption:hover {
-    opacity: 0.8;
-}
-
-.filterOption input[type='checkbox'] {
-    width: 16px;
-    height: 16px;
-    accent-color: #f5f1eb;
-    cursor: pointer;
-    border-radius: 3px;
-}
-
-.filterOption span {
-    line-height: 1.4;
-    font-size: 13px;
-}
-
-.filterOption input[type='checkbox']:checked + span {
-    color: #f5f1eb;
-    font-weight: 500;
-}
-
-.supplierSearch {
-    margin-top: 8px;
-    position: relative;
-}
-
-.supplierInput {
-    width: 100%;
-    padding: 8px 12px 8px 35px;
-    border: none;
-    border-radius: 6px;
-    font-size: 13px;
-    background-color: rgba(245, 241, 235, 0.9);
-    box-sizing: border-box;
-}
-
-.supplierSearch::before {
-    content: '🔍';
-    position: absolute;
-    left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 14px;
-    opacity: 0.6;
-}
-
-.supplierInput::placeholder {
-    font-size: 13px;
-}
-
-.supplierInput:focus {
-    outline: none;
-    background-color: #f5f1eb;
-    box-shadow: 0 0 0 2px rgba(245, 241, 235, 0.5);
 }
 
 .mapContainer {
@@ -217,13 +94,6 @@
     .container {
         flex-direction: column;
         height: auto;
-    }
-
-    .sidebar {
-        width: 100%;
-        height: auto;
-        max-height: 50vh;
-        order: 2;
     }
 
     .mapContainer {

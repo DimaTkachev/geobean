@@ -4,7 +4,8 @@ import styles from './FilterSection.module.css';
 import cn from 'classnames';
 import { Input } from '@components/Input';
 
-const toUpperCase = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
+const toFirstLetterUpperCase = (str: string) =>
+    str.charAt(0).toUpperCase() + str.slice(1);
 
 interface FilterSectionProps {
     title: string;
@@ -59,7 +60,7 @@ export const FilterSection: React.FC<FilterSectionProps> = ({
                                 checked={selectedOptions.includes(option)}
                                 onChange={() => handleOptionChange(option)}
                             />
-                            <span>{toUpperCase(option)}</span>
+                            <span>{toFirstLetterUpperCase(option)}</span>
                         </label>
                     ))}
                 </div>

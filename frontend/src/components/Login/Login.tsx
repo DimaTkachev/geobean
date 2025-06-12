@@ -9,8 +9,8 @@ import { useAuth } from '@contexts/index';
 
 import styles from './Login.module.css';
 import { Input } from '@components/Input';
-import cn from 'classnames';
 import { Button } from '../Button';
+import { EyeIcon } from '@phosphor-icons/react';
 
 interface LoginFormData {
     email: string;
@@ -43,6 +43,7 @@ export const Login: React.FC = () => {
         formState: { errors },
     } = useForm<LoginFormData>({
         resolver: yupResolver(validationSchema),
+        reValidateMode: 'onChange',
         defaultValues: {
             email: '',
             password: '',
@@ -81,9 +82,11 @@ export const Login: React.FC = () => {
                             type='email'
                             placeholder='Введите e-mail'
                             disabled={isLoading}
-                            className={cn(styles.input, {
-                                [styles.inputError]: errors.email,
-                            })}
+                            error={!!errors.email}
+                            onChange={(e) => {
+                                register('email').onChange(e);
+                                setSubmitError('');
+                            }}
                         />
                         {errors.email && (
                             <span className={styles.error}>
@@ -99,9 +102,11 @@ export const Login: React.FC = () => {
                                 type={showPassword ? 'text' : 'password'}
                                 placeholder='Введите пароль'
                                 disabled={isLoading}
-                                className={cn(styles.input, {
-                                    [styles.inputError]: errors.password,
-                                })}
+                                error={!!errors.password}
+                                onChange={(e) => {
+                                    register('password').onChange(e);
+                                    setSubmitError('');
+                                }}
                             />
                             <button
                                 type='button'
@@ -109,7 +114,7 @@ export const Login: React.FC = () => {
                                 disabled={isLoading}
                                 onClick={() => setShowPassword(!showPassword)}
                             >
-                                👁️
+                                <EyeIcon size={20} />
                             </button>
                         </div>
                         {errors.password && (

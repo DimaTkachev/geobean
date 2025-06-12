@@ -33,6 +33,11 @@
     width: 100%;
     font-size: 14px;
 
+    &.error {
+        background: #da09091a;
+        border-color: var(--error);
+    }
+
     &:focus {
         border-color: var(--brown-60);
     }

@@ -50,11 +50,10 @@
 }
 
 .submitError {
-    background: rgba(231, 76, 60, 0.1);
-    border: 1px solid var(--brown-100);
-    color: var(--brown-100);
+    background: #da09091a;
+    border: 1px solid var(--error);
+    color: var(--error);
     padding: 12px 16px;
-    border-radius: 4px;
     font-size: 14px;
     text-align: center;
     margin-bottom: 16px;
@@ -64,14 +63,6 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
-}
-
-.inputError {
-    border-color: var(--error-color);
-}
-
-.inputError:focus {
-    border-color: var(--error-color);
 }
 
 .passwordWrapper {

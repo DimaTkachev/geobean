@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { CaretDownIcon } from '@phosphor-icons/react';
-import styles from './CoffeeMapSidebar.module.css';
+import styles from './FilterSection.module.css';
+import cn from 'classnames';
+import { Input } from '@components/Input';
 
 const toUpperCase = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
 
@@ -11,7 +13,6 @@ interface FilterSectionProps {
     selectedOptions?: string[];
     onOptionChange?: (option: string) => void;
     searchPlaceholder?: string;
-    searchInputClassName?: string;
 }
 
 export const FilterSection: React.FC<FilterSectionProps> = ({
@@ -21,8 +22,9 @@ export const FilterSection: React.FC<FilterSectionProps> = ({
     selectedOptions = [],
     onOptionChange,
     searchPlaceholder,
-    searchInputClassName,
 }) => {
+    const [isExpanded, setIsExpanded] = useState(true);
+
     const handleOptionChange = (option: string) => {
         if (onOptionChange) {
             onOptionChange(option);
@@ -31,12 +33,24 @@ export const FilterSection: React.FC<FilterSectionProps> = ({
 
     return (
         <div className={styles.filterSection}>
-            <div className={styles.filterSubtitleContainer}>
+            <div
+                className={styles.filterSubtitleContainer}
+                onClick={() => setIsExpanded(!isExpanded)}
+                role='button'
+                tabIndex={0}
+            >
                 <h4 className={styles.filterSubtitle}>{title}</h4>
-                <CaretDownIcon size={20} weight='bold' />
+                <CaretDownIcon
+                    size={20}
+                    weight='bold'
+                    className={cn(styles.caretIcon, {
+                        [styles.caretIconExpanded]: isExpanded,
+                        [styles.caretIconCollapsed]: !isExpanded,
+                    })}
+                />
             </div>
 
-            {type === 'checkbox' && (
+            {isExpanded && type === 'checkbox' && (
                 <div className={styles.filterOptions}>
                     {options.map((option) => (
                         <label key={option} className={styles.filterOption}>
@@ -51,12 +65,13 @@ export const FilterSection: React.FC<FilterSectionProps> = ({
                 </div>
             )}
 
-            {type === 'search' && (
+            {isExpanded && type === 'search' && (
                 <div className={styles.supplierSearch}>
-                    <input
+                    <Input
                         type='text'
                         placeholder={searchPlaceholder}
-                        className={searchInputClassName || styles.supplierInput}
+                        width='full'
+                        search
                     />
                 </div>
             )}

@@ -1,4 +1,28 @@
 .input {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    width: 560px;
+
+    &.fullWidth {
+        width: 100%;
+    }
+
+    &.search {
+        .field {
+            padding-left: 32px;
+        }
+    }
+}
+
+.searchIcon {
+    position: absolute;
+    left: 8px;
+    color: var(--brown-60);
+    z-index: 1;
+}
+
+.field {
     border: 1px solid var(--brown-40);
     outline: none;
     background: var(--brown-20);
@@ -6,10 +30,15 @@
     margin: 0;
     color: var(--brown-100);
     font-weight: 600;
-    width: 560px;
+    width: 100%;
     font-size: 14px;
-}
+    border-radius: 4px;
 
-.input::placeholder {
-    color: var(--brown-60);
+    &:focus {
+        border-color: var(--brown-60);
+    }
+
+    &::placeholder {
+        color: var(--brown-60);
+    }
 }

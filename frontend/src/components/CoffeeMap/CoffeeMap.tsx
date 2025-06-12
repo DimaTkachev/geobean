@@ -328,6 +328,7 @@ export const CoffeeMap: React.FC = () => {
                             placeholder='Найти страну...'
                             value={filters.searchQuery}
                             onChange={(e) => handleSearchChange(e.target.value)}
+                            search
                         />
                     </div>
                     <div style={{ cursor: 'pointer' }}>

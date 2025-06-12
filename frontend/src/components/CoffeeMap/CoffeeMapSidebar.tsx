@@ -6,6 +6,8 @@ import { ShopModal } from './ShopModal';
 import styles from './CoffeeMapSidebar.module.css';
 import { CaretDownIcon } from '@phosphor-icons/react';
 
+const toUpperCase = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
+
 interface Filters {
     continents: string[];
     roastingTypes: string[];
@@ -261,14 +263,19 @@ export const CoffeeMapSidebar: React.FC<CoffeeMapSidebarProps> = ({
                                         onFilterChange('roastingTypes', type)
                                     }
                                 />
-                                <span>{type}</span>
+                                <span>{toUpperCase(type)}</span>
                             </label>
                         ))}
                     </div>
                 </div>
 
                 <div className={styles.filterSection}>
-                    <h4 className={styles.filterSubtitle}>Способ обработки:</h4>
+                    <div className={styles.filterSubtitleContainer}>
+                        <h4 className={styles.filterSubtitle}>
+                            Способ обработки:
+                        </h4>
+                        <CaretDownIcon size={20} weight='bold' />
+                    </div>
                     <div className={styles.filterOptions}>
                         {availableFilters.processingMethods.map((method) => (
                             <label key={method} className={styles.filterOption}>
@@ -284,14 +291,17 @@ export const CoffeeMapSidebar: React.FC<CoffeeMapSidebarProps> = ({
                                         )
                                     }
                                 />
-                                <span>{method}</span>
+                                <span>{toUpperCase(method)}</span>
                             </label>
                         ))}
                     </div>
                 </div>
 
                 <div className={styles.filterSection}>
-                    <h4 className={styles.filterSubtitle}>Вкус кофе:</h4>
+                    <div className={styles.filterSubtitleContainer}>
+                        <h4 className={styles.filterSubtitle}>Вкус кофе:</h4>
+                        <CaretDownIcon size={20} weight='bold' />
+                    </div>
                     <div className={styles.filterOptions}>
                         {availableFilters.tasteTags.map((tag) => (
                             <label key={tag} className={styles.filterOption}>
@@ -302,14 +312,17 @@ export const CoffeeMapSidebar: React.FC<CoffeeMapSidebarProps> = ({
                                         onFilterChange('tasteTags', tag)
                                     }
                                 />
-                                <span>{tag}</span>
+                                <span>{toUpperCase(tag)}</span>
                             </label>
                         ))}
                     </div>
                 </div>
 
                 <div className={styles.filterSection}>
-                    <h4 className={styles.filterSubtitle}>Поставщик:</h4>
+                    <div className={styles.filterSubtitleContainer}>
+                        <h4 className={styles.filterSubtitle}>Поставщик:</h4>
+                        <CaretDownIcon size={20} weight='bold' />
+                    </div>
                     <div className={styles.supplierSearch}>
                         <input
                             type='text'
@@ -320,7 +333,10 @@ export const CoffeeMapSidebar: React.FC<CoffeeMapSidebarProps> = ({
                 </div>
 
                 <div className={styles.filterSection}>
-                    <h4 className={styles.filterSubtitle}>Континент:</h4>
+                    <div className={styles.filterSubtitleContainer}>
+                        <h4 className={styles.filterSubtitle}>Континент:</h4>
+                        <CaretDownIcon size={20} weight='bold' />
+                    </div>
                     <div className={styles.filterOptions}>
                         {availableFilters.continents.map((continent) => (
                             <label
@@ -336,7 +352,7 @@ export const CoffeeMapSidebar: React.FC<CoffeeMapSidebarProps> = ({
                                         onFilterChange('continents', continent)
                                     }
                                 />
-                                <span>{continent}</span>
+                                <span>{toUpperCase(continent)}</span>
                             </label>
                         ))}
                     </div>

@@ -25,3 +25,7 @@
     font-style: normal;
     line-height: 1.1;
 }
+
+html {
+    background-color: var(--brown-0);
+}

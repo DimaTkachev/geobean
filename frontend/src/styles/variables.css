@@ -1,8 +1,10 @@
-.root {
+:root {
     --brown-0: #ffe2cf;
     --brown-20: #ffd9c0;
     --brown-40: #d4a88c;
     --brown-60: #76543e;
+    --brown-80: #3c1f0c;
+    --brown-100: #260e06;
     --brown-linear:
         linear-gradient(0deg, var(--brown-20), var(--brown-20)),
         linear-gradient(0deg, rgba(var(--error), 0.1), rgba(var(--error), 0.1));

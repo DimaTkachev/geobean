@@ -1,0 +1,53 @@
+.button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    border: 1px solid transparent;
+
+    &.medium {
+        width: 230px;
+        height: 42px;
+    }
+
+    &.small {
+        width: 172px;
+        height: 32px;
+    }
+
+    &.outline {
+        background: transparent;
+        border: 1px solid var(--brown-40);
+        color: var(--brown-40);
+        transition: all 0.2s ease;
+
+        &.active {
+            border: 1px solid var(--brown-80);
+            color: var(--brown-80);
+        }
+
+        &:hover {
+            border: 1px solid var(--brown-100);
+            color: var(--brown-100);
+        }
+    }
+
+    &.filled {
+        background: var(--brown-40);
+        color: var(--brown-0);
+        border: 1px solid var(--brown-40);
+
+        &.active {
+            color: var(--brown-0);
+            background: var(--brown-80);
+            border: 1px solid var(--brown-80);
+        }
+
+        &:hover {
+            background: var(--brown-100);
+            border: 1px solid var(--brown-100);
+            color: var(--brown-0);
+        }
+    }
+}

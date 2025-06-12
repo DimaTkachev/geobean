@@ -44,7 +44,7 @@ export const Header: React.FC = () => {
                 ) : (
                     <div className={styles.authButtons}>
                         <Button type='outline' active to='/register'>
-                            Регистрация
+                            Зарегистрироваться
                         </Button>
                         <Button active to='/login'>
                             Войти

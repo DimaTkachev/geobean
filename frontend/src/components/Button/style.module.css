@@ -7,13 +7,11 @@
     border: 1px solid transparent;
 
     &.medium {
-        width: 230px;
-        height: 42px;
+        padding: 8px 56px;
     }
 
     &.small {
-        width: 172px;
-        height: 32px;
+        padding: 8px 24px;
     }
 
     &.outline {

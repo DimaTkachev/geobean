@@ -33,16 +33,6 @@
     border-bottom: 1px solid var(--brown-40);
 }
 
-.searchInput::placeholder {
-    color: #666;
-}
-
-.searchInput:focus {
-    outline: none;
-    background-color: #f5f1eb;
-    box-shadow: 0 0 0 2px rgba(245, 241, 235, 0.5);
-}
-
 .filters {
     display: flex;
     flex-direction: column;
@@ -193,6 +183,10 @@
     stroke-width: 0.5;
     cursor: pointer;
     transition: all 0.2s ease;
+
+    &:focus {
+        outline: none;
+    }
 }
 
 .geography:hover {

@@ -35,7 +35,6 @@ export const CoffeeMapSidebar: React.FC<CoffeeMapSidebarProps> = ({
     onClearFilters,
 }) => {
     const { shops, currentShop, setCurrentShop, refreshShops } = useShop();
-    const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
     const [modalOpen, setModalOpen] = useState(false);
     const [modalMode, setModalMode] = useState<'add' | 'edit'>('add');
     const [modalShop, setModalShop] = useState<Shop | null>(null);
@@ -109,31 +108,7 @@ export const CoffeeMapSidebar: React.FC<CoffeeMapSidebarProps> = ({
     };
 
     return (
-        <aside
-            className={styles.sidebar}
-            style={{
-                width: isSidebarExpanded ? 300 : 60,
-                transition: 'width 0.2s',
-                overflowY: 'auto',
-                maxHeight: '100vh',
-                overflowX: 'hidden',
-            }}
-        >
-            <button
-                style={{
-                    background: 'none',
-                    border: 'none',
-                    cursor: 'pointer',
-                    marginBottom: 16,
-                    marginLeft: 4,
-                }}
-                onClick={() => setIsSidebarExpanded((exp) => !exp)}
-                aria-label={isSidebarExpanded ? 'Свернуть' : 'Развернуть'}
-            >
-                <span style={{ fontSize: 24, color: '#8b6a4a' }}>
-                    {isSidebarExpanded ? '←' : '→'}
-                </span>
-            </button>
+        <aside className={styles.sidebar}>
             {isAuthenticated && (
                 <div style={{ marginBottom: 24 }}>
                     {shops.map((shop) => (
@@ -142,7 +117,7 @@ export const CoffeeMapSidebar: React.FC<CoffeeMapSidebarProps> = ({
                             style={{
                                 display: 'flex',
                                 alignItems: 'center',
-                                gap: isSidebarExpanded ? 12 : 0,
+                                gap: 12,
                                 marginBottom: 8,
                                 cursor: 'pointer',
                                 background:
@@ -176,35 +151,31 @@ export const CoffeeMapSidebar: React.FC<CoffeeMapSidebarProps> = ({
                                             : '2px solid #ccc',
                                 }}
                             />
-                            {isSidebarExpanded && (
-                                <span
-                                    style={{
-                                        color: '#3c1f0c',
-                                        fontWeight: 500,
-                                    }}
-                                >
-                                    {shop.name}
-                                </span>
-                            )}
-                            {isSidebarExpanded && (
-                                <button
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleEditShop(shop);
-                                    }}
-                                    style={{
-                                        background: 'none',
-                                        border: 'none',
-                                        marginLeft: 'auto',
-                                        color: '#8b6a4a',
-                                        cursor: 'pointer',
-                                        fontSize: 14,
-                                    }}
-                                    title='Редактировать'
-                                >
-                                    Ред.
-                                </button>
-                            )}
+                            <span
+                                style={{
+                                    color: '#3c1f0c',
+                                    fontWeight: 500,
+                                }}
+                            >
+                                {shop.name}
+                            </span>
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleEditShop(shop);
+                                }}
+                                style={{
+                                    background: 'none',
+                                    border: 'none',
+                                    marginLeft: 'auto',
+                                    color: '#8b6a4a',
+                                    cursor: 'pointer',
+                                    fontSize: 14,
+                                }}
+                                title='Редактировать'
+                            >
+                                Ред.
+                            </button>
                         </div>
                     ))}
                     {shops.length < maxShops && (
@@ -212,7 +183,7 @@ export const CoffeeMapSidebar: React.FC<CoffeeMapSidebarProps> = ({
                             style={{
                                 display: 'flex',
                                 alignItems: 'center',
-                                gap: isSidebarExpanded ? 12 : 0,
+                                gap: 12,
                                 marginTop: 8,
                             }}
                         >
@@ -232,11 +203,9 @@ export const CoffeeMapSidebar: React.FC<CoffeeMapSidebarProps> = ({
                             >
                                 +
                             </button>
-                            {isSidebarExpanded && (
-                                <span style={{ color: '#3c1f0c' }}>
-                                    Добавить ещё
-                                </span>
-                            )}
+                            <span style={{ color: '#3c1f0c' }}>
+                                Добавить ещё
+                            </span>
                         </div>
                     )}
                 </div>

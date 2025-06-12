@@ -27,6 +27,7 @@ import type {
     WeightDTO,
 } from '../../types/dtos';
 import { ShopModal } from './ShopModal';
+import { Input } from '../Input';
 
 const geoUrl = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json';
 
@@ -679,21 +680,16 @@ export const CoffeeMap: React.FC = () => {
                     )}
                 </aside>
 
-                <div
-                    className={styles.mapContainer}
-                    style={{ cursor: 'pointer' }}
-                >
+                <div className={styles.mapContainer}>
                     <div className={styles.searchContainer}>
-                        <input
+                        <Input
                             type='text'
                             placeholder='Найти страну...'
                             value={filters.searchQuery}
                             onChange={(e) => handleSearchChange(e.target.value)}
-                            className={styles.searchInput}
                         />
                     </div>
-                    <div>
-                        {' '}
+                    <div style={{ cursor: 'pointer' }}>
                         <ComposableMap
                             projectionConfig={{
                                 scale: 147,

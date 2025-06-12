@@ -33,17 +33,6 @@
     border-bottom: 1px solid var(--brown-40);
 }
 
-.searchInput {
-    width: 100%;
-    padding: 12px;
-    border: none;
-    border-radius: 8px;
-    font-size: 14px;
-    background-color: rgba(245, 241, 235, 0.9);
-    color: #333;
-    box-sizing: border-box;
-}
-
 .searchInput::placeholder {
     color: #666;
 }
@@ -190,7 +179,7 @@
 .mapContainer {
     flex: 1;
     position: relative;
-    background-color: #f5f1eb;
+    background-color: var(--brown-0);
 }
 
 .map {
@@ -199,15 +188,15 @@
 }
 
 .geography {
-    fill: #d4c4a8;
-    stroke: #8b4513;
+    fill: var(--brown-80);
+    stroke: var(--brown-40);
     stroke-width: 0.5;
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
 .geography:hover {
-    fill: #c9b896;
+    fill: var(--brown-100);
     stroke-width: 1;
 }
 

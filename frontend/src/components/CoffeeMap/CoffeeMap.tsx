@@ -28,6 +28,7 @@ import type {
 } from '../../types/dtos';
 import { ShopModal } from './ShopModal';
 import { Input } from '../Input';
+import { Button } from '../Button';
 
 const geoUrl = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json';
 
@@ -654,12 +655,9 @@ export const CoffeeMap: React.FC = () => {
                             </div>
                         </div>
 
-                        <button
-                            onClick={clearFilters}
-                            className={styles.clearButton}
-                        >
+                        <Button onClick={clearFilters} active>
                             Очистить фильтры
-                        </button>
+                        </Button>
                     </div>
                     {isAuthenticated && (
                         <ShopModal
@@ -756,7 +754,6 @@ export const CoffeeMap: React.FC = () => {
                                 ))}
                             </ZoomableGroup>
                         </ComposableMap>
-                        {/* Render popup outside SVG for correct positioning */}
                         {hoveredMarkerID !== null &&
                             popupPosition &&
                             (() => {
@@ -824,14 +821,17 @@ export const CoffeeMap: React.FC = () => {
                                                     styles.markerPopupTasteTitle
                                                 }
                                             >
-                                                Вкусовые ноты:
-                                            </div>
-                                            <div
-                                                className={
-                                                    styles.markerPopupTaste
-                                                }
-                                            >
-                                                {marker.CoffeeLot.tasteFilter}
+                                                Вкусовые ноты:{' '}
+                                                <span
+                                                    className={
+                                                        styles.markerPopupTaste
+                                                    }
+                                                >
+                                                    {
+                                                        marker.CoffeeLot
+                                                            .tasteFilter
+                                                    }
+                                                </span>
                                             </div>
                                         </div>
                                     </div>

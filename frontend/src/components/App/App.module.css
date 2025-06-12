@@ -2,18 +2,13 @@
 
 .app {
     min-height: 100vh;
-    font-family: Arial, sans-serif;
     display: flex;
     flex-direction: column;
 }
 
 .title {
-    color: var(--primary-color);
+    color: var(--brown-100);
     font-weight: 600;
-
-    @media (width >= 768px) {
-        font-size: 2rem;
-    }
 }
 
 .main {

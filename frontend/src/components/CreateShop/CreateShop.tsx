@@ -7,9 +7,9 @@ import { Input } from '@components/Input';
 import { useShop } from '@contexts/index';
 
 const themes = [
-    { value: 'beige', label: 'Бежевый', color: '#8b6a4a' },
-    { value: 'purple', label: 'Фиолетовый', color: '#6c4a8b' },
-    { value: 'blue', label: 'Синий', color: '#4a6a8b' },
+    { value: 'beige', label: 'Бежевый', color: 'var(--brown-60)' },
+    { value: 'purple', label: 'Фиолетовый', color: 'var(--purple-60)' },
+    { value: 'blue', label: 'Синий', color: 'var(--blue-60)' },
 ];
 
 interface ApiError {

@@ -43,7 +43,10 @@ export const ShopProvider: React.FC<{ children: ReactNode }> = ({
     const [currentShop, setCurrentShopState] = useState<Shop | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const { isAuthenticated } = useAuth();
-    const [isShopSidebarExpanded, setIsShopSidebarExpanded] = useState(true);
+    const [isShopSidebarExpanded, setIsShopSidebarExpanded] = useState(() => {
+        const saved = localStorage.getItem('isShopSidebarExpanded');
+        return saved !== null ? JSON.parse(saved) : true;
+    });
 
     const setCurrentShop = (shop: Shop | null) => {
         setCurrentShopState(shop);
@@ -105,7 +108,9 @@ export const ShopProvider: React.FC<{ children: ReactNode }> = ({
     };
 
     const toggleShopSidebar = () => {
-        setIsShopSidebarExpanded(!isShopSidebarExpanded);
+        const newValue = !isShopSidebarExpanded;
+        setIsShopSidebarExpanded(newValue);
+        localStorage.setItem('isShopSidebarExpanded', JSON.stringify(newValue));
     };
 
     useEffect(() => {

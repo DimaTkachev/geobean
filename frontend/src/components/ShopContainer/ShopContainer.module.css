@@ -4,8 +4,10 @@
     width: 300px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    transition: width 0.3s ease;
+    gap: 4px;
+    transition:
+        width 150ms ease,
+        background-color 150ms ease;
 
     &.shopsContainerExpanded {
         width: fit-content;
@@ -20,6 +22,7 @@
     background: transparent;
     padding: 8px 12px;
     position: relative;
+    transition: background-color 150ms ease;
 
     &:hover {
         background-color: var(--brown-40);

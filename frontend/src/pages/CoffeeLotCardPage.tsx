@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAuth, useShop } from '@contexts/index';
 import { Tooltip } from '@components/Tooltip/Tooltip';
-import { ShopModal } from '@components/CoffeeMap/ShopModal';
+import { ShopModal } from '@components/ShopModal';
 import styles from '@styles/CoffeeLotCard.module.css';
 import { Shop } from '@/contexts/ShopContext';
 
@@ -252,10 +252,10 @@ export const CoffeeLotCardPage: React.FC = () => {
                                         borderRadius: '50%',
                                         background:
                                             shop.theme === 'beige'
-                                                ? '#8b6a4a'
+                                                ? 'var(--brown-60)'
                                                 : shop.theme === 'purple'
-                                                  ? '#6c4a8b'
-                                                  : '#4a6a8b',
+                                                  ? 'var(--purple-60)'
+                                                  : 'var(--blue-60)',
                                         backgroundImage: shop.image
                                             ? `url(${shop.image})`
                                             : undefined,

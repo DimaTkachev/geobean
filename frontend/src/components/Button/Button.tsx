@@ -20,7 +20,7 @@ export const Button: React.FC<ButtonProps> = ({
     onClick,
     type = 'filled',
     size = 'medium',
-    active = false,
+    active = true,
     to,
     disabled = false,
     htmlType = 'button',
@@ -31,7 +31,7 @@ export const Button: React.FC<ButtonProps> = ({
         styles[type],
         styles[size],
         {
-            [styles.active]: active,
+            [styles.active]: active && !disabled,
             [styles.disabled]: disabled,
         },
         className

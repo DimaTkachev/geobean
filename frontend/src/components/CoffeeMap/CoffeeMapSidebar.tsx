@@ -77,9 +77,7 @@ export const CoffeeMapSidebar: React.FC<CoffeeMapSidebarProps> = ({
                 }
             />
 
-            <Button onClick={onClearFilters} active>
-                Очистить фильтры
-            </Button>
+            <Button onClick={onClearFilters}>Очистить фильтры</Button>
         </div>
     </aside>
 );

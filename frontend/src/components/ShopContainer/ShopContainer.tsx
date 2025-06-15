@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import cn from 'classnames';
 import { useShop, useAuth } from '@contexts/index';
 import { Shop } from '@contexts/ShopContext';
-import { ShopModal } from '../CoffeeMap/ShopModal';
+import { ShopModal } from '../ShopModal';
 import styles from './ShopContainer.module.css';
 import { PlusIcon } from '@phosphor-icons/react';
 

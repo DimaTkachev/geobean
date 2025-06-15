@@ -76,12 +76,10 @@ export const Header: React.FC = () => {
                     </div>
                 ) : (
                     <div className={styles.authButtons}>
-                        <Button type='outline' active to='/register'>
+                        <Button type='outline' to='/register'>
                             Зарегистрироваться
                         </Button>
-                        <Button active to='/login'>
-                            Войти
-                        </Button>
+                        <Button to='/login'>Войти</Button>
                     </div>
                 )}
             </nav>

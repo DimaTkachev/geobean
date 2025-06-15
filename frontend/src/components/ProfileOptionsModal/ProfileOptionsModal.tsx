@@ -1,7 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import classNames from 'classnames';
 
 import { useAuth } from '@contexts/index';
+import styles from './ProfileOptionsModal.module.css';
 
 interface ProfileOptionsModalProps {
     isOpen: boolean;
@@ -31,59 +33,31 @@ export const ProfileOptionsModal: React.FC<ProfileOptionsModalProps> = ({
     };
 
     return (
-        <div
-            style={{
-                position: 'absolute',
-                top: 'calc(100% + 10px)',
-                right: 0,
-                backgroundColor: '#ffe2d0',
-                borderRadius: '8px',
-                boxShadow: '0 4px 16px rgba(0, 0, 0, 0.2)',
-                padding: '10px 0',
-                zIndex: 1000,
-                minWidth: '200px',
-            }}
-        >
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+        <div className={styles.modal}>
+            <ul className={styles.list}>
                 <li
-                    style={{
-                        padding: '10px 20px',
-                        cursor: 'pointer',
-                        color: '#3c1f0c',
-                    }}
+                    className={styles.listItem}
                     onClick={() => handleNavigation('/catalog')}
                 >
                     Каталог зерен
                 </li>
                 <li
-                    style={{
-                        padding: '10px 20px',
-                        cursor: 'pointer',
-                        color: '#3c1f0c',
-                    }}
+                    className={styles.listItem}
                     onClick={() => handleNavigation('/inventory')}
                 >
                     Инвентарь кофейни
                 </li>
                 <li
-                    style={{
-                        padding: '10px 20px',
-                        cursor: 'pointer',
-                        color: '#3c1f0c',
-                    }}
+                    className={styles.listItem}
                     onClick={() => handleNavigation('/guest-access')}
                 >
                     Гостевой доступ
                 </li>
                 <li
-                    style={{
-                        padding: '10px 20px',
-                        cursor: 'pointer',
-                        color: '#3c1f0c',
-                        borderTop: '1px solid #d4a88c',
-                        marginTop: '5px',
-                        paddingTop: '15px',
-                    }}
+                    className={classNames(
+                        styles.listItem,
+                        styles.listItemWithBorder
+                    )}
                     onClick={handleLogoutClick}
                 >
                     Выйти

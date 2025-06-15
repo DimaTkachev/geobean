@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import cn from 'classnames';
 import { useAuth, useShop } from '@contexts/index';
 import styles from './Header.module.css';
 import { ProfileOptionsModal } from '@components/ProfileOptionsModal/ProfileOptionsModal';
@@ -15,10 +16,10 @@ export const Header: React.FC = () => {
     };
 
     return (
-        <header className={styles.header}>
-            <div className={styles.headerLeft}>
+        <header className={cn(styles.header)}>
+            <div className={cn(styles.headerLeft)}>
                 <button
-                    className={styles.toggleShopButton}
+                    className={cn(styles.toggleShopButton)}
                     onClick={toggleShopSidebar}
                 >
                     <svg
@@ -35,8 +36,8 @@ export const Header: React.FC = () => {
                     </svg>
                 </button>
 
-                <Link to='/' className={styles.logo}>
-                    <span className={styles.logoIcon}>
+                <Link to='/' className={cn(styles.logo)}>
+                    <span className={cn(styles.logoIcon)}>
                         <svg
                             width='32'
                             height='32'
@@ -50,23 +51,19 @@ export const Header: React.FC = () => {
                             />
                         </svg>
                     </span>
-                    <h2 className={styles.logoText}>
+                    <h2 className={cn(styles.logoText)}>
                         {currentShop ? currentShop.name : 'GeoBean'}
                     </h2>
                 </Link>
             </div>
 
-            <nav className={styles.nav}>
+            <nav className={cn(styles.nav)}>
                 {isAuthenticated ? (
-                    <div
-                        className={styles.userSection}
-                        style={{ position: 'relative' }}
-                    >
-                        <div className={styles.userEmailContainer}>
+                    <div className={cn(styles.userSection)}>
+                        <div className={cn(styles.userEmailContainer)}>
                             <span
-                                className={styles.userEmail}
+                                className={cn(styles.userEmail)}
                                 onClick={handleEmailClick}
-                                style={{ cursor: 'pointer' }}
                             >
                                 {user?.email}
                             </span>

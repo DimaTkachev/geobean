@@ -1,0 +1,107 @@
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modalContent {
+    background: var(--brown-20);
+    min-width: 440px;
+    padding: 20px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.closeButton {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.title {
+    font-weight: 700;
+    font-size: 20px;
+    margin-bottom: 40px;
+}
+
+.formSection {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 24px;
+}
+
+.themePreview {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin: 0 auto 12px;
+}
+
+.label {
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 16px;
+    text-align: left;
+    margin-right: auto;
+}
+
+.nameInput {
+    width: 240px;
+    margin-bottom: 16px;
+}
+
+.themeButtons {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.themeButton {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    outline: none;
+    cursor: pointer;
+    border: 2px solid transparent;
+    position: relative;
+}
+
+.themeButtonSelected {
+    border: 2px solid var(--brown-80);
+}
+
+.buttonContainer {
+    display: flex;
+    gap: 16px;
+    width: 100%;
+    justify-content: center;
+}
+
+.deleteButton {
+    background: none;
+    border: 1px solid #a67c3a;
+    color: #3c1f0c;
+    padding: 10px 24px;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    min-width: 100px;
+}
+
+.deleteButtonDisabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}

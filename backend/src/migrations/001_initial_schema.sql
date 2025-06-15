@@ -103,7 +103,7 @@ CREATE TABLE IF NOT EXISTS `coffee_lot` (
   CONSTRAINT `coffee_lot_ibfk_10` FOREIGN KEY (`weightID`) REFERENCES `weight` (`weightID`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE IF NOT EXISTS `markers` (
+CREATE TABLE IF NOT EXISTS `marker` (
   `markerID` int UNSIGNED NOT NULL AUTO_INCREMENT,
   `lotID` int UNSIGNED NOT NULL,
   `longitude` decimal(9,6) DEFAULT NULL,
@@ -211,7 +211,7 @@ INSERT INTO `coffee_lot` (`lotID`, `name`, `description`, `regionID`, `taste`, `
 (2, 'Гватемала Сантьяго', 'Сладкий вкус с нотами молочного шоколада, апельсина и сухофруктов. Плотное тело и насыщенный аромат с шоколадными и цитрусовыми нотами. Хорошо раскрывается в турке и при приготовлении фильтр-способами.', 2, 'Сладкий кофе со вкусом апельсина, сухофруктов и молочного шоколада', 'апельсин, сухофрукты, молочный шоколад', 84, 1, 2, 1, '1400 м', 1, '2.png', '2025-05-25 22:37:49', '2025-05-25 22:37:49', 'https://shop.tastycoffee.ru/coffee/guatemala-santiago'),
 (3, 'Колумбия Уила', 'Во вкусе умеренная кислотность и лёгкая сладость, с нотами красного яблока и какао. Послевкусие чаще всего с лёгкой горечью и фруктовыми оттенками. Лот универсален и хорошо раскрывается в разных способах приготовления (капельная кофеварка, воронка, френч-пресс).', 3, 'Сочный кофе с нотами красного яблока, тёмного винограда и какао', 'красное яблоко, тёмный виноград, какао', 84, 1, 2, 1, '1500–1900 м', 1, '3.png', '2025-05-25 22:37:49', '2025-05-25 22:37:49', 'https://shop.tastycoffee.ru/coffee/colombia-huila');
 
-INSERT INTO `markers` (`markerID`, `lotID`, `longitude`, `latitude`, `createdAt`, `updatedAt`) VALUES
+INSERT INTO `marker` (`markerID`, `lotID`, `longitude`, `latitude`, `createdAt`, `updatedAt`) VALUES
 (1, 1, -45.556900, -22.070250, '2025-05-25 22:38:16', '2025-05-25 22:38:16'),
 (2, 2, -90.703000, 14.559250, '2025-05-25 22:38:16', '2025-05-25 22:38:16'),
 (3, 3, -75.525000, 2.276500, '2025-05-25 22:38:16', '2025-05-25 22:38:16');

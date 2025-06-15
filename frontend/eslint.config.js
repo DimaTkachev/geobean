@@ -20,6 +20,7 @@ export default [
             globals: {
                 ...globals.browser,
                 ...globals.es2021,
+                ...globals.node,
             },
         },
         plugins: {
@@ -59,6 +60,14 @@ export default [
         settings: {
             react: {
                 version: 'detect',
+            },
+        },
+    },
+    {
+        files: ['**/*.{js,mjs}'],
+        languageOptions: {
+            globals: {
+                ...globals.node,
             },
         },
     },

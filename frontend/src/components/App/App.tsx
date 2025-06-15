@@ -1,32 +1,68 @@
 import React from 'react';
+
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AuthProvider } from '../../contexts';
-import { Header } from '../Header';
-import { Home } from '../Home';
-import { Registration } from '../Registration';
-import { Login } from '../Login';
+
+import { AuthProvider, useAuth } from '@contexts/index';
+import { ShopProvider, useShop } from '@contexts/index';
+import { Header } from '@components/Header';
+import { Login } from '@components/Login';
+import { Registration } from '@components/Registration';
+import { CreateShop } from '@components/CreateShop';
+import { Catalog } from '@components/Catalog';
+import { Loader } from '@components/Loader';
+
+import CoffeeLotCardPage from '@pages/CoffeeLotCardPage';
+import { CoffeeMap } from '@components/CoffeeMap';
+import GuestAccess from '@pages/GuestAccess';
+import GuestInventory from '@pages/GuestInventory';
+import Inventory from '@pages/Inventory';
+
 import styles from './App.module.css';
 
-export const App: React.FC = () => {
+const AppContent: React.FC = () => {
+    const { isLoading: authLoading } = useAuth();
+    const { isLoading: shopLoading } = useShop();
+
+    const isGlobalLoading = authLoading || shopLoading;
+
+    if (isGlobalLoading) {
+        return <Loader variant='container' />;
+    }
+
     return (
-        <AuthProvider>
-            <div className={styles.app}>
-                <Router>
-                    <Header />
-                    <main className={styles.main}>
-                        <Routes>
-                            <Route path='/' element={<Home />} />
-                            <Route
-                                path='/register'
-                                element={<Registration />}
-                            />
-                            <Route path='/login' element={<Login />} />
-                        </Routes>
-                    </main>
-                </Router>
-            </div>
-        </AuthProvider>
+        <div className={styles.app}>
+            <Router>
+                <Header />
+                <main className={styles.main}>
+                    <Routes>
+                        <Route path='/' element={<CoffeeMap />} />
+                        <Route path='/register' element={<Registration />} />
+                        <Route path='/login' element={<Login />} />
+                        <Route path='/create-shop' element={<CreateShop />} />
+                        <Route path='/catalog' element={<Catalog />} />
+                        <Route path='/inventory' element={<Inventory />} />
+                        <Route
+                            path='/coffee-lots/:lotID'
+                            element={<CoffeeLotCardPage />}
+                        />
+                        <Route path='/guest-access' element={<GuestAccess />} />
+                        <Route
+                            path='/guest-inventory/:shareUrl'
+                            element={<GuestInventory />}
+                        />
+                    </Routes>
+                </main>
+            </Router>
+        </div>
     );
 };
+
+export const App: React.FC = () => (
+    <AuthProvider>
+        <ShopProvider>
+            <AppContent />
+        </ShopProvider>
+    </AuthProvider>
+);
 
 export default App;

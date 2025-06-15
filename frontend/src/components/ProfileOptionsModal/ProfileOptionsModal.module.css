@@ -1,0 +1,29 @@
+.modal {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    background-color: var(--brown-20);
+    box-shadow: 0 4px 10px 0 #0000001a;
+    padding: 10px 0;
+    z-index: 1000;
+    min-width: 200px;
+}
+
+.list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.listItem {
+    padding: 10px 16px;
+    cursor: pointer;
+
+    &:hover {
+        background-color: var(--brown-40);
+    }
+}
+
+.listItemWithBorder {
+    border-top: 1px solid var(--brown-40);
+}

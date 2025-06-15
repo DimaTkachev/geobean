@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useForm } from 'react-hook-form';
+import { Link, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
+
 import styles from './Registration.module.css';
+import { Input } from '@components/Input';
+import { Button } from '../Button';
+import { EyeIcon } from '@phosphor-icons/react';
+import { useAuth } from '@contexts/index';
 
 interface RegistrationFormData {
     email: string;
@@ -38,6 +43,7 @@ const validationSchema = yup
 
 export const Registration: React.FC = () => {
     const navigate = useNavigate();
+    const { setUserAfterRegistration } = useAuth();
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [submitError, setSubmitError] = useState<string>('');
@@ -46,10 +52,11 @@ export const Registration: React.FC = () => {
     const {
         register,
         handleSubmit,
+        watch,
         formState: { errors },
-        setError,
     } = useForm<RegistrationFormData>({
         resolver: yupResolver(validationSchema),
+        reValidateMode: 'onChange',
         defaultValues: {
             email: '',
             password: '',
@@ -75,41 +82,41 @@ export const Registration: React.FC = () => {
             });
 
             if (response.ok) {
-                console.log('Регистрация успешна');
-                // Keep loading state while redirecting
-                setTimeout(() => {
-                    navigate('/login');
-                }, 1000); // Small delay to show success state
+                const result = await response.json();
+                localStorage.setItem('authToken', result.token);
+                localStorage.setItem('user', JSON.stringify(result.user));
+
+                setUserAfterRegistration(result.user);
+
+                navigate('/create-shop');
             } else {
-                setIsLoading(false);
                 const errorData = await response.json();
                 if (errorData.message?.includes('User already exists')) {
-                    setError('email', {
-                        message: 'Пользователь с таким email уже существует',
-                    });
+                    setSubmitError('Пользователь с таким email уже существует');
                 } else {
                     setSubmitError(errorData.message || 'Ошибка регистрации');
                 }
             }
         } catch (error) {
-            setIsLoading(false);
             setSubmitError('Ошибка сети. Попробуйте еще раз.');
+        } finally {
+            setIsLoading(false);
         }
     };
 
-    const handleLoginClick = () => {
-        navigate('/login');
-    };
+    const isButtonActive =
+        !isLoading &&
+        !errors.email &&
+        !errors.password &&
+        !errors.confirmPassword &&
+        watch('email') &&
+        watch('password') &&
+        watch('confirmPassword') &&
+        watch('agreeToPrivacy');
 
     return (
         <div className={styles.container}>
             <div className={styles.card}>
-                <div className={styles.header}>
-                    <Link to='/' className={styles.backButton}>
-                        ← На главную
-                    </Link>
-                </div>
-
                 <h1 className={styles.title}>Создать аккаунт</h1>
 
                 <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
@@ -118,12 +125,16 @@ export const Registration: React.FC = () => {
                     )}
 
                     <div className={styles.inputGroup}>
-                        <input
+                        <Input
                             {...register('email')}
                             type='email'
                             placeholder='Введите e-mail'
                             disabled={isLoading}
-                            className={`${styles.input} ${errors.email ? styles.inputError : ''}`}
+                            error={!!errors.email}
+                            onChange={(e) => {
+                                register('email').onChange(e);
+                                setSubmitError('');
+                            }}
                         />
                         {errors.email && (
                             <span className={styles.error}>
@@ -134,12 +145,16 @@ export const Registration: React.FC = () => {
 
                     <div className={styles.inputGroup}>
                         <div className={styles.passwordWrapper}>
-                            <input
+                            <Input
                                 {...register('password')}
                                 type={showPassword ? 'text' : 'password'}
                                 placeholder='Введите пароль'
                                 disabled={isLoading}
-                                className={`${styles.input} ${errors.password ? styles.inputError : ''}`}
+                                error={!!errors.password}
+                                onChange={(e) => {
+                                    register('password').onChange(e);
+                                    setSubmitError('');
+                                }}
                             />
                             <button
                                 type='button'
@@ -147,7 +162,7 @@ export const Registration: React.FC = () => {
                                 disabled={isLoading}
                                 onClick={() => setShowPassword(!showPassword)}
                             >
-                                👁️
+                                <EyeIcon size={20} />
                             </button>
                         </div>
                         {errors.password && (
@@ -159,12 +174,16 @@ export const Registration: React.FC = () => {
 
                     <div className={styles.inputGroup}>
                         <div className={styles.passwordWrapper}>
-                            <input
+                            <Input
                                 {...register('confirmPassword')}
                                 type={showConfirmPassword ? 'text' : 'password'}
                                 placeholder='Повторите пароль'
                                 disabled={isLoading}
-                                className={`${styles.input} ${errors.confirmPassword ? styles.inputError : ''}`}
+                                error={!!errors.confirmPassword}
+                                onChange={(e) => {
+                                    register('confirmPassword').onChange(e);
+                                    setSubmitError('');
+                                }}
                             />
                             <button
                                 type='button'
@@ -174,7 +193,7 @@ export const Registration: React.FC = () => {
                                     setShowConfirmPassword(!showConfirmPassword)
                                 }
                             >
-                                👁️
+                                <EyeIcon size={20} />
                             </button>
                         </div>
                         {errors.confirmPassword && (
@@ -195,9 +214,9 @@ export const Registration: React.FC = () => {
                             <span className={styles.checkboxCustom}></span>
                             <span className={styles.checkboxText}>
                                 Я согласен с{' '}
-                                <span className={styles.privacyLink}>
+                                <Link to='#' className={styles.privacyLink}>
                                     Политикой конфиденциальности
-                                </span>
+                                </Link>
                             </span>
                         </label>
                         {errors.agreeToPrivacy && (
@@ -207,31 +226,23 @@ export const Registration: React.FC = () => {
                         )}
                     </div>
 
-                    <button
-                        type='submit'
-                        disabled={isLoading}
-                        className={`${styles.submitButton} ${isLoading ? styles.loading : ''}`}
+                    <Button
+                        htmlType='submit'
+                        disabled={!isButtonActive}
+                        active={!!isButtonActive}
+                        className={styles.submitButton}
                     >
-                        {isLoading ? (
-                            <span className={styles.loadingContent}>
-                                <span className={styles.spinner}></span>
-                                Регистрируется...
-                            </span>
-                        ) : (
-                            'Зарегистрироваться'
-                        )}
-                    </button>
+                        {isLoading ? 'Регистрируется...' : 'Зарегистрироваться'}
+                    </Button>
                 </form>
 
-                <div className={styles.loginSection}>
-                    <span className={styles.loginText}>Уже есть аккаунт? </span>
-                    <button
-                        type='button'
-                        onClick={handleLoginClick}
-                        className={styles.loginButton}
-                    >
-                        Войти
-                    </button>
+                <div className={styles.footer}>
+                    <p className={styles.footerText}>
+                        Уже есть аккаунт?{' '}
+                        <Link to='/login' className={styles.link}>
+                            Войти
+                        </Link>
+                    </p>
                 </div>
             </div>
         </div>

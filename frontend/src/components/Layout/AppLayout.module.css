@@ -1,0 +1,81 @@
+.appLayout {
+    flex: 1;
+    display: flex;
+    min-height: 100vh;
+}
+
+.appContent {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    background-color: var(--brown-0);
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid var(--brown-40);
+}
+
+.title {
+    font-size: 32px;
+    font-weight: 900;
+    color: var(--brown-100);
+    text-align: center;
+    margin: 0;
+}
+
+.headerExtra {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.container {
+    display: flex;
+    flex: 1;
+    background-color: var(--brown-0);
+    min-height: 0;
+}
+
+.sidebarContainer {
+    flex-shrink: 0;
+    border-right: 1px solid var(--brown-40);
+}
+
+.mainContent {
+    flex: 1;
+    position: relative;
+    background-color: var(--brown-0);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .sidebarContainer {
+        order: 2;
+    }
+
+    .mainContent {
+        order: 1;
+        height: 50vh;
+    }
+
+    .header {
+        flex-direction: column;
+        gap: 16px;
+        align-items: flex-start;
+    }
+
+    .title {
+        font-size: 24px;
+    }
+}

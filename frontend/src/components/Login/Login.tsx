@@ -1,10 +1,16 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
+
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useForm } from 'react-hook-form';
+import { Link, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
-import { useAuth } from '../../contexts';
+
+import { useAuth } from '@contexts/index';
+
 import styles from './Login.module.css';
+import { Input } from '@components/Input';
+import { Button } from '../Button';
+import { EyeIcon } from '@phosphor-icons/react';
 
 interface LoginFormData {
     email: string;
@@ -34,9 +40,11 @@ export const Login: React.FC = () => {
     const {
         register,
         handleSubmit,
+        watch,
         formState: { errors },
     } = useForm<LoginFormData>({
         resolver: yupResolver(validationSchema),
+        reValidateMode: 'onChange',
         defaultValues: {
             email: '',
             password: '',
@@ -59,6 +67,13 @@ export const Login: React.FC = () => {
         }
     };
 
+    const isButtonActive =
+        !isLoading &&
+        !errors.email &&
+        !errors.password &&
+        watch('email') &&
+        watch('password');
+
     return (
         <div className={styles.container}>
             <div className={styles.card}>
@@ -70,12 +85,16 @@ export const Login: React.FC = () => {
                     )}
 
                     <div className={styles.inputGroup}>
-                        <input
+                        <Input
                             {...register('email')}
                             type='email'
                             placeholder='Введите e-mail'
                             disabled={isLoading}
-                            className={`${styles.input} ${errors.email ? styles.inputError : ''}`}
+                            error={!!errors.email}
+                            onChange={(e) => {
+                                register('email').onChange(e);
+                                setSubmitError('');
+                            }}
                         />
                         {errors.email && (
                             <span className={styles.error}>
@@ -86,12 +105,16 @@ export const Login: React.FC = () => {
 
                     <div className={styles.inputGroup}>
                         <div className={styles.passwordWrapper}>
-                            <input
+                            <Input
                                 {...register('password')}
                                 type={showPassword ? 'text' : 'password'}
                                 placeholder='Введите пароль'
                                 disabled={isLoading}
-                                className={`${styles.input} ${errors.password ? styles.inputError : ''}`}
+                                error={!!errors.password}
+                                onChange={(e) => {
+                                    register('password').onChange(e);
+                                    setSubmitError('');
+                                }}
                             />
                             <button
                                 type='button'
@@ -99,7 +122,7 @@ export const Login: React.FC = () => {
                                 disabled={isLoading}
                                 onClick={() => setShowPassword(!showPassword)}
                             >
-                                👁️
+                                <EyeIcon size={20} />
                             </button>
                         </div>
                         {errors.password && (
@@ -109,28 +132,24 @@ export const Login: React.FC = () => {
                         )}
                     </div>
 
-                    <div className={styles.forgotPassword}>
-                        <Link
-                            to='/forgot-password'
-                            className={styles.forgotPasswordLink}
-                        >
-                            Забыли пароль?
-                        </Link>
-                    </div>
+                    <Link to='/forgot-password' className={styles.link}>
+                        Забыли пароль?
+                    </Link>
 
-                    <button
-                        type='submit'
-                        disabled={isLoading}
+                    <Button
+                        htmlType='submit'
+                        disabled={!isButtonActive}
+                        active={!!isButtonActive}
                         className={styles.submitButton}
                     >
                         {isLoading ? 'Вход...' : 'Войти'}
-                    </button>
+                    </Button>
                 </form>
 
                 <div className={styles.footer}>
                     <p className={styles.footerText}>
                         Нет аккаунта?{' '}
-                        <Link to='/register' className={styles.registerLink}>
+                        <Link to='/register' className={styles.link}>
                             Создать
                         </Link>
                     </p>

@@ -1,0 +1,43 @@
+.fullScreenLoader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--brown-0);
+    z-index: 9999;
+}
+
+.containerLoader {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    background-color: var(--brown-0);
+    flex: 1;
+}
+
+.centerLoader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.smallLoader {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.loadingText {
+    color: var(--brown-100);
+    font-size: 16px;
+    margin-top: 12px;
+    text-align: center;
+}

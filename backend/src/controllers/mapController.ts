@@ -6,6 +6,7 @@ import {
   ProcessingMethod,
   Region,
   Roasting,
+  Supplier,
   TasteTag,
   Weight,
 } from '../models';
@@ -39,6 +40,7 @@ export const getAllMarkers = async (
             Roasting,
             Weight,
             ProcessingMethod,
+            Supplier,
             TasteTag,
           ],
         },

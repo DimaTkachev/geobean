@@ -8,6 +8,7 @@ interface Filters {
     roastingTypes: string[];
     processingMethods: string[];
     tasteTags: string[];
+    suppliers: string[];
     searchQuery: string;
 }
 
@@ -16,6 +17,7 @@ interface AvailableFilters {
     roastingTypes: string[];
     processingMethods: string[];
     tasteTags: string[];
+    suppliers: string[];
 }
 
 interface CoffeeMapSidebarProps {
@@ -63,8 +65,12 @@ export const CoffeeMapSidebar: React.FC<CoffeeMapSidebarProps> = ({
 
             <FilterSection
                 title='Поставщик:'
-                type='search'
-                searchPlaceholder='Найти поставщика...'
+                type='checkbox'
+                options={availableFilters.suppliers}
+                selectedOptions={filters.suppliers}
+                onOptionChange={(supplier) =>
+                    onFilterChange('suppliers', supplier)
+                }
             />
 
             <FilterSection

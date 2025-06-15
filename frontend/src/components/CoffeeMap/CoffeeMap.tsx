@@ -22,6 +22,7 @@ import type {
     ProcessingMethodDTO,
     RegionDTO,
     RoastingDTO,
+    SupplierDTO,
     TasteTagDTO,
     WeightDTO,
 } from '../../types/dtos';
@@ -42,6 +43,7 @@ interface CoffeeMarker extends MarkerDTO {
         Roasting: RoastingDTO;
         ProcessingMethod: ProcessingMethodDTO;
         Weight: WeightDTO;
+        Supplier: SupplierDTO;
         TasteTags: TasteTagDTO[];
     };
 }
@@ -51,6 +53,7 @@ interface Filters {
     roastingTypes: string[];
     processingMethods: string[];
     tasteTags: string[];
+    suppliers: string[];
     searchQuery: string;
 }
 
@@ -66,6 +69,7 @@ export const CoffeeMap: React.FC = () => {
         roastingTypes: [],
         processingMethods: [],
         tasteTags: [],
+        suppliers: [],
         searchQuery: '',
     });
 
@@ -74,6 +78,7 @@ export const CoffeeMap: React.FC = () => {
         roastingTypes: [] as string[],
         processingMethods: [] as string[],
         tasteTags: [] as string[],
+        suppliers: [] as string[],
     });
 
     const { currentShop } = useShop();
@@ -144,12 +149,16 @@ export const CoffeeMap: React.FC = () => {
                         )
                     ),
                 ];
+                const suppliers = [
+                    ...new Set(data.map((m) => m.CoffeeLot.Supplier.name)),
+                ];
 
                 setAvailableFilters({
                     continents,
                     roastingTypes,
                     processingMethods,
                     tasteTags,
+                    suppliers,
                 });
             } catch (err) {
                 setError('Ошибка загрузки данных карты');
@@ -204,6 +213,12 @@ export const CoffeeMap: React.FC = () => {
                 marker.CoffeeLot.TasteTags?.some((tag) =>
                     filters.tasteTags.includes(tag.name)
                 )
+            );
+        }
+
+        if (filters.suppliers.length > 0) {
+            filtered = filtered.filter((marker) =>
+                filters.suppliers.includes(marker.CoffeeLot.Supplier.name)
             );
         }
 
@@ -273,6 +288,7 @@ export const CoffeeMap: React.FC = () => {
             roastingTypes: [],
             processingMethods: [],
             tasteTags: [],
+            suppliers: [],
             searchQuery: '',
         });
         setSelectedContinent(null);

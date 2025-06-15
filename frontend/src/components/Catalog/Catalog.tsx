@@ -9,6 +9,7 @@ import { CatalogLayout } from './CatalogLayout';
 import { CatalogSidebar } from './CatalogSidebar';
 
 import styles from './Catalog.module.css';
+import { PlusIcon } from '@phosphor-icons/react';
 
 interface CoffeeLot {
     coffeeLotID: number;
@@ -325,35 +326,41 @@ export const Catalog: React.FC = () => {
                                         tabIndex={0}
                                     />
                                 )}
-                                <h4
-                                    className={styles.coffeeLotName}
-                                    onClick={() => handleCoffeeLotClick(lot)}
-                                    onKeyDown={(e) => {
-                                        if (e.key === 'Enter')
-                                            handleCoffeeLotClick(lot);
-                                    }}
-                                    tabIndex={0}
-                                >
-                                    {lot.name}
-                                </h4>
-                                <div className={styles.coffeeLotDetails}>
-                                    <span>под {lot.roasting}</span>
-                                    {lot.weight && <span> - {lot.weight}</span>}
-                                </div>
-                                <div className={styles.supplierInfo}>
-                                    {lot.supplier && (
-                                        <>
-                                            <div
-                                                className={cn(
-                                                    styles.supplierDot,
-                                                    getSupplierDotClass(
-                                                        lot.supplier
-                                                    )
-                                                )}
-                                            />
-                                            <span>{lot.supplier}</span>
-                                        </>
-                                    )}
+                                <div className={styles.coffeeLotInfo}>
+                                    <h4
+                                        className={styles.coffeeLotName}
+                                        onClick={() =>
+                                            handleCoffeeLotClick(lot)
+                                        }
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter')
+                                                handleCoffeeLotClick(lot);
+                                        }}
+                                        tabIndex={0}
+                                    >
+                                        {lot.name}
+                                    </h4>
+                                    <div className={styles.coffeeLotDetails}>
+                                        <span>под {lot.roasting}</span>
+                                        {lot.weight && (
+                                            <span> · {lot.weight}</span>
+                                        )}
+                                    </div>
+                                    <div className={styles.supplierInfo}>
+                                        {lot.supplier && (
+                                            <>
+                                                <div
+                                                    className={cn(
+                                                        styles.supplierDot,
+                                                        getSupplierDotClass(
+                                                            lot.supplier
+                                                        )
+                                                    )}
+                                                />
+                                                <span>{lot.supplier}</span>
+                                            </>
+                                        )}
+                                    </div>
                                 </div>
                                 <button
                                     className={styles.addToInventoryButton}
@@ -373,7 +380,7 @@ export const Catalog: React.FC = () => {
                                             : 'Выберите кофейню'
                                     }
                                 >
-                                    +
+                                    <PlusIcon size={20} color='white' />
                                 </button>
                             </div>
                         ))}

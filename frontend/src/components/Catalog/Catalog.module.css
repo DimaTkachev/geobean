@@ -1,64 +1,4 @@
-.container {
-    display: flex;
-    min-height: 100vh;
-    background: #f5f5f5;
-}
-
-.sidebar {
-    background: #fff;
-    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    transition: width 0.2s;
-    overflow: hidden auto;
-    max-height: 100vh;
-}
-
-.sidebarToggle {
-    background: none;
-    border: none;
-    cursor: pointer;
-    margin-bottom: 16px;
-    margin-left: 4px;
-    font-size: 24px;
-}
-
-.filters {
-    flex: 1;
-    padding: 0 16px;
-}
-
-.filterTitle {
-    color: #3c1f0c;
-    margin-bottom: 20px;
-    font-size: 18px;
-    font-weight: 600;
-}
-
-.searchContainer {
-    margin-bottom: 20px;
-}
-
-.clearButton {
-    width: 100%;
-    margin-top: 20px;
-}
-
-.mainContent {
-    flex-grow: 1;
-    padding: 20px;
-    overflow-y: auto;
-}
-
-.catalogTitle {
-    color: #3c1f0c;
-    margin-bottom: 20px;
-    font-size: 24px;
-    font-weight: 600;
-}
-
 .catalogContent {
-    padding: 20px;
     overflow-y: auto;
     height: 100%;
 }
@@ -66,7 +6,6 @@
 .coffeeGrid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 20px;
 }
 
 .emptyState {
@@ -80,21 +19,20 @@
 }
 
 .coffeeLotCard {
-    border: 1px solid #ccc;
-    padding: 15px;
-    border-radius: 8px;
-    text-align: center;
-    background: #fff;
+    padding: 16px;
     position: relative;
     overflow: hidden;
-    transition:
-        transform 0.2s,
-        box-shadow 0.2s;
+    border-bottom: 1px solid var(--brown-40);
+
+    &:not(:nth-child(3n)) {
+        border-right: 1px solid var(--brown-40);
+    }
 }
 
-.coffeeLotCard:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+.coffeeLotInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
 .coffeeLotImage {
@@ -105,38 +43,27 @@
     margin-bottom: 10px;
     cursor: pointer;
     transition: opacity 0.2s;
-}
 
-.coffeeLotImage:hover {
-    opacity: 0.9;
+    &:hover {
+        opacity: 0.9;
+    }
 }
 
 .coffeeLotName {
-    margin-bottom: 5px;
-    color: #3c1f0c;
     cursor: pointer;
-    font-size: 16px;
-    font-weight: 600;
+    font-size: 15px;
+    font-weight: 500;
     transition: color 0.2s;
 }
 
-.coffeeLotName:hover {
-    color: #2a1508;
-}
-
 .coffeeLotDetails {
-    font-size: 0.9em;
-    color: #555;
-    margin-bottom: 5px;
+    font-size: 14px;
 }
 
 .supplierInfo {
     display: flex;
     align-items: center;
-    justify-content: center;
-    font-size: 0.9em;
-    color: #555;
-    margin-bottom: 10px;
+    font-size: 14px;
 }
 
 .supplierDot {
@@ -144,18 +71,18 @@
     height: 8px;
     border-radius: 50%;
     margin-right: 5px;
-}
 
-.supplierDotTasty {
-    background: #9747ff;
-}
+    &Tasty {
+        background: #9747ff;
+    }
 
-.supplierDotEast {
-    background: #2bb22b;
-}
+    &East {
+        background: #2bb22b;
+    }
 
-.supplierDotWest {
-    background: #f68420;
+    &West {
+        background: #f68420;
+    }
 }
 
 .addToInventoryButton {
@@ -177,15 +104,15 @@
     transition:
         opacity 0.2s ease-in-out,
         background-color 0.2s;
-}
 
-.addToInventoryButton:hover:not(:disabled) {
-    background: rgba(0, 0, 0, 0.8);
-}
+    &:hover:not(:disabled) {
+        background: rgba(0, 0, 0, 0.8);
+    }
 
-.addToInventoryButton:disabled {
-    background: rgba(0, 0, 0, 0.3);
-    cursor: not-allowed;
+    &:disabled {
+        background: rgba(0, 0, 0, 0.3);
+        cursor: not-allowed;
+    }
 }
 
 .errorContainer {
@@ -232,10 +159,6 @@
 }
 
 @media (max-width: 768px) {
-    .catalogContent {
-        padding: 16px;
-    }
-
     .coffeeGrid {
         grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
         gap: 16px;

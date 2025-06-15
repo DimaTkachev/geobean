@@ -3,14 +3,14 @@ import { Request, Response } from 'express';
 import { AuthenticatedRequest } from '../middleware/auth';
 import {
   CoffeeLot,
+  Continent,
   Country,
   ProcessingMethod,
   Region,
   Roasting,
   Supplier,
-  Weight,
   TasteTag,
-  Continent,
+  Weight,
 } from '../models';
 
 export const getCoffeeLots = async (
@@ -36,19 +36,23 @@ export const getCoffeeLots = async (
         {
           model: Region,
           attributes: ['name'],
-          include: [{
-            model: Country,
-            attributes: ['name'],
-            include: [{
-              model: Continent,
+          include: [
+            {
+              model: Country,
               attributes: ['name'],
-            }],
-          }],
+              include: [
+                {
+                  model: Continent,
+                  attributes: ['name'],
+                },
+              ],
+            },
+          ],
         },
       ],
     });
 
-    const formattedCoffeeLots = coffeeLots.map(lot => ({
+    const formattedCoffeeLots = coffeeLots.map((lot) => ({
       coffeeLotID: lot.lotID,
       name: lot.name,
       roasting: lot.Roasting?.name,
@@ -56,7 +60,10 @@ export const getCoffeeLots = async (
       supplier: lot.Supplier?.name,
       imageFilename: lot.image,
       processingMethod: lot.ProcessingMethod?.name,
-      tasteTags: (lot as any).TasteTags?.map((tag: { name: string }) => tag.name) || [],
+      tasteTags:
+        (lot as { TasteTags?: { name: string }[] }).TasteTags?.map(
+          (tag) => tag.name,
+        ) || [],
       continent: lot.Region?.Country?.Continent?.name,
       country: lot.Region?.Country?.name,
       region: lot.Region?.name,
@@ -81,18 +88,22 @@ export const getCoffeeLotById = async (req: Request, res: Response) => {
         {
           model: Region,
           attributes: ['name', 'countryID'],
-          include: [{
-            model: Country,
-            attributes: ['name', 'continentID'],
-            include: [{
-              model: require('../models').Continent,
-              attributes: ['name'],
-            }],
-          }],
+          include: [
+            {
+              model: Country,
+              attributes: ['name', 'continentID'],
+              include: [
+                {
+                  model: Continent,
+                  attributes: ['name'],
+                },
+              ],
+            },
+          ],
         },
         { model: ProcessingMethod, attributes: ['name'] },
         {
-          model: require('../models').TasteTag,
+          model: TasteTag,
           attributes: ['name'],
           through: { attributes: [] },
         },
@@ -108,12 +119,16 @@ export const getCoffeeLotById = async (req: Request, res: Response) => {
       supplierLink: lot.Supplier?.url,
       country: lot.Region?.Country?.name,
       region: lot.Region?.name,
-      continent: lot.Region?.Country && (lot.Region.Country as any).Continent ? (lot.Region.Country as any).Continent.name : undefined,
+      continent: (lot.Region?.Country as { Continent?: { name: string } })
+        ?.Continent?.name,
       height: lot.height,
       qRate: lot.qRate,
       processingMethod: lot.ProcessingMethod?.name,
       flavorNotes: lot.taste ? lot.taste.split(',') : [],
-      tasteTags: (lot as any).TasteTags ? (lot as any).TasteTags.map((tag: any) => tag.name) : [],
+      tasteTags:
+        (lot as { TasteTags?: { name: string }[] }).TasteTags?.map(
+          (tag) => tag.name,
+        ) || [],
       description: lot.description,
       weight: lot.Weight?.value,
       roasting: lot.Roasting?.name,
@@ -142,20 +157,21 @@ export const getAttributeInfo = (_req: Request, res: Response) => {
 
 export const getFilterOptions = async (_req: Request, res: Response) => {
   try {
-    const [roastingTypes, processingMethods, tasteTags, continents, suppliers] = await Promise.all([
-      Roasting.findAll({ attributes: ['name'] }),
-      ProcessingMethod.findAll({ attributes: ['name'] }),
-      TasteTag.findAll({ attributes: ['name'] }),
-      Continent.findAll({ attributes: ['name'] }),
-      Supplier.findAll({ attributes: ['name'] }),
-    ]);
+    const [roastingTypes, processingMethods, tasteTags, continents, suppliers] =
+      await Promise.all([
+        Roasting.findAll({ attributes: ['name'] }),
+        ProcessingMethod.findAll({ attributes: ['name'] }),
+        TasteTag.findAll({ attributes: ['name'] }),
+        Continent.findAll({ attributes: ['name'] }),
+        Supplier.findAll({ attributes: ['name'] }),
+      ]);
 
     res.json({
-      roastingTypes: roastingTypes.map(r => r.name),
-      processingMethods: processingMethods.map(p => p.name),
-      tasteTags: tasteTags.map((t: { name: string }) => t.name),
-      continents: continents.map((c: { name: string }) => c.name),
-      suppliers: suppliers.map(s => s.name),
+      roastingTypes: roastingTypes.map((r) => r.name),
+      processingMethods: processingMethods.map((p) => p.name),
+      tasteTags: tasteTags.map((t) => t.name),
+      continents: continents.map((c) => c.name),
+      suppliers: suppliers.map((s) => s.name),
     });
   } catch (error) {
     console.error('Error fetching filter options:', error);

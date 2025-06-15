@@ -43,7 +43,7 @@ const Marker = sequelize.define<MarkerModel>(
   {
     tableName: 'marker',
     timestamps: true,
-  }
+  },
 );
 
 const CoffeeLot = sequelize.define<CoffeeLotModel>(
@@ -110,7 +110,7 @@ const CoffeeLot = sequelize.define<CoffeeLotModel>(
   {
     tableName: 'coffee_lot',
     timestamps: true,
-  }
+  },
 );
 
 const Region = sequelize.define<RegionModel>(
@@ -137,7 +137,7 @@ const Region = sequelize.define<RegionModel>(
   {
     tableName: 'region',
     timestamps: true,
-  }
+  },
 );
 
 const Country = sequelize.define<CountryModel>(
@@ -168,7 +168,7 @@ const Country = sequelize.define<CountryModel>(
   {
     tableName: 'country',
     timestamps: true,
-  }
+  },
 );
 
 const Continent = sequelize.define<ContinentModel>(
@@ -187,7 +187,7 @@ const Continent = sequelize.define<ContinentModel>(
   {
     tableName: 'continent',
     timestamps: true,
-  }
+  },
 );
 
 const Roasting = sequelize.define<RoastingModel>(
@@ -210,7 +210,7 @@ const Roasting = sequelize.define<RoastingModel>(
   {
     tableName: 'roasting',
     timestamps: true,
-  }
+  },
 );
 
 const ProcessingMethod = sequelize.define<ProcessingMethodModel>(
@@ -233,7 +233,7 @@ const ProcessingMethod = sequelize.define<ProcessingMethodModel>(
   {
     tableName: 'processing_method',
     timestamps: true,
-  }
+  },
 );
 
 const TasteTag = sequelize.define<TasteTagModel>(
@@ -256,7 +256,7 @@ const TasteTag = sequelize.define<TasteTagModel>(
   {
     tableName: 'taste_tag',
     timestamps: true,
-  }
+  },
 );
 
 const Weight = sequelize.define<WeightModel>(
@@ -275,7 +275,7 @@ const Weight = sequelize.define<WeightModel>(
   {
     tableName: 'weight',
     timestamps: true,
-  }
+  },
 );
 
 const CoffeeLotTag = sequelize.define<CoffeeLotTagModel>(
@@ -293,7 +293,7 @@ const CoffeeLotTag = sequelize.define<CoffeeLotTagModel>(
   {
     tableName: 'coffee_lot_tag',
     timestamps: false,
-  }
+  },
 );
 
 const Supplier = sequelize.define<SupplierModel>(
@@ -316,7 +316,7 @@ const Supplier = sequelize.define<SupplierModel>(
   {
     tableName: 'supplier',
     timestamps: true,
-  }
+  },
 );
 
 const User = sequelize.define<UserModel>(
@@ -340,7 +340,7 @@ const User = sequelize.define<UserModel>(
   {
     tableName: 'users',
     timestamps: true,
-  }
+  },
 );
 
 const Shop = sequelize.define<ShopModel>(
@@ -387,7 +387,7 @@ const Shop = sequelize.define<ShopModel>(
   {
     tableName: 'shop',
     timestamps: true,
-  }
+  },
 );
 
 const Inventory = sequelize.define<InventoryModel>(
@@ -414,7 +414,7 @@ const Inventory = sequelize.define<InventoryModel>(
   {
     tableName: 'inventory',
     timestamps: true,
-  }
+  },
 );
 
 // Define relationships

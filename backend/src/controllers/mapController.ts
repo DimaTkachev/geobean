@@ -14,7 +14,7 @@ import type { Request, Response } from 'express';
 
 export const getAllMarkers = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   try {
     // Set headers to prevent caching

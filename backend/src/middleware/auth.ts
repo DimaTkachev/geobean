@@ -13,7 +13,7 @@ export interface AuthenticatedRequest extends Request {
 export const authenticateToken = async (
   req: AuthenticatedRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): Promise<void> => {
   const authHeader = req.headers.authorization;
   const token = authHeader && authHeader.split(' ')[1];
@@ -26,7 +26,7 @@ export const authenticateToken = async (
   try {
     const decoded = jwt.verify(
       token,
-      process.env.JWT_SECRET || 'your-secret-key'
+      process.env.JWT_SECRET || 'your-secret-key',
     ) as { userID: number; email: string };
 
     const user = await User.findByPk(decoded.userID);

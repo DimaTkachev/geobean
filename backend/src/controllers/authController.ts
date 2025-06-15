@@ -37,7 +37,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     const token = jwt.sign(
       { userID: user.userID, email: user.email },
       process.env.JWT_SECRET || 'your-secret-key',
-      { expiresIn: '24h' }
+      { expiresIn: '24h' },
     );
 
     res.status(201).json({
@@ -81,7 +81,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     const token = jwt.sign(
       { userID: user.userID, email: user.email },
       process.env.JWT_SECRET || 'your-secret-key',
-      { expiresIn: '24h' }
+      { expiresIn: '24h' },
     );
 
     res.json({
@@ -108,7 +108,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
 export const me = async (
   req: AuthenticatedRequest,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   try {
     if (!req.user) {

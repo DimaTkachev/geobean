@@ -4,13 +4,13 @@ import {
   addCoffeeLotToInventory,
   createShop,
   deleteShop,
+  generateShopQr,
+  getGuestInventory,
   getInventoryItem,
   getShopInventory,
   getShops,
   updateInventoryItem,
   updateShop,
-  generateShopQr,
-  getGuestInventory,
 } from '../controllers/shopController';
 import { authenticateToken } from '../middleware/auth';
 
@@ -25,7 +25,7 @@ router.get('/:shopID/inventory/:lotID', authenticateToken, getInventoryItem);
 router.patch(
   '/:shopID/inventory/:lotID',
   authenticateToken,
-  updateInventoryItem
+  updateInventoryItem,
 );
 router.get('/:shopID/inventory', authenticateToken, getShopInventory);
 router.post('/:shopID/generate-qr', authenticateToken, generateShopQr);

@@ -33,7 +33,7 @@ const runMigrations = async (): Promise<void> => {
         // Log the error but continue with other statements
         console.error(
           'Error executing schema statement:',
-          (error as DatabaseError).message
+          (error as DatabaseError).message,
         );
       }
     }
@@ -56,7 +56,7 @@ const runMigrations = async (): Promise<void> => {
         // Log the error but continue with other statements
         console.error(
           'Error executing data statement:',
-          (error as DatabaseError).message
+          (error as DatabaseError).message,
         );
       }
     }
@@ -64,7 +64,7 @@ const runMigrations = async (): Promise<void> => {
     // Run table rename migration
     const renameMigrationFile = path.join(
       __dirname,
-      '003_rename_markers_table.sql'
+      '003_rename_markers_table.sql',
     );
     const renameSql = fs.readFileSync(renameMigrationFile, 'utf8');
 
@@ -82,7 +82,7 @@ const runMigrations = async (): Promise<void> => {
         // Log the error but continue with other statements
         console.error(
           'Error executing rename statement:',
-          (error as DatabaseError).message
+          (error as DatabaseError).message,
         );
       }
     }
@@ -90,11 +90,11 @@ const runMigrations = async (): Promise<void> => {
     // Run additional insert and alter migration
     const insertAndAlterMigrationFile = path.join(
       __dirname,
-      '004_insert_and_alter.sql'
+      '004_insert_and_alter.sql',
     );
     const insertAndAlterSql = fs.readFileSync(
       insertAndAlterMigrationFile,
-      'utf8'
+      'utf8',
     );
 
     // Split the SQL file into individual statements
@@ -111,7 +111,7 @@ const runMigrations = async (): Promise<void> => {
         // Log the error but continue with other statements
         console.error(
           'Error executing insert/alter statement:',
-          (error as DatabaseError).message
+          (error as DatabaseError).message,
         );
       }
     }

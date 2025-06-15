@@ -1,11 +1,9 @@
-import { Response } from 'express';
+import { Request, Response } from 'express';
+import { nanoid } from 'nanoid';
+import QRCode from 'qrcode';
 
 import { AuthenticatedRequest } from '../middleware/auth';
 import { Inventory, Shop } from '../models';
-import QRCode from 'qrcode';
-import { Op } from 'sequelize';
-
-const { nanoid } = require('nanoid');
 
 export const createShop = async (req: AuthenticatedRequest, res: Response) => {
   if (!req.user) {
@@ -77,7 +75,7 @@ export const deleteShop = async (req: AuthenticatedRequest, res: Response) => {
 
 export const addCoffeeLotToInventory = async (
   req: AuthenticatedRequest,
-  res: Response
+  res: Response,
 ) => {
   if (!req.user) {
     return res.status(401).json({ message: 'User not authenticated' });
@@ -111,7 +109,7 @@ export const addCoffeeLotToInventory = async (
     }
 
     console.log(
-      `CoffeeLot ${coffeeLotID} added/updated in inventory for Shop ${shopID}`
+      `CoffeeLot ${coffeeLotID} added/updated in inventory for Shop ${shopID}`,
     );
 
     res.status(200).json({ message: 'Кофе добавлен в инвентарь!' });
@@ -125,7 +123,7 @@ export const addCoffeeLotToInventory = async (
 
 export const getInventoryItem = async (
   req: AuthenticatedRequest,
-  res: Response
+  res: Response,
 ) => {
   if (!req.user) {
     return res.status(401).json({ message: 'User not authenticated' });
@@ -161,7 +159,7 @@ export const getInventoryItem = async (
 
 export const updateInventoryItem = async (
   req: AuthenticatedRequest,
-  res: Response
+  res: Response,
 ) => {
   if (!req.user) {
     return res.status(401).json({ message: 'User not authenticated' });
@@ -212,7 +210,7 @@ export const updateInventoryItem = async (
 
 export const getShopInventory = async (
   req: AuthenticatedRequest,
-  res: Response
+  res: Response,
 ) => {
   if (!req.user) {
     return res.status(401).json({ message: 'User not authenticated' });
@@ -237,7 +235,10 @@ export const getShopInventory = async (
 };
 
 // Generate or regenerate shareUrl and QR code for a shop (authenticated)
-export const generateShopQr = async (req: AuthenticatedRequest, res: Response) => {
+export const generateShopQr = async (
+  req: AuthenticatedRequest,
+  res: Response,
+) => {
   if (!req.user) {
     console.error('User not authenticated');
     return res.status(401).json({ message: 'User not authenticated' });
@@ -249,7 +250,10 @@ export const generateShopQr = async (req: AuthenticatedRequest, res: Response) =
 
     const shop = await Shop.findOne({ where: { shopID, userID } });
     if (!shop) {
-      console.error('Shop not found or does not belong to user', { shopID, userID });
+      console.error('Shop not found or does not belong to user', {
+        shopID,
+        userID,
+      });
       return res.status(404).json({ message: 'Shop not found' });
     }
 
@@ -272,7 +276,8 @@ export const generateShopQr = async (req: AuthenticatedRequest, res: Response) =
 };
 
 // Public endpoint: get shop inventory by shareUrl (no auth)
-export const getGuestInventory = async (req: any, res: Response) => {
+
+export const getGuestInventory = async (req: Request, res: Response) => {
   try {
     const { shareUrl } = req.params;
     const shop = await Shop.findOne({ where: { shareUrl, qrEnabled: true } });

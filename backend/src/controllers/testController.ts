@@ -8,11 +8,11 @@ interface QueryResult {
 
 export const getTestMessage = async (
   _req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   try {
     const [results] = await sequelize.query(
-      'SELECT "Hello from MySQL!" as message'
+      'SELECT "Hello from MySQL!" as message',
     );
     const typedResults = results as QueryResult[];
 

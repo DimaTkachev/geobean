@@ -124,19 +124,9 @@
 }
 
 .footerText {
-    color: #3c1f0c;
-    margin: 0;
-}
-
-.registerLink {
-    color: #c19653;
-    text-decoration: underline;
-    font-weight: 600;
-    transition: color 0.2s ease;
-}
-
-.registerLink:hover {
-    color: #a67c3a;
+    color: var(--brown-60);
+    font-weight: 500;
+    font-size: 12px;
 }
 
 @media (max-width: 768px) {

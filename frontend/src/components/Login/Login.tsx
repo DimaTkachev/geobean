@@ -40,6 +40,7 @@ export const Login: React.FC = () => {
     const {
         register,
         handleSubmit,
+        watch,
         formState: { errors },
     } = useForm<LoginFormData>({
         resolver: yupResolver(validationSchema),
@@ -65,6 +66,13 @@ export const Login: React.FC = () => {
             setIsLoading(false);
         }
     };
+
+    const isButtonActive =
+        !isLoading &&
+        !errors.email &&
+        !errors.password &&
+        watch('email') &&
+        watch('password');
 
     return (
         <div className={styles.container}>
@@ -130,7 +138,8 @@ export const Login: React.FC = () => {
 
                     <Button
                         htmlType='submit'
-                        disabled={isLoading}
+                        disabled={!isButtonActive}
+                        active={!!isButtonActive}
                         className={styles.submitButton}
                     >
                         {isLoading ? 'Вход...' : 'Войти'}
@@ -140,7 +149,7 @@ export const Login: React.FC = () => {
                 <div className={styles.footer}>
                     <p className={styles.footerText}>
                         Нет аккаунта?{' '}
-                        <Link to='/register' className={styles.registerLink}>
+                        <Link to='/register' className={styles.link}>
                             Создать
                         </Link>
                     </p>

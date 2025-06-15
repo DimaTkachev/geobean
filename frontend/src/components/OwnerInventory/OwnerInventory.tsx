@@ -79,6 +79,11 @@ export const OwnerInventory: React.FC = () => {
     const [errorMessage, setErrorMessage] = useState('');
 
     useEffect(() => {
+        if (!user) {
+            navigate('/login');
+            return;
+        }
+
         if (!currentShop) {
             navigate('/');
             return;
@@ -146,7 +151,7 @@ export const OwnerInventory: React.FC = () => {
         };
 
         fetchInventory();
-    }, [currentShop, navigate]);
+    }, [user, currentShop, navigate]);
 
     useEffect(() => {
         let filtered = inventory;

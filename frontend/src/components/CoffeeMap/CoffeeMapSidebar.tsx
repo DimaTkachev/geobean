@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import cn from 'classnames';
 import { useShop, useAuth } from '@contexts/index';
 import { Shop } from '@contexts/ShopContext';
-import { Button } from '../Button';
+import { Button } from '@components/Button';
 import { ShopModal } from './ShopModal';
 import { FilterSection } from './FilterSection';
 import styles from './CoffeeMapSidebar.module.css';

@@ -18,8 +18,8 @@
     opacity: 1;
     pointer-events: none;
     transition: opacity 0.2s;
-    max-width: 320px;
-    min-width: 220px;
+    max-width: 520px;
+    min-width: 370px;
     font-weight: 500;
     line-height: 1.4;
 }

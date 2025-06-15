@@ -1,0 +1,109 @@
+.pageWrapper {
+    display: flex;
+    flex-direction: column;
+    background: var(--brown-0);
+}
+
+.topSection {
+    display: flex;
+}
+
+.imageSection {
+    flex: 0 0 460px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.image {
+    object-fit: contain;
+    border-radius: 8px;
+    background: #f5e0d1;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.04);
+    margin-bottom: 12px;
+}
+
+.infoSection {
+    flex: 1;
+    padding: 30px;
+    border-bottom: 1px solid var(--brown-40);
+    border-left: 1px solid var(--brown-40);
+}
+
+.name {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.paramRow {
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px dashed var(--brown-40);
+
+    &:last-child {
+        border-bottom: none;
+    }
+}
+
+.roastingWeight {
+    margin-bottom: 24px;
+    color: var(--brown-80);
+}
+
+.supplierSection {
+    color: var(--brown-80);
+
+    margin-bottom: 24px;
+}
+
+.supplierLink {
+    color: var(--purple);
+    text-decoration: underline;
+    transition: color 0.2s;
+}
+
+.supplierLink:hover {
+    color: #7a2fd1;
+}
+
+.paramLabel {
+    font-weight: 600;
+}
+
+.paramLabelWrapper {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 220px;
+}
+
+.inventoryControls {
+    background-color: var(--brown-60);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    width: 100%;
+    height: 55px;
+}
+
+.quantity {
+    font-weight: 600;
+    color: var(--brown-20);
+}
+
+.descriptionTitle {
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.descriptionSection {
+    padding: 20px;
+}
+
+.description {
+    font-size: 15px;
+}

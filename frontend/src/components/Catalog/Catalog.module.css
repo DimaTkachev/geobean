@@ -24,12 +24,12 @@
 
 .coffeeLotCard {
     position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     overflow: hidden;
     border-bottom: 1px solid var(--brown-40);
-
-    &:not(:nth-child(3n)) {
-        border-right: 1px solid var(--brown-40);
-    }
+    border-right: 1px solid var(--brown-40);
 }
 
 .coffeeLotInfo {
@@ -217,20 +217,5 @@
     to {
         transform: translateX(-50%) translateY(0);
         opacity: 1;
-    }
-}
-
-@media (max-width: 768px) {
-    .coffeeGrid {
-        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-        gap: 16px;
-    }
-
-    .coffeeLotCard {
-        padding: 12px;
-    }
-
-    .coffeeLotImage {
-        height: 120px;
     }
 }

@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import cn from 'classnames';
 
 import { useShop } from '@contexts/index';
 import { useAuth } from '@contexts/index';
+import { Loader } from '@components/Loader';
+import { CatalogLayout } from './CatalogLayout';
+import { CatalogSidebar } from './CatalogSidebar';
 
-import styles from '@components/CoffeeMap/CoffeeMap.module.css';
+import styles from './Catalog.module.css';
 
 interface CoffeeLot {
     coffeeLotID: number;
@@ -33,7 +37,7 @@ interface Filters {
 }
 
 export const Catalog: React.FC = () => {
-    const { shops, currentShop, setCurrentShop } = useShop();
+    const { currentShop } = useShop();
     const { user } = useAuth();
     const navigate = useNavigate();
 
@@ -42,8 +46,8 @@ export const Catalog: React.FC = () => {
         []
     );
     const [loading, setLoading] = useState(true);
+    const [filtersLoading, setFiltersLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
     const [hoveredCardId, setHoveredCardId] = useState<number | null>(null);
 
     const [filters, setFilters] = useState<Filters>({
@@ -63,9 +67,13 @@ export const Catalog: React.FC = () => {
         suppliers: [] as string[],
     });
 
+    const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+    const [successMessage, setSuccessMessage] = useState('');
+
     useEffect(() => {
         const fetchFilterOptions = async () => {
             try {
+                setFiltersLoading(true);
                 const response = await fetch('/api/coffee-lots/filter-options');
                 if (!response.ok)
                     throw new Error('Failed to fetch filter options');
@@ -73,6 +81,8 @@ export const Catalog: React.FC = () => {
                 setAvailableFilters(data);
             } catch (err) {
                 console.error('Error fetching filter options:', err);
+            } finally {
+                setFiltersLoading(false);
             }
         };
 
@@ -201,9 +211,6 @@ export const Catalog: React.FC = () => {
         });
     };
 
-    const [showSuccessPopup, setShowSuccessPopup] = useState(false);
-    const [successMessage, setSuccessMessage] = useState('');
-
     const handleAddToInventory = async (coffeeLotID: number) => {
         if (!currentShop) {
             alert('Пожалуйста, выберите кофейню сначала.');
@@ -250,511 +257,133 @@ export const Catalog: React.FC = () => {
         navigate(`/coffee-lots/${coffeeLot.coffeeLotID}`);
     };
 
-    if (loading) {
-        return (
-            <div className={styles.container}>
-                <div className={styles.loading}>Загрузка каталога...</div>
-            </div>
-        );
+    const getSupplierDotClass = (supplier: string) => {
+        switch (supplier) {
+            case 'Tasty Coffee':
+                return styles.supplierDotTasty;
+            case 'East Brew':
+                return styles.supplierDotEast;
+            case 'West 4':
+                return styles.supplierDotWest;
+            default:
+                return '';
+        }
+    };
+
+    if (loading || filtersLoading) {
+        return <Loader variant='fullscreen' />;
     }
 
     if (error) {
         return (
-            <div className={styles.container}>
+            <div className={styles.errorContainer}>
                 <div className={styles.error}>Ошибка: {error}</div>
             </div>
         );
     }
 
+    const sidebar = (
+        <CatalogSidebar
+            filters={filters}
+            availableFilters={availableFilters}
+            onFilterChange={handleFilterChange}
+            onSearchChange={handleSearchChange}
+            onClearFilters={clearFilters}
+        />
+    );
+
     return (
-        <div
-            className={`${styles.container} ${isSidebarExpanded ? styles.sidebarExpanded : ''}`}
-        >
-            <div
-                className={styles.sidebar}
-                style={{
-                    width: isSidebarExpanded ? 300 : 60,
-                    transition: 'width 0.2s',
-                    overflowY: 'auto',
-                    maxHeight: '100vh',
-                    overflowX: 'hidden',
-                }}
-            >
-                <button
-                    style={{
-                        background: 'none',
-                        border: 'none',
-                        cursor: 'pointer',
-                        marginBottom: 16,
-                        marginLeft: 4,
-                    }}
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        setIsSidebarExpanded((exp) => !exp);
-                    }}
-                    aria-label={isSidebarExpanded ? 'Свернуть' : 'Развернуть'}
-                >
-                    <span style={{ fontSize: 24 }}>
-                        {isSidebarExpanded ? '←' : '→'}
-                    </span>
-                </button>
-
-                <div
-                    style={{
-                        marginBottom: isSidebarExpanded ? 24 : 0,
-                        overflow: 'hidden',
-                    }}
-                >
-                    {isSidebarExpanded && (
-                        <div style={{ marginBottom: 12 }}>
-                            {shops.map((shop) => (
-                                <div
-                                    key={shop.shopID}
-                                    style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: 12,
-                                        marginBottom: 8,
-                                        cursor: 'pointer',
-                                        background:
-                                            currentShop?.shopID === shop.shopID
-                                                ? 'rgba(255,255,255,0.1)'
-                                                : 'transparent',
-                                        borderRadius: 8,
-                                        padding: 4,
-                                    }}
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        setCurrentShop(shop);
-                                    }}
-                                >
-                                    <div
-                                        style={{
-                                            width: 36,
-                                            height: 36,
-                                            borderRadius: '50%',
-                                            background:
-                                                shop.theme === 'beige'
-                                                    ? '#8b6a4a'
-                                                    : shop.theme === 'purple'
-                                                      ? '#6c4a8b'
-                                                      : '#4a6a8b',
-                                            backgroundImage: shop.image
-                                                ? `url(${shop.image})`
-                                                : undefined,
-                                            backgroundSize: 'cover',
-                                            border:
-                                                currentShop?.shopID ===
-                                                shop.shopID
-                                                    ? '2px solid #fff'
-                                                    : '2px solid #ccc',
-                                        }}
-                                    />
-                                    <span
-                                        style={{
-                                            color: '#3c1f0c',
-                                            fontWeight: 500,
-                                        }}
-                                    >
-                                        {shop.name}
-                                    </span>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                    {!isSidebarExpanded && (
-                        <div
-                            style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'center',
-                                marginBottom: 8,
-                            }}
-                        >
-                            {shops.map((shop) => (
-                                <div
-                                    key={shop.shopID}
-                                    style={{
-                                        width: 40,
-                                        height: 40,
-                                        borderRadius: '50%',
-                                        background:
-                                            shop.theme === 'beige'
-                                                ? '#8b6a4a'
-                                                : shop.theme === 'purple'
-                                                  ? '#6c4a8b'
-                                                  : '#4a6a8b',
-                                        backgroundImage: shop.image
-                                            ? `url(${shop.image})`
-                                            : undefined,
-                                        backgroundSize: 'cover',
-                                        border:
-                                            currentShop?.shopID === shop.shopID
-                                                ? '2px solid #fff'
-                                                : '2px solid #ccc',
-                                        marginBottom: 8,
-                                        cursor: 'pointer',
-                                    }}
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        setCurrentShop(shop);
-                                    }}
-                                    title={shop.name}
-                                />
-                            ))}
-                        </div>
-                    )}
-                </div>
-
-                {isSidebarExpanded && (
-                    <div className={styles.filters}>
-                        <h3 className={styles.filterTitle}>Фильтры</h3>
-
-                        <div className={styles.searchContainer}>
-                            <input
-                                type='text'
-                                placeholder='Быстрый поиск...'
-                                value={filters.searchQuery}
-                                onChange={(e) =>
-                                    handleSearchChange(e.target.value)
-                                }
-                                className={styles.searchInput}
-                            />
-                        </div>
-
-                        <div className={styles.filterSection}>
-                            <h4 className={styles.filterSubtitle}>
-                                Тип обжарки:
-                            </h4>
-                            <div className={styles.filterOptions}>
-                                {availableFilters.roastingTypes.map((type) => (
-                                    <label
-                                        key={type}
-                                        className={styles.filterOption}
-                                    >
-                                        <input
-                                            type='checkbox'
-                                            checked={filters.roastingTypes.includes(
-                                                type
-                                            )}
-                                            onChange={() =>
-                                                handleFilterChange(
-                                                    'roastingTypes',
-                                                    type
-                                                )
-                                            }
-                                        />
-                                        <span>{type}</span>
-                                    </label>
-                                ))}
-                            </div>
-                        </div>
-                        <div className={styles.filterSection}>
-                            <h4 className={styles.filterSubtitle}>
-                                Способ обработки:
-                            </h4>
-                            <div className={styles.filterOptions}>
-                                {availableFilters.processingMethods.map(
-                                    (method) => (
-                                        <label
-                                            key={method}
-                                            className={styles.filterOption}
-                                        >
-                                            <input
-                                                type='checkbox'
-                                                checked={filters.processingMethods.includes(
-                                                    method
-                                                )}
-                                                onChange={() =>
-                                                    handleFilterChange(
-                                                        'processingMethods',
-                                                        method
-                                                    )
-                                                }
-                                            />
-                                            <span>{method}</span>
-                                        </label>
-                                    )
-                                )}
-                            </div>
-                        </div>
-                        <div className={styles.filterSection}>
-                            <h4 className={styles.filterSubtitle}>
-                                Вкус кофе:
-                            </h4>
-                            <div className={styles.filterOptions}>
-                                {availableFilters.tasteTags.map((tag) => (
-                                    <label
-                                        key={tag}
-                                        className={styles.filterOption}
-                                    >
-                                        <input
-                                            type='checkbox'
-                                            checked={filters.tasteTags.includes(
-                                                tag
-                                            )}
-                                            onChange={() =>
-                                                handleFilterChange(
-                                                    'tasteTags',
-                                                    tag
-                                                )
-                                            }
-                                        />
-                                        <span>{tag}</span>
-                                    </label>
-                                ))}
-                            </div>
-                        </div>
-
-                        <div className={styles.filterSection}>
-                            <h4 className={styles.filterSubtitle}>
-                                Поставщик:
-                            </h4>
-                            <div className={styles.filterOptions}>
-                                {availableFilters.suppliers.map((supplier) => (
-                                    <label
-                                        key={supplier}
-                                        className={styles.filterOption}
-                                    >
-                                        <input
-                                            type='checkbox'
-                                            checked={filters.suppliers.includes(
-                                                supplier
-                                            )}
-                                            onChange={() =>
-                                                handleFilterChange(
-                                                    'suppliers',
-                                                    supplier
-                                                )
-                                            }
-                                        />
-                                        <span>{supplier}</span>
-                                    </label>
-                                ))}
-                            </div>
-                        </div>
-
-                        <div className={styles.filterSection}>
-                            <h4 className={styles.filterSubtitle}>
-                                Континент:
-                            </h4>
-                            <div className={styles.filterOptions}>
-                                {availableFilters.continents.map(
-                                    (continent) => (
-                                        <label
-                                            key={continent}
-                                            className={styles.filterOption}
-                                        >
-                                            <input
-                                                type='checkbox'
-                                                checked={filters.continents.includes(
-                                                    continent
-                                                )}
-                                                onChange={() =>
-                                                    handleFilterChange(
-                                                        'continents',
-                                                        continent
-                                                    )
-                                                }
-                                            />
-                                            <span>{continent}</span>
-                                        </label>
-                                    )
-                                )}
-                            </div>
-                        </div>
-
-                        <button
-                            onClick={clearFilters}
-                            className={styles.clearButton}
-                        >
-                            Очистить фильтры
-                        </button>
+        <CatalogLayout sidebar={sidebar}>
+            <div className={styles.catalogContent}>
+                {filteredCoffeeLots.length === 0 ? (
+                    <div className={styles.emptyState}>
+                        <p>Кофе не найден по заданным критериям</p>
                     </div>
-                )}
-            </div>
-
-            <div style={{ flexGrow: 1, padding: '20px', overflowY: 'auto' }}>
-                <h2 style={{ color: '#3c1f0c', marginBottom: '20px' }}>
-                    Каталог зерен
-                </h2>
-
-                <div
-                    style={{
-                        display: 'grid',
-                        gridTemplateColumns:
-                            'repeat(auto-fill, minmax(200px, 1fr))',
-                        gap: '20px',
-                    }}
-                >
-                    {filteredCoffeeLots.map((lot) => (
-                        <div
-                            key={lot.coffeeLotID}
-                            style={{
-                                border: '1px solid #ccc',
-                                padding: '15px',
-                                borderRadius: '8px',
-                                textAlign: 'center',
-                                background: '#fff',
-                                position: 'relative',
-                                overflow: 'hidden',
-                            }}
-                            className={styles.coffeeLotCard}
-                            onMouseEnter={() =>
-                                setHoveredCardId(lot.coffeeLotID)
-                            }
-                            onMouseLeave={() => setHoveredCardId(null)}
-                        >
-                            {lot.imageFilename && (
-                                <img
-                                    src={`/images/${lot.imageFilename}`}
-                                    alt={lot.name}
-                                    style={{
-                                        width: '100%',
-                                        height: '150px',
-                                        objectFit: 'contain',
-                                        borderRadius: '4px',
-                                        marginBottom: '10px',
-                                        cursor: 'pointer',
-                                    }}
+                ) : (
+                    <div className={styles.coffeeGrid}>
+                        {filteredCoffeeLots.map((lot) => (
+                            <div
+                                key={lot.coffeeLotID}
+                                className={styles.coffeeLotCard}
+                                onMouseEnter={() =>
+                                    setHoveredCardId(lot.coffeeLotID)
+                                }
+                                onMouseLeave={() => setHoveredCardId(null)}
+                            >
+                                {lot.imageFilename && (
+                                    <img
+                                        src={`/images/${lot.imageFilename}`}
+                                        alt={lot.name}
+                                        className={styles.coffeeLotImage}
+                                        onClick={() =>
+                                            handleCoffeeLotClick(lot)
+                                        }
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter')
+                                                handleCoffeeLotClick(lot);
+                                        }}
+                                        tabIndex={0}
+                                    />
+                                )}
+                                <h4
+                                    className={styles.coffeeLotName}
                                     onClick={() => handleCoffeeLotClick(lot)}
                                     onKeyDown={(e) => {
                                         if (e.key === 'Enter')
                                             handleCoffeeLotClick(lot);
                                     }}
                                     tabIndex={0}
-                                    className={styles.coffeeLotImage}
-                                />
-                            )}
-                            <h4
-                                style={{
-                                    marginBottom: '5px',
-                                    color: '#3c1f0c',
-                                    cursor: 'pointer',
-                                }}
-                                onClick={() => handleCoffeeLotClick(lot)}
-                                onKeyDown={(e) => {
-                                    if (e.key === 'Enter')
-                                        handleCoffeeLotClick(lot);
-                                }}
-                                tabIndex={0}
-                                className={styles.coffeeLotName}
-                            >
-                                {lot.name}
-                            </h4>
-                            <div
-                                style={{
-                                    fontSize: '0.9em',
-                                    color: '#555',
-                                    marginBottom: '5px',
-                                }}
-                            >
-                                <span>под {lot.roasting}</span>
-                                {lot.weight && <span> - {lot.weight}</span>}
+                                >
+                                    {lot.name}
+                                </h4>
+                                <div className={styles.coffeeLotDetails}>
+                                    <span>под {lot.roasting}</span>
+                                    {lot.weight && <span> - {lot.weight}</span>}
+                                </div>
+                                <div className={styles.supplierInfo}>
+                                    {lot.supplier && (
+                                        <>
+                                            <div
+                                                className={cn(
+                                                    styles.supplierDot,
+                                                    getSupplierDotClass(
+                                                        lot.supplier
+                                                    )
+                                                )}
+                                            />
+                                            <span>{lot.supplier}</span>
+                                        </>
+                                    )}
+                                </div>
+                                <button
+                                    className={styles.addToInventoryButton}
+                                    style={{
+                                        opacity:
+                                            hoveredCardId === lot.coffeeLotID
+                                                ? 1
+                                                : 0,
+                                    }}
+                                    onClick={() =>
+                                        handleAddToInventory(lot.coffeeLotID)
+                                    }
+                                    disabled={!currentShop}
+                                    title={
+                                        currentShop
+                                            ? 'Добавить в инвентарь'
+                                            : 'Выберите кофейню'
+                                    }
+                                >
+                                    +
+                                </button>
                             </div>
-                            <div
-                                style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    fontSize: '0.9em',
-                                    color: '#555',
-                                }}
-                            >
-                                {lot.supplier === 'Tasty Coffee' && (
-                                    <div
-                                        style={{
-                                            width: '8px',
-                                            height: '8px',
-                                            borderRadius: '50%',
-                                            background: '#9747FF',
-                                            marginRight: '5px',
-                                        }}
-                                    ></div>
-                                )}
-                                {lot.supplier === 'East Brew' && (
-                                    <div
-                                        style={{
-                                            width: '8px',
-                                            height: '8px',
-                                            borderRadius: '50%',
-                                            background: '#2BB22B',
-                                            marginRight: '5px',
-                                        }}
-                                    ></div>
-                                )}
-                                {lot.supplier === 'West 4' && (
-                                    <div
-                                        style={{
-                                            width: '8px',
-                                            height: '8px',
-                                            borderRadius: '50%',
-                                            background: '#F68420',
-                                            marginRight: '5px',
-                                        }}
-                                    ></div>
-                                )}
-                                {lot.supplier && <span>{lot.supplier}</span>}
-                            </div>
-                            <button
-                                style={{
-                                    position: 'absolute',
-                                    top: '10px',
-                                    right: '10px',
-                                    background: 'rgba(0, 0, 0, 0.6)',
-                                    color: 'white',
-                                    border: 'none',
-                                    borderRadius: '50%',
-                                    width: '30px',
-                                    height: '30px',
-                                    fontSize: '20px',
-                                    cursor: 'pointer',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    zIndex: 1,
-                                    opacity:
-                                        hoveredCardId === lot.coffeeLotID
-                                            ? 1
-                                            : 0,
-                                    transition: 'opacity 0.2s ease-in-out',
-                                }}
-                                className={styles.addToInventoryButton}
-                                onClick={() =>
-                                    handleAddToInventory(lot.coffeeLotID)
-                                }
-                                disabled={!currentShop}
-                                title={
-                                    currentShop
-                                        ? 'Добавить в инвентарь'
-                                        : 'Выберите кофейню'
-                                }
-                            >
-                                +
-                            </button>
-                        </div>
-                    ))}
-                </div>
+                        ))}
+                    </div>
+                )}
             </div>
 
             {showSuccessPopup && (
-                <div
-                    style={{
-                        position: 'fixed',
-                        bottom: '20px',
-                        left: '50%',
-                        transform: 'translateX(-50%)',
-                        background: '#4CAF50',
-                        color: 'white',
-                        padding: '15px 20px',
-                        borderRadius: '8px',
-                        zIndex: 1000,
-                        boxShadow: '0 2px 10px rgba(0,0,0,0.2)',
-                    }}
-                >
-                    {successMessage}
-                </div>
+                <div className={styles.successPopup}>{successMessage}</div>
             )}
-        </div>
+        </CatalogLayout>
     );
 };

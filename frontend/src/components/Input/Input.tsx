@@ -10,15 +10,17 @@ export interface InputProps
     width?: 'full' | 'fit';
     search?: boolean;
     error?: boolean;
+    style?: React.CSSProperties;
 }
 
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
-    ({ className, width, search, error, ...props }, ref) => (
+    ({ className, width, search, error, style, ...props }, ref) => (
         <div
             className={cn(styles.input, className, {
                 [styles.fullWidth]: width === 'full',
                 [styles.search]: search,
             })}
+            style={style}
         >
             {search && (
                 <MagnifyingGlassIcon size={20} className={styles.searchIcon} />

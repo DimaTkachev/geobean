@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import classNames from 'classnames';
 
-import styles from '@components/Registration/Registration.module.css';
+import styles from './CreateShop.module.css';
+import { Input } from '@components/Input';
 
 const themes = [
     { value: 'beige', label: 'Бежевый', color: '#8b6a4a' },
@@ -72,61 +74,33 @@ export const CreateShop: React.FC = () => {
                 <h1 className={styles.title}>Добавьте вашу первую кофейню!</h1>
                 <form onSubmit={handleSubmit} className={styles.form}>
                     {error && <div className={styles.submitError}>{error}</div>}
-                    <div
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            marginBottom: 24,
-                        }}
-                    >
+                    <div className={styles.formContent}>
                         <div
+                            className={styles.themePreview}
                             style={{
-                                width: 80,
-                                height: 80,
-                                borderRadius: '50%',
                                 background: themes.find(
                                     (t) => t.value === selectedTheme
                                 )?.color,
-                                marginBottom: 12,
                             }}
                         />
-                        <input
+                        <Input
                             type='text'
                             placeholder='Название'
+                            style={{ width: '300px' }}
                             value={name}
                             onChange={(e) => setName(e.target.value)}
-                            className={styles.input}
-                            style={{
-                                width: 300,
-                                textAlign: 'center',
-                                marginBottom: 16,
-                            }}
-                            required
+                            error={!!error}
                         />
-                        {/* Optionally, add image upload here */}
-                        <div
-                            style={{
-                                display: 'flex',
-                                gap: 16,
-                                marginBottom: 16,
-                            }}
-                        >
+                        <div className={styles.themeSelector}>
                             {themes.map((t) => (
                                 <button
                                     key={t.value}
                                     type='button'
-                                    style={{
-                                        width: 32,
-                                        height: 32,
-                                        borderRadius: '50%',
-                                        background: t.color,
-                                        border:
-                                            selectedTheme === t.value
-                                                ? '3px solid #333'
-                                                : '2px solid #ccc',
-                                        outline: 'none',
-                                    }}
+                                    className={classNames(styles.themeButton, {
+                                        [styles.themeButtonSelected]:
+                                            selectedTheme === t.value,
+                                    })}
+                                    style={{ background: t.color }}
                                     onClick={() => setSelectedTheme(t.value)}
                                     aria-label={t.label}
                                 />
@@ -137,7 +111,6 @@ export const CreateShop: React.FC = () => {
                         type='submit'
                         disabled={isLoading || !name}
                         className={styles.submitButton}
-                        style={{ width: 300 }}
                     >
                         {isLoading ? 'Добавляется...' : 'Добавить'}
                     </button>

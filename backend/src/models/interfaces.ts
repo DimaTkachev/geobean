@@ -138,6 +138,7 @@ export interface CoffeeLotModel extends Model<ICoffeeLot>, ICoffeeLot {
   Region?: RegionModel;
   ProcessingMethod?: ProcessingMethodModel;
   TasteTags?: TasteTagModel[];
+  Marker?: MarkerModel;
 }
 export interface RegionModel extends Model<IRegion>, IRegion {
   Country?: CountryModel;

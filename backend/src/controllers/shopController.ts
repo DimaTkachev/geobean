@@ -8,6 +8,7 @@ import {
   Continent,
   Country,
   Inventory,
+  Marker,
   ProcessingMethod,
   Region,
   Roasting,
@@ -399,16 +400,83 @@ export const getGuestInventory = async (req: Request, res: Response) => {
       where: { shareUrl, qrEnabled: true },
     });
     if (!shop) return res.status(404).json({ message: 'Shop not found' });
+
     const inventory = await Inventory.findAll({
       where: { shopID: shop.shopID },
       attributes: ['lotID', 'stock'],
+      include: [
+        {
+          model: CoffeeLot,
+          include: [
+            {
+              model: Marker,
+              attributes: ['markerID', 'latitude', 'longitude'],
+            },
+            {
+              model: Region,
+              attributes: ['name'],
+              include: [
+                {
+                  model: Country,
+                  attributes: ['name'],
+                  include: [
+                    {
+                      model: Continent,
+                      attributes: ['name'],
+                    },
+                  ],
+                },
+              ],
+            },
+            { model: Roasting, attributes: ['name'] },
+            { model: ProcessingMethod, attributes: ['name'] },
+            { model: Weight, attributes: ['value'] },
+            { model: Supplier, attributes: ['name'] },
+            {
+              model: TasteTag,
+              attributes: ['name'],
+              through: { attributes: [] },
+            },
+          ],
+        },
+      ],
     });
+
+    const markers = inventory
+      .filter(item => item.CoffeeLot?.Marker)
+      .map(item => {
+        const coffeeLot = item.CoffeeLot;
+        const marker = coffeeLot?.Marker;
+        if (!coffeeLot || !marker) {
+          throw new Error('Expected CoffeeLot and Marker to be present');
+        }
+        return {
+          markerID: marker.markerID,
+          latitude: marker.latitude,
+          longitude: marker.longitude,
+          lotID: item.lotID,
+          stock: item.stock,
+          CoffeeLot: {
+            lotID: coffeeLot.lotID,
+            name: coffeeLot.name,
+            image: coffeeLot.image,
+            tasteFilter: coffeeLot.taste,
+            Region: coffeeLot.Region,
+            Roasting: coffeeLot.Roasting,
+            ProcessingMethod: coffeeLot.ProcessingMethod,
+            Weight: coffeeLot.Weight,
+            Supplier: coffeeLot.Supplier,
+            TasteTags: coffeeLot.TasteTags,
+          },
+        };
+      });
+
     res.json({
       shop: { name: shop.name, theme: shop.theme },
-      qrBase64: shop.qrBase64,
-      inventory,
+      markers,
     });
   } catch (error) {
+    console.error('Error getting guest inventory:', error);
     res.status(500).json({
       message: 'Failed to get guest inventory',
       error,

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useAuth, useShop } from '@contexts/index';
 import { Tooltip } from '@components/Tooltip/Tooltip';
 import styles from './CoffeeLotCardPage.module.css';
@@ -33,17 +33,9 @@ export const CoffeeLotCardPage: React.FC = () => {
     const { lotID } = useParams<{ lotID: string }>();
     const { user } = useAuth();
     const { currentShop } = useShop();
-    const navigate = useNavigate();
     const [coffeeLot, setCoffeeLot] = useState<CoffeeLot | null>(null);
     const [attrInfo, setAttrInfo] = useState<AttributeInfo>({});
     const [inventory, setInventory] = useState<number | null>(null);
-
-    useEffect(() => {
-        if (!user) {
-            navigate('/login');
-            return;
-        }
-    }, [user, navigate]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -117,7 +109,7 @@ export const CoffeeLotCardPage: React.FC = () => {
         }
     };
 
-    if (!user || !coffeeLot) return <Loader variant='fullscreen' />;
+    if (!coffeeLot) return <Loader variant='fullscreen' />;
 
     return (
         <div className={styles.pageWrapper}>

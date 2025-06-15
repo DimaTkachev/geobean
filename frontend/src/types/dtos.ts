@@ -112,7 +112,7 @@ export interface ShopDTO {
     theme: 'beige' | 'purple' | 'blue';
     shareUrl: string | null;
     qrPath: string | null;
-    qrBase64?: string | null;
+    qrBase64: string | null;
     qrEnabled: boolean;
     createdAt?: string;
     updatedAt?: string;
@@ -125,23 +125,4 @@ export interface InventoryDTO {
     stock: number;
     createdAt?: string;
     updatedAt?: string;
-}
-
-export interface RegistrationRequestDTO {
-    email: string;
-    password: string;
-}
-
-export interface LoginRequestDTO {
-    email: string;
-    password: string;
-}
-
-export interface AuthResponseDTO {
-    message: string;
-    token: string;
-    user: {
-        userID: number;
-        email: string;
-    };
 }

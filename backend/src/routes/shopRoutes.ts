@@ -9,6 +9,7 @@ import {
   getInventoryItem,
   getShopInventory,
   getShops,
+  removeFromInventory,
   updateInventoryItem,
   updateShop,
 } from '../controllers/shopController';
@@ -26,6 +27,11 @@ router.patch(
   '/:shopID/inventory/:lotID',
   authenticateToken,
   updateInventoryItem,
+);
+router.delete(
+  '/:shopID/inventory/:lotID',
+  authenticateToken,
+  removeFromInventory,
 );
 router.get('/:shopID/inventory', authenticateToken, getShopInventory);
 router.post('/:shopID/generate-qr', authenticateToken, generateShopQr);

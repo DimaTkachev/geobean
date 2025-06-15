@@ -137,6 +137,7 @@ export interface CoffeeLotModel extends Model<ICoffeeLot>, ICoffeeLot {
   Supplier?: SupplierModel;
   Region?: RegionModel;
   ProcessingMethod?: ProcessingMethodModel;
+  TasteTags?: TasteTagModel[];
 }
 export interface RegionModel extends Model<IRegion>, IRegion {
   Country?: CountryModel;
@@ -157,4 +158,6 @@ export interface CoffeeLotTagModel
 export interface SupplierModel extends Model<ISupplier>, ISupplier {}
 export interface UserModel extends Model<IUser>, IUser {}
 export interface ShopModel extends Model<IShop>, IShop {}
-export interface InventoryModel extends Model<IInventory>, IInventory {}
+export interface InventoryModel extends Model<IInventory>, IInventory {
+  CoffeeLot?: CoffeeLotModel;
+}

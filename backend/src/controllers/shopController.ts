@@ -3,7 +3,19 @@ import { nanoid } from 'nanoid';
 import QRCode from 'qrcode';
 
 import { AuthenticatedRequest } from '../middleware/auth';
-import { Inventory, Shop } from '../models';
+import {
+  CoffeeLot,
+  Continent,
+  Country,
+  Inventory,
+  ProcessingMethod,
+  Region,
+  Roasting,
+  Shop,
+  Supplier,
+  TasteTag,
+  Weight,
+} from '../models';
 
 export const createShop = async (req: AuthenticatedRequest, res: Response) => {
   if (!req.user) {
@@ -215,6 +227,45 @@ export const updateInventoryItem = async (
   }
 };
 
+export const removeFromInventory = async (
+  req: AuthenticatedRequest,
+  res: Response,
+) => {
+  if (!req.user) {
+    return res.status(401).json({ message: 'User not authenticated' });
+  }
+  try {
+    const { shopID, lotID } = req.params;
+    const { userID } = req.user;
+
+    const shop = await Shop.findOne({ where: { shopID, userID } });
+    if (!shop) {
+      return res
+        .status(404)
+        .json({ message: 'Shop not found or does not belong to user' });
+    }
+
+    const result = await Inventory.destroy({
+      where: {
+        shopID: parseInt(shopID, 10),
+        lotID: parseInt(lotID, 10),
+      },
+    });
+
+    if (result === 0) {
+      return res.status(404).json({ message: 'Inventory item not found' });
+    }
+
+    res.json({ message: 'Inventory item removed successfully' });
+  } catch (error) {
+    console.error('Error removing inventory item:', error);
+    res.status(500).json({
+      message: 'Failed to remove inventory item',
+      error,
+    });
+  }
+};
+
 export const getShopInventory = async (
   req: AuthenticatedRequest,
   res: Response,
@@ -231,12 +282,69 @@ export const getShopInventory = async (
         .status(404)
         .json({ message: 'Shop not found or does not belong to user' });
     }
+
     const inventory = await Inventory.findAll({
       where: { shopID },
       attributes: ['lotID', 'stock'],
+      include: [
+        {
+          model: CoffeeLot,
+          attributes: ['lotID', 'name', 'description', 'image', 'taste'],
+          include: [
+            { model: Roasting, attributes: ['name'] },
+            { model: Weight, attributes: ['value'] },
+            { model: Supplier, attributes: ['name'] },
+            { model: ProcessingMethod, attributes: ['name'] },
+            {
+              model: TasteTag,
+              attributes: ['name'],
+              through: { attributes: [] },
+            },
+            {
+              model: Region,
+              attributes: ['name'],
+              include: [
+                {
+                  model: Country,
+                  attributes: ['name'],
+                  include: [
+                    {
+                      model: Continent,
+                      attributes: ['name'],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
     });
-    res.json(inventory);
+
+    const formattedInventory = inventory.map(item => ({
+      lotID: item.lotID,
+      stock: item.stock,
+      coffeeLot: {
+        coffeeLotID: item.CoffeeLot?.lotID,
+        name: item.CoffeeLot?.name,
+        description: item.CoffeeLot?.description,
+        roasting: item.CoffeeLot?.Roasting?.name,
+        weight: item.CoffeeLot?.Weight?.value,
+        supplier: item.CoffeeLot?.Supplier?.name,
+        imageFilename: item.CoffeeLot?.image,
+        processingMethod: item.CoffeeLot?.ProcessingMethod?.name,
+        tasteTags: item.CoffeeLot?.TasteTags?.map(tag => tag.name) || [],
+        continent: item.CoffeeLot?.Region?.Country?.Continent?.name,
+        country: item.CoffeeLot?.Region?.Country?.name,
+        region: item.CoffeeLot?.Region?.name,
+        price: 0, // TODO: добавить поле price в базу данных
+        shopId: parseInt(shopID, 10),
+      },
+    }));
+
+    res.json(formattedInventory);
   } catch (error) {
+    console.error('Error getting shop inventory:', error);
     res.status(500).json({ message: 'Failed to get inventory', error });
   }
 };

@@ -11,6 +11,7 @@ interface AuthContextType {
     user: User | null;
     login: (email: string, password: string) => Promise<void>;
     logout: () => void;
+    setUserAfterRegistration: (user: User) => void;
     isLoading: boolean;
     isAuthenticated: boolean;
 }
@@ -89,6 +90,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         }
     };
 
+    const setUserAfterRegistration = (newUser: User) => {
+        setUser(newUser);
+    };
+
     const logout = () => {
         localStorage.removeItem('authToken');
         localStorage.removeItem('user');
@@ -99,6 +104,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         user,
         login,
         logout,
+        setUserAfterRegistration,
         isLoading,
         isAuthenticated: !!user,
     };

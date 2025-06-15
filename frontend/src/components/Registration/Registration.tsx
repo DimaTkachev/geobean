@@ -8,6 +8,7 @@ import styles from './Registration.module.css';
 import { Input } from '@components/Input';
 import { Button } from '../Button';
 import { EyeIcon } from '@phosphor-icons/react';
+import { useAuth } from '@contexts/index';
 
 interface RegistrationFormData {
     email: string;
@@ -42,6 +43,7 @@ const validationSchema = yup
 
 export const Registration: React.FC = () => {
     const navigate = useNavigate();
+    const { setUserAfterRegistration } = useAuth();
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [submitError, setSubmitError] = useState<string>('');
@@ -83,6 +85,9 @@ export const Registration: React.FC = () => {
                 const result = await response.json();
                 localStorage.setItem('authToken', result.token);
                 localStorage.setItem('user', JSON.stringify(result.user));
+
+                setUserAfterRegistration(result.user);
+
                 navigate('/create-shop');
             } else {
                 const errorData = await response.json();

@@ -4,6 +4,7 @@ import classNames from 'classnames';
 
 import styles from './CreateShop.module.css';
 import { Input } from '@components/Input';
+import { useShop } from '@contexts/index';
 
 const themes = [
     { value: 'beige', label: 'Бежевый', color: '#8b6a4a' },
@@ -24,6 +25,7 @@ type ErrorType = Error | ApiError;
 
 export const CreateShop: React.FC = () => {
     const navigate = useNavigate();
+    const { refreshShops } = useShop();
     const [name, setName] = useState('');
     const [selectedTheme, setSelectedTheme] = useState('beige');
     const [isLoading, setIsLoading] = useState(false);
@@ -57,6 +59,8 @@ export const CreateShop: React.FC = () => {
             if (!response.ok) {
                 throw new Error(data.message || 'Failed to create shop');
             }
+
+            await refreshShops();
 
             navigate('/');
         } catch (err) {

@@ -4,7 +4,9 @@ import React, {
     useEffect,
     useState,
     ReactNode,
+    useCallback,
 } from 'react';
+import { useAuth } from './AuthContext';
 
 export interface Shop {
     shopID: number;
@@ -38,6 +40,7 @@ export const ShopProvider: React.FC<{ children: ReactNode }> = ({
     const [shops, setShops] = useState<Shop[]>([]);
     const [currentShop, setCurrentShopState] = useState<Shop | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const { isAuthenticated } = useAuth();
 
     const setCurrentShop = (shop: Shop | null) => {
         setCurrentShopState(shop);
@@ -48,7 +51,7 @@ export const ShopProvider: React.FC<{ children: ReactNode }> = ({
         }
     };
 
-    const refreshShops = async () => {
+    const refreshShops = useCallback(async () => {
         setIsLoading(true);
         try {
             const token = localStorage.getItem('authToken');
@@ -91,7 +94,7 @@ export const ShopProvider: React.FC<{ children: ReactNode }> = ({
         } finally {
             setIsLoading(false);
         }
-    };
+    }, []);
 
     const addShop = (shop: Shop) => {
         setShops((prev) => [...prev, shop]);
@@ -99,9 +102,14 @@ export const ShopProvider: React.FC<{ children: ReactNode }> = ({
     };
 
     useEffect(() => {
-        refreshShops();
-        // eslint-disable-next-line
-    }, []);
+        if (isAuthenticated) {
+            refreshShops();
+        } else {
+            setShops([]);
+            setCurrentShopState(null);
+            setIsLoading(false);
+        }
+    }, [isAuthenticated, refreshShops]);
 
     return (
         <ShopContext.Provider

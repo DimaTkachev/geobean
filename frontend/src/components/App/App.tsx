@@ -18,8 +18,8 @@ import Inventory from '@pages/Inventory';
 import styles from './App.module.css';
 
 export const App: React.FC = () => (
-    <ShopProvider>
-        <AuthProvider>
+    <AuthProvider>
+        <ShopProvider>
             <div className={styles.app}>
                 <Router>
                     <Header />
@@ -53,8 +53,8 @@ export const App: React.FC = () => (
                     </main>
                 </Router>
             </div>
-        </AuthProvider>
-    </ShopProvider>
+        </ShopProvider>
+    </AuthProvider>
 );
 
 export default App;

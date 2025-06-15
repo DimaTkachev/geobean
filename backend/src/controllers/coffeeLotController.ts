@@ -52,7 +52,7 @@ export const getCoffeeLots = async (
       ],
     });
 
-    const formattedCoffeeLots = coffeeLots.map((lot) => ({
+    const formattedCoffeeLots = coffeeLots.map(lot => ({
       coffeeLotID: lot.lotID,
       name: lot.name,
       roasting: lot.Roasting?.name,
@@ -62,7 +62,7 @@ export const getCoffeeLots = async (
       processingMethod: lot.ProcessingMethod?.name,
       tasteTags:
         (lot as { TasteTags?: { name: string }[] }).TasteTags?.map(
-          (tag) => tag.name,
+          tag => tag.name,
         ) || [],
       continent: lot.Region?.Country?.Continent?.name,
       country: lot.Region?.Country?.name,
@@ -127,7 +127,7 @@ export const getCoffeeLotById = async (req: Request, res: Response) => {
       flavorNotes: lot.taste ? lot.taste.split(',') : [],
       tasteTags:
         (lot as { TasteTags?: { name: string }[] }).TasteTags?.map(
-          (tag) => tag.name,
+          tag => tag.name,
         ) || [],
       description: lot.description,
       weight: lot.Weight?.value,
@@ -167,14 +167,17 @@ export const getFilterOptions = async (_req: Request, res: Response) => {
       ]);
 
     res.json({
-      roastingTypes: roastingTypes.map((r) => r.name),
-      processingMethods: processingMethods.map((p) => p.name),
-      tasteTags: tasteTags.map((t) => t.name),
-      continents: continents.map((c) => c.name),
-      suppliers: suppliers.map((s) => s.name),
+      roastingTypes: roastingTypes.map(r => r.name),
+      processingMethods: processingMethods.map(p => p.name),
+      tasteTags: tasteTags.map(t => t.name),
+      continents: continents.map(c => c.name),
+      suppliers: suppliers.map(s => s.name),
     });
   } catch (error) {
     console.error('Error fetching filter options:', error);
-    res.status(500).json({ message: 'Failed to fetch filter options', error });
+    res.status(500).json({
+      message: 'Failed to fetch filter options',
+      error,
+    });
   }
 };

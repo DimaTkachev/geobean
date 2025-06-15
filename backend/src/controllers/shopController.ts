@@ -115,9 +115,10 @@ export const addCoffeeLotToInventory = async (
     res.status(200).json({ message: 'Кофе добавлен в инвентарь!' });
   } catch (error) {
     console.error('Error adding coffee lot to inventory:', error);
-    res
-      .status(500)
-      .json({ message: 'Failed to add coffee lot to inventory', error });
+    res.status(500).json({
+      message: 'Failed to add coffee lot to inventory',
+      error,
+    });
   }
 };
 
@@ -153,7 +154,10 @@ export const getInventoryItem = async (
     res.json({ stock: inventoryItem.stock });
   } catch (error) {
     console.error('Error fetching inventory item:', error);
-    res.status(500).json({ message: 'Failed to fetch inventory item', error });
+    res.status(500).json({
+      message: 'Failed to fetch inventory item',
+      error,
+    });
   }
 };
 
@@ -204,7 +208,10 @@ export const updateInventoryItem = async (
     res.json({ message: 'Inventory updated successfully', stock });
   } catch (error) {
     console.error('Error updating inventory item:', error);
-    res.status(500).json({ message: 'Failed to update inventory item', error });
+    res.status(500).json({
+      message: 'Failed to update inventory item',
+      error,
+    });
   }
 };
 
@@ -280,7 +287,9 @@ export const generateShopQr = async (
 export const getGuestInventory = async (req: Request, res: Response) => {
   try {
     const { shareUrl } = req.params;
-    const shop = await Shop.findOne({ where: { shareUrl, qrEnabled: true } });
+    const shop = await Shop.findOne({
+      where: { shareUrl, qrEnabled: true },
+    });
     if (!shop) return res.status(404).json({ message: 'Shop not found' });
     const inventory = await Inventory.findAll({
       where: { shopID: shop.shopID },
@@ -292,6 +301,9 @@ export const getGuestInventory = async (req: Request, res: Response) => {
       inventory,
     });
   } catch (error) {
-    res.status(500).json({ message: 'Failed to get guest inventory', error });
+    res.status(500).json({
+      message: 'Failed to get guest inventory',
+      error,
+    });
   }
 };

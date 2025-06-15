@@ -19,8 +19,8 @@ const runMigrations = async (): Promise<void> => {
     // Split the SQL file into individual statements
     const schemaStatements = schemaSql
       .split(';')
-      .map((s) => s.trim())
-      .filter((s) => s.length > 0);
+      .map(s => s.trim())
+      .filter(s => s.length > 0);
 
     // Execute each schema statement separately
     for (const statement of schemaStatements) {
@@ -45,8 +45,8 @@ const runMigrations = async (): Promise<void> => {
     // Split the SQL file into individual statements
     const dataStatements = dataSql
       .split(';')
-      .map((s) => s.trim())
-      .filter((s) => s.length > 0);
+      .map(s => s.trim())
+      .filter(s => s.length > 0);
 
     // Execute each data statement separately
     for (const statement of dataStatements) {
@@ -71,8 +71,8 @@ const runMigrations = async (): Promise<void> => {
     // Split the SQL file into individual statements
     const renameStatements = renameSql
       .split(';')
-      .map((s) => s.trim())
-      .filter((s) => s.length > 0);
+      .map(s => s.trim())
+      .filter(s => s.length > 0);
 
     // Execute each rename statement separately
     for (const statement of renameStatements) {
@@ -100,8 +100,8 @@ const runMigrations = async (): Promise<void> => {
     // Split the SQL file into individual statements
     const insertAndAlterStatements = insertAndAlterSql
       .split(';')
-      .map((s) => s.trim())
-      .filter((s) => s.length > 0);
+      .map(s => s.trim())
+      .filter(s => s.length > 0);
 
     // Execute each statement separately
     for (const statement of insertAndAlterStatements) {

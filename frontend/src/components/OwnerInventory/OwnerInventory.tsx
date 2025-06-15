@@ -5,6 +5,7 @@ import cn from 'classnames';
 import { useShop } from '@contexts/index';
 import { useAuth } from '@contexts/index';
 import { Loader } from '@components/Loader';
+import { debouncedFetch } from '@utils/api';
 import { OwnerInventoryLayout } from './OwnerInventoryLayout';
 import { OwnerInventorySidebar } from './OwnerInventorySidebar';
 
@@ -93,7 +94,7 @@ export const OwnerInventory: React.FC = () => {
             try {
                 setLoading(true);
                 const token = localStorage.getItem('authToken');
-                const response = await fetch(
+                const response = await debouncedFetch(
                     `/api/shops/${currentShop.shopID}/inventory`,
                     {
                         headers: {
@@ -270,7 +271,7 @@ export const OwnerInventory: React.FC = () => {
 
         try {
             const token = localStorage.getItem('authToken');
-            const response = await fetch(
+            const response = await debouncedFetch(
                 `/api/shops/${currentShop.shopID}/inventory/${lotID}`,
                 {
                     method: 'PATCH',
@@ -311,7 +312,7 @@ export const OwnerInventory: React.FC = () => {
 
         try {
             const token = localStorage.getItem('authToken');
-            const response = await fetch(
+            const response = await debouncedFetch(
                 `/api/shops/${currentShop.shopID}/inventory/${lotID}`,
                 {
                     method: 'DELETE',

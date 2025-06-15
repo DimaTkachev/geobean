@@ -9,6 +9,7 @@ import {
 } from 'react-simple-maps';
 import styles from '@components/CoffeeMap/CoffeeMap.module.css';
 import { Loader } from '@components/Loader';
+import { debouncedFetch } from '@utils/api';
 
 const geoUrl = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json';
 
@@ -77,7 +78,7 @@ const GuestInventory: React.FC = () => {
         setLoading(true);
         setError(null);
 
-        fetch(`/api/shops/guest-inventory/${shareUrl}`)
+        debouncedFetch(`/api/shops/guest-inventory/${shareUrl}`)
             .then(async (res) => {
                 if (!res.ok) {
                     const errorData = await res.json();

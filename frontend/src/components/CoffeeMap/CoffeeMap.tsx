@@ -105,11 +105,10 @@ export const CoffeeMap: React.FC = () => {
                 .then((res) => res.json())
                 .then((data) => {
                     // data should be an array of inventory items with lotID
-                    setInventoryLotIDs(
-                        Array.isArray(data)
-                            ? data.map((item) => item.lotID)
-                            : []
-                    );
+                    const lotIDs = Array.isArray(data)
+                        ? data.map((item) => item.lotID)
+                        : [];
+                    setInventoryLotIDs(lotIDs);
                 })
                 .catch(() => setInventoryLotIDs([]));
         } else {
@@ -123,43 +122,6 @@ export const CoffeeMap: React.FC = () => {
                 setLoading(true);
                 const data = await fetchApi<CoffeeMarker[]>('/api/map/all');
                 setMarkers(data);
-                setFilteredMarkers(data);
-
-                const continents = [
-                    ...new Set(
-                        data.map(
-                            (m) => m.CoffeeLot.Region.Country.Continent.name
-                        )
-                    ),
-                ];
-                const roastingTypes = [
-                    ...new Set(data.map((m) => m.CoffeeLot.Roasting.name)),
-                ];
-                const processingMethods = [
-                    ...new Set(
-                        data.map((m) => m.CoffeeLot.ProcessingMethod.name)
-                    ),
-                ];
-                const tasteTags = [
-                    ...new Set(
-                        data.flatMap(
-                            (m) =>
-                                m.CoffeeLot.TasteTags?.map((tag) => tag.name) ||
-                                []
-                        )
-                    ),
-                ];
-                const suppliers = [
-                    ...new Set(data.map((m) => m.CoffeeLot.Supplier.name)),
-                ];
-
-                setAvailableFilters({
-                    continents,
-                    roastingTypes,
-                    processingMethods,
-                    tasteTags,
-                    suppliers,
-                });
             } catch (err) {
                 setError('Ошибка загрузки данных карты');
                 console.error('Error fetching markers:', err);
@@ -172,19 +134,55 @@ export const CoffeeMap: React.FC = () => {
     }, []);
 
     useEffect(() => {
-        let filtered = markers;
+        let baseMarkers = markers;
 
         if (isAuthenticated && currentShop && currentShop.shopID) {
             if (inventoryLotIDs) {
                 if (inventoryLotIDs.length === 0) {
-                    filtered = [];
+                    baseMarkers = [];
                 } else {
-                    filtered = filtered.filter((marker) =>
+                    baseMarkers = baseMarkers.filter((marker) =>
                         inventoryLotIDs.includes(marker.lotID)
                     );
                 }
             }
         }
+
+        const continents = [
+            ...new Set(
+                baseMarkers.map(
+                    (m) => m.CoffeeLot.Region.Country.Continent.name
+                )
+            ),
+        ];
+        const roastingTypes = [
+            ...new Set(baseMarkers.map((m) => m.CoffeeLot.Roasting.name)),
+        ];
+        const processingMethods = [
+            ...new Set(
+                baseMarkers.map((m) => m.CoffeeLot.ProcessingMethod.name)
+            ),
+        ];
+        const tasteTags = [
+            ...new Set(
+                baseMarkers.flatMap(
+                    (m) => m.CoffeeLot.TasteTags?.map((tag) => tag.name) || []
+                )
+            ),
+        ];
+        const suppliers = [
+            ...new Set(baseMarkers.map((m) => m.CoffeeLot.Supplier.name)),
+        ];
+
+        setAvailableFilters({
+            continents,
+            roastingTypes,
+            processingMethods,
+            tasteTags,
+            suppliers,
+        });
+
+        let filtered = baseMarkers;
 
         if (filters.continents.length > 0) {
             filtered = filtered.filter((marker) =>

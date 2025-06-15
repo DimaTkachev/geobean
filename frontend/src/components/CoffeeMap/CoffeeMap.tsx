@@ -9,7 +9,7 @@ import {
     ZoomableGroup,
 } from 'react-simple-maps';
 
-import { fetchApi } from '@utils/api';
+import { fetchApi, debouncedFetch } from '@utils/api';
 import { useShop, useAuth } from '@contexts/index';
 
 import styles from './CoffeeMap.module.css';
@@ -99,7 +99,7 @@ export const CoffeeMap: React.FC = () => {
     useEffect(() => {
         if (isAuthenticated && currentShop && currentShop.shopID) {
             const token = localStorage.getItem('authToken');
-            fetch(`/api/shops/${currentShop.shopID}/inventory`, {
+            debouncedFetch(`/api/shops/${currentShop.shopID}/inventory`, {
                 headers: { Authorization: `Bearer ${token}` },
             })
                 .then((res) => res.json())

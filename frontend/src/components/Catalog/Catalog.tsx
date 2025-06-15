@@ -7,6 +7,7 @@ import { useAuth } from '@contexts/index';
 import { Loader } from '@components/Loader';
 import { CatalogLayout } from './CatalogLayout';
 import { CatalogSidebar } from './CatalogSidebar';
+import { debouncedFetch } from '@utils/api';
 
 import styles from './Catalog.module.css';
 import { PlusIcon, MinusIcon } from '@phosphor-icons/react';
@@ -82,7 +83,9 @@ export const Catalog: React.FC = () => {
         const fetchFilterOptions = async () => {
             try {
                 setFiltersLoading(true);
-                const response = await fetch('/api/coffee-lots/filter-options');
+                const response = await debouncedFetch(
+                    '/api/coffee-lots/filter-options'
+                );
                 if (!response.ok)
                     throw new Error('Failed to fetch filter options');
                 const data = await response.json();
@@ -102,7 +105,7 @@ export const Catalog: React.FC = () => {
             try {
                 setLoading(true);
                 const token = localStorage.getItem('authToken');
-                const response = await fetch('/api/coffee-lots', {
+                const response = await debouncedFetch('/api/coffee-lots', {
                     headers: {
                         'Content-Type': 'application/json',
                         Authorization: `Bearer ${token}`,
@@ -147,7 +150,7 @@ export const Catalog: React.FC = () => {
 
             try {
                 const token = localStorage.getItem('authToken');
-                const response = await fetch(
+                const response = await debouncedFetch(
                     `/api/shops/${currentShop.shopID}/inventory`,
                     {
                         headers: {

@@ -4,6 +4,7 @@ import { useAuth, useShop } from '@contexts/index';
 import { Tooltip } from '@components/Tooltip/Tooltip';
 import styles from './CoffeeLotCardPage.module.css';
 import { Loader } from '@components/Loader';
+import { debouncedFetch } from '@utils/api';
 import { InfoIcon, MinusIcon, PlusIcon } from '@phosphor-icons/react';
 
 interface CoffeeLot {
@@ -40,7 +41,9 @@ export const CoffeeLotCardPage: React.FC = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(`/api/coffee-lots/${lotID}`);
+                const response = await debouncedFetch(
+                    `/api/coffee-lots/${lotID}`
+                );
                 if (!response.ok) {
                     throw new Error('Failed to fetch coffee lot');
                 }
@@ -57,16 +60,19 @@ export const CoffeeLotCardPage: React.FC = () => {
     }, [lotID]);
 
     useEffect(() => {
-        fetch('/api/coffee-lots/attribute-info')
+        debouncedFetch('/api/coffee-lots/attribute-info')
             .then((res) => res.json())
             .then(setAttrInfo);
         if (user && currentShop) {
             const token = localStorage.getItem('authToken');
-            fetch(`/api/shops/${currentShop.shopID}/inventory/${lotID}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            })
+            debouncedFetch(
+                `/api/shops/${currentShop.shopID}/inventory/${lotID}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            )
                 .then((res) => {
                     if (res.ok) {
                         return res.json();
@@ -83,7 +89,7 @@ export const CoffeeLotCardPage: React.FC = () => {
         const token = localStorage.getItem('authToken');
 
         try {
-            const response = await fetch(
+            const response = await debouncedFetch(
                 `/api/shops/${currentShop.shopID}/inventory/${coffeeLot.lotID}`,
                 {
                     method: 'PATCH',

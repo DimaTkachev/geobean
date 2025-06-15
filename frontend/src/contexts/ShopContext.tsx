@@ -24,6 +24,8 @@ interface ShopContextType {
     refreshShops: () => Promise<void>;
     addShop: (shop: Shop) => void;
     isLoading: boolean;
+    isShopSidebarExpanded: boolean;
+    toggleShopSidebar: () => void;
 }
 
 const ShopContext = createContext<ShopContextType | undefined>(undefined);
@@ -41,6 +43,7 @@ export const ShopProvider: React.FC<{ children: ReactNode }> = ({
     const [currentShop, setCurrentShopState] = useState<Shop | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const { isAuthenticated } = useAuth();
+    const [isShopSidebarExpanded, setIsShopSidebarExpanded] = useState(true);
 
     const setCurrentShop = (shop: Shop | null) => {
         setCurrentShopState(shop);
@@ -101,6 +104,10 @@ export const ShopProvider: React.FC<{ children: ReactNode }> = ({
         setCurrentShop(shop);
     };
 
+    const toggleShopSidebar = () => {
+        setIsShopSidebarExpanded(!isShopSidebarExpanded);
+    };
+
     useEffect(() => {
         if (isAuthenticated) {
             refreshShops();
@@ -120,6 +127,8 @@ export const ShopProvider: React.FC<{ children: ReactNode }> = ({
                 refreshShops,
                 addShop,
                 isLoading,
+                isShopSidebarExpanded,
+                toggleShopSidebar,
             }}
         >
             {children}

@@ -26,7 +26,8 @@ import type {
     WeightDTO,
 } from '../../types/dtos';
 import { CoffeeMapSidebar } from './CoffeeMapSidebar';
-import { Input } from '../Input';
+import { Input } from '@components/Input';
+import { ShopContainer } from '@components/ShopContainer';
 
 const geoUrl = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json';
 
@@ -309,178 +310,195 @@ export const CoffeeMap: React.FC = () => {
     }
 
     return (
-        <section>
-            <div className={styles.header}>
-                <h2 className={styles.title}>Карта мира</h2>
-            </div>
-            <div className={styles.container}>
-                <CoffeeMapSidebar
-                    filters={filters}
-                    availableFilters={availableFilters}
-                    onFilterChange={handleFilterChange}
-                    onClearFilters={clearFilters}
-                />
+        <section className={styles.coffeeMap}>
+            <ShopContainer />
+            <div className={styles.coffeeMapContent}>
+                <div className={styles.header}>
+                    <h2 className={styles.title}>Карта мира</h2>
+                </div>
+                <div className={styles.container}>
+                    <CoffeeMapSidebar
+                        filters={filters}
+                        availableFilters={availableFilters}
+                        onFilterChange={handleFilterChange}
+                        onClearFilters={clearFilters}
+                    />
 
-                <div className={styles.mapContainer}>
-                    <div className={styles.searchContainer}>
-                        <Input
-                            type='text'
-                            placeholder='Найти страну...'
-                            value={filters.searchQuery}
-                            onChange={(e) => handleSearchChange(e.target.value)}
-                            search
-                        />
-                    </div>
-                    <div style={{ cursor: 'pointer' }}>
-                        <ComposableMap
-                            projectionConfig={{
-                                scale: 147,
-                            }}
-                            className={styles.map}
-                        >
-                            <ZoomableGroup>
-                                <Geographies geography={geoUrl}>
-                                    {({ geographies }) =>
-                                        geographies.map((geo) => {
-                                            const hasMarkers = markers.some(
-                                                (marker) =>
-                                                    marker.CoffeeLot.Region
-                                                        .Country.name ===
-                                                    geo.properties.NAME
-                                            );
+                    <div className={styles.mapContainer}>
+                        <div className={styles.searchContainer}>
+                            <Input
+                                type='text'
+                                placeholder='Найти страну...'
+                                value={filters.searchQuery}
+                                onChange={(e) =>
+                                    handleSearchChange(e.target.value)
+                                }
+                                search
+                            />
+                        </div>
+                        <div style={{ cursor: 'pointer' }}>
+                            <ComposableMap
+                                projectionConfig={{
+                                    scale: 147,
+                                }}
+                                className={styles.map}
+                            >
+                                <ZoomableGroup>
+                                    <Geographies geography={geoUrl}>
+                                        {({ geographies }) =>
+                                            geographies.map((geo) => {
+                                                const hasMarkers = markers.some(
+                                                    (marker) =>
+                                                        marker.CoffeeLot.Region
+                                                            .Country.name ===
+                                                        geo.properties.NAME
+                                                );
 
-                                            return (
-                                                <Geography
-                                                    key={geo.rsmKey}
-                                                    geography={geo}
-                                                    onClick={() =>
-                                                        handleGeographyClick(
-                                                            geo
-                                                        )
-                                                    }
-                                                    className={`${styles.geography} ${
-                                                        hasMarkers
-                                                            ? styles.hasMarkers
-                                                            : ''
-                                                    }`}
-                                                />
-                                            );
-                                        })
-                                    }
-                                </Geographies>
-                                {filteredMarkers.map((marker) => (
-                                    <g key={marker.markerID}>
-                                        <Marker
-                                            coordinates={[
-                                                marker.longitude || 0,
-                                                marker.latitude || 0,
-                                            ]}
-                                            className={styles.marker}
-                                            onMouseEnter={handleMarkerMouseEnter(
-                                                marker.markerID || 0
-                                            )}
-                                            onMouseMove={handleMarkerMouseMove}
-                                            onMouseLeave={handleMarkerMouseLeave(
-                                                marker.markerID || 0
-                                            )}
-                                            onClick={() =>
-                                                navigate(
-                                                    `/coffee-lots/${marker.lotID}`
-                                                )
-                                            }
-                                        >
-                                            <circle
-                                                r={markerSize}
-                                                className={styles.markerCircle}
-                                            />
-                                        </Marker>
-                                    </g>
-                                ))}
-                            </ZoomableGroup>
-                        </ComposableMap>
-                        {hoveredMarkerID !== null &&
-                            popupPosition &&
-                            (() => {
-                                const marker = filteredMarkers.find(
-                                    (m) => m.markerID === hoveredMarkerID
-                                );
-                                if (!marker) return null;
-                                return (
-                                    <div
-                                        className={styles.markerPopup}
-                                        style={{
-                                            position: 'fixed',
-                                            left: popupPosition.x + 16,
-                                            top: popupPosition.y - 40,
-                                            zIndex: 1000,
-                                            pointerEvents: 'none',
-                                        }}
-                                    >
-                                        <img
-                                            src={
-                                                marker.CoffeeLot.image
-                                                    ? `/images/${marker.CoffeeLot.image}`
-                                                    : '/images/placeholder.png'
-                                            }
-                                            alt={marker.CoffeeLot.name || ''}
-                                            className={styles.markerPopupImage}
-                                        />
-                                        <div className={styles.markerPopupInfo}>
-                                            <div
-                                                className={
-                                                    styles.markerPopupName
+                                                return (
+                                                    <Geography
+                                                        key={geo.rsmKey}
+                                                        geography={geo}
+                                                        onClick={() =>
+                                                            handleGeographyClick(
+                                                                geo
+                                                            )
+                                                        }
+                                                        className={`${styles.geography} ${
+                                                            hasMarkers
+                                                                ? styles.hasMarkers
+                                                                : ''
+                                                        }`}
+                                                    />
+                                                );
+                                            })
+                                        }
+                                    </Geographies>
+                                    {filteredMarkers.map((marker) => (
+                                        <g key={marker.markerID}>
+                                            <Marker
+                                                coordinates={[
+                                                    marker.longitude || 0,
+                                                    marker.latitude || 0,
+                                                ]}
+                                                className={styles.marker}
+                                                onMouseEnter={handleMarkerMouseEnter(
+                                                    marker.markerID || 0
+                                                )}
+                                                onMouseMove={
+                                                    handleMarkerMouseMove
                                                 }
-                                                style={{
-                                                    pointerEvents: 'auto',
-                                                }}
+                                                onMouseLeave={handleMarkerMouseLeave(
+                                                    marker.markerID || 0
+                                                )}
                                                 onClick={() =>
                                                     navigate(
                                                         `/coffee-lots/${marker.lotID}`
                                                     )
                                                 }
-                                                tabIndex={0}
-                                                role='button'
-                                                onKeyDown={(e) => {
-                                                    if (e.key === 'Enter')
+                                            >
+                                                <circle
+                                                    r={markerSize}
+                                                    className={
+                                                        styles.markerCircle
+                                                    }
+                                                />
+                                            </Marker>
+                                        </g>
+                                    ))}
+                                </ZoomableGroup>
+                            </ComposableMap>
+                            {hoveredMarkerID !== null &&
+                                popupPosition &&
+                                (() => {
+                                    const marker = filteredMarkers.find(
+                                        (m) => m.markerID === hoveredMarkerID
+                                    );
+                                    if (!marker) return null;
+                                    return (
+                                        <div
+                                            className={styles.markerPopup}
+                                            style={{
+                                                position: 'fixed',
+                                                left: popupPosition.x + 16,
+                                                top: popupPosition.y - 40,
+                                                zIndex: 1000,
+                                                pointerEvents: 'none',
+                                            }}
+                                        >
+                                            <img
+                                                src={
+                                                    marker.CoffeeLot.image
+                                                        ? `/images/${marker.CoffeeLot.image}`
+                                                        : '/images/placeholder.png'
+                                                }
+                                                alt={
+                                                    marker.CoffeeLot.name || ''
+                                                }
+                                                className={
+                                                    styles.markerPopupImage
+                                                }
+                                            />
+                                            <div
+                                                className={
+                                                    styles.markerPopupInfo
+                                                }
+                                            >
+                                                <div
+                                                    className={
+                                                        styles.markerPopupName
+                                                    }
+                                                    style={{
+                                                        pointerEvents: 'auto',
+                                                    }}
+                                                    onClick={() =>
                                                         navigate(
                                                             `/coffee-lots/${marker.lotID}`
-                                                        );
-                                                }}
-                                            >
-                                                {marker.CoffeeLot.name}
-                                            </div>
-                                            <div
-                                                className={
-                                                    styles.markerPopupRoasting
-                                                }
-                                            >
-                                                под{' '}
-                                                {
-                                                    marker.CoffeeLot.Roasting
-                                                        ?.name
-                                                }
-                                            </div>
-                                            <div
-                                                className={
-                                                    styles.markerPopupTasteTitle
-                                                }
-                                            >
-                                                Вкусовые ноты:{' '}
-                                                <span
+                                                        )
+                                                    }
+                                                    tabIndex={0}
+                                                    role='button'
+                                                    onKeyDown={(e) => {
+                                                        if (e.key === 'Enter')
+                                                            navigate(
+                                                                `/coffee-lots/${marker.lotID}`
+                                                            );
+                                                    }}
+                                                >
+                                                    {marker.CoffeeLot.name}
+                                                </div>
+                                                <div
                                                     className={
-                                                        styles.markerPopupTaste
+                                                        styles.markerPopupRoasting
                                                     }
                                                 >
+                                                    под{' '}
                                                     {
                                                         marker.CoffeeLot
-                                                            .tasteFilter
+                                                            .Roasting?.name
                                                     }
-                                                </span>
+                                                </div>
+                                                <div
+                                                    className={
+                                                        styles.markerPopupTasteTitle
+                                                    }
+                                                >
+                                                    Вкусовые ноты:{' '}
+                                                    <span
+                                                        className={
+                                                            styles.markerPopupTaste
+                                                        }
+                                                    >
+                                                        {
+                                                            marker.CoffeeLot
+                                                                .tasteFilter
+                                                        }
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                );
-                            })()}
+                                    );
+                                })()}
+                        </div>
                     </div>
                 </div>
             </div>

@@ -10,7 +10,7 @@
 .container {
     display: flex;
     height: 100vh;
-    background-color: #f5f1eb;
+    background-color: var(--brown-0);
 }
 
 .header {
@@ -84,16 +84,6 @@
 
 .markerCircle:hover {
     stroke-width: 3;
-}
-
-.loading,
-.error {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    font-size: 18px;
-    background-color: #f5f1eb;
 }
 
 .error {

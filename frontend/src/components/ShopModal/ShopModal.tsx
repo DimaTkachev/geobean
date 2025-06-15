@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import cn from 'classnames';
 import { ConfirmationModal } from '@components/ConfirmationModal';
 import styles from './ShopModal.module.css';
 import { XIcon } from '@phosphor-icons/react';
@@ -99,11 +100,10 @@ export const ShopModal: React.FC<ShopModalProps> = ({
                             <button
                                 key={t.value}
                                 type='button'
-                                className={`${styles.themeButton} ${
-                                    theme === t.value
-                                        ? styles.themeButtonSelected
-                                        : ''
-                                }`}
+                                className={cn(styles.themeButton, {
+                                    [styles.themeButtonSelected]:
+                                        theme === t.value,
+                                })}
                                 style={{ background: t.color }}
                                 onClick={() =>
                                     setTheme(

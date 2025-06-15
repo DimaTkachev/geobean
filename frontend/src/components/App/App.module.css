@@ -6,6 +6,16 @@
     flex-direction: column;
 }
 
+.loaderContainer {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    background-color: var(--brown-0);
+}
+
 .title {
     color: var(--brown-100);
     font-weight: 600;

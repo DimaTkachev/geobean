@@ -28,6 +28,7 @@ import type {
 import { CoffeeMapSidebar } from './CoffeeMapSidebar';
 import { Input } from '@components/Input';
 import { ShopContainer } from '@components/ShopContainer';
+import { Loader } from '../Loader';
 
 const geoUrl = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json';
 
@@ -294,11 +295,7 @@ export const CoffeeMap: React.FC = () => {
     const markerSize = 8;
 
     if (loading) {
-        return (
-            <div className={styles.container}>
-                <div className={styles.loading}>Загрузка карты...</div>
-            </div>
-        );
+        return <Loader variant='container' />;
     }
 
     if (error) {

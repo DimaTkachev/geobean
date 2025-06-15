@@ -1,7 +1,3 @@
-.catalogLayout {
-    /* Additional catalog-specific styles can go here */
-}
-
 .headerActions {
     display: flex;
     align-items: center;

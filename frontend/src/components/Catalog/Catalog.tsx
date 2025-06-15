@@ -9,7 +9,7 @@ import { CatalogLayout } from './CatalogLayout';
 import { CatalogSidebar } from './CatalogSidebar';
 
 import styles from './Catalog.module.css';
-import { PlusIcon } from '@phosphor-icons/react';
+import { PlusIcon, MinusIcon } from '@phosphor-icons/react';
 
 interface CoffeeLot {
     coffeeLotID: number;
@@ -26,6 +26,11 @@ interface CoffeeLot {
     region: string;
     price: number;
     shopId: number;
+}
+
+interface InventoryItem {
+    lotID: number;
+    stock: number;
 }
 
 interface Filters {
@@ -46,10 +51,10 @@ export const Catalog: React.FC = () => {
     const [filteredCoffeeLots, setFilteredCoffeeLots] = useState<CoffeeLot[]>(
         []
     );
+    const [inventory, setInventory] = useState<InventoryItem[]>([]);
     const [loading, setLoading] = useState(true);
     const [filtersLoading, setFiltersLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [hoveredCardId, setHoveredCardId] = useState<number | null>(null);
 
     const [filters, setFilters] = useState<Filters>({
         continents: [],
@@ -70,6 +75,8 @@ export const Catalog: React.FC = () => {
 
     const [showSuccessPopup, setShowSuccessPopup] = useState(false);
     const [successMessage, setSuccessMessage] = useState('');
+    const [showErrorPopup, setShowErrorPopup] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
 
     useEffect(() => {
         const fetchFilterOptions = async () => {
@@ -130,6 +137,40 @@ export const Catalog: React.FC = () => {
 
         fetchCoffeeLots();
     }, [user]);
+
+    useEffect(() => {
+        const fetchInventory = async () => {
+            if (!currentShop || !user) {
+                setInventory([]);
+                return;
+            }
+
+            try {
+                const token = localStorage.getItem('authToken');
+                const response = await fetch(
+                    `/api/shops/${currentShop.shopID}/inventory`,
+                    {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+
+                if (response.ok) {
+                    const data: InventoryItem[] = await response.json();
+                    setInventory(data);
+                } else {
+                    setInventory([]);
+                }
+            } catch (err) {
+                console.error('Error fetching inventory:', err);
+                setInventory([]);
+            }
+        };
+
+        fetchInventory();
+    }, [currentShop, user]);
 
     useEffect(() => {
         let filtered = coffeeLots;
@@ -212,9 +253,25 @@ export const Catalog: React.FC = () => {
         });
     };
 
+    const getInventoryStock = (coffeeLotID: number): number => {
+        const inventoryItem = inventory.find(
+            (item) => item.lotID === coffeeLotID
+        );
+        return inventoryItem ? inventoryItem.stock : 0;
+    };
+
+    const showError = (message: string) => {
+        setErrorMessage(message);
+        setShowErrorPopup(true);
+        setTimeout(() => {
+            setShowErrorPopup(false);
+            setErrorMessage('');
+        }, 3000);
+    };
+
     const handleAddToInventory = async (coffeeLotID: number) => {
         if (!currentShop) {
-            alert('Пожалуйста, выберите кофейню сначала.');
+            showError('Пожалуйста, выберите кофейню сначала.');
             return;
         }
 
@@ -239,6 +296,22 @@ export const Catalog: React.FC = () => {
                 );
             }
 
+            // Update inventory state locally
+            setInventory((prev) => {
+                const existingItem = prev.find(
+                    (item) => item.lotID === coffeeLotID
+                );
+                if (existingItem) {
+                    return prev.map((item) =>
+                        item.lotID === coffeeLotID
+                            ? { ...item, stock: item.stock + 1 }
+                            : item
+                    );
+                } else {
+                    return [...prev, { lotID: coffeeLotID, stock: 1 }];
+                }
+            });
+
             setSuccessMessage('Кофе добавлен в инвентарь!');
             setShowSuccessPopup(true);
 
@@ -250,7 +323,72 @@ export const Catalog: React.FC = () => {
             const errorMessage =
                 error instanceof Error ? error.message : 'Unknown error';
             console.error('Error adding to inventory:', error);
-            alert('Ошибка при добавлении в инвентарь: ' + errorMessage);
+            showError('Ошибка при добавлении в инвентарь: ' + errorMessage);
+        }
+    };
+
+    const handleRemoveFromInventory = async (coffeeLotID: number) => {
+        if (!currentShop) {
+            return;
+        }
+
+        const currentStock = getInventoryStock(coffeeLotID);
+        if (currentStock === 0) {
+            return;
+        }
+
+        const newStock = currentStock - 1;
+
+        try {
+            const token = localStorage.getItem('authToken');
+            const response = await fetch(
+                `/api/shops/${currentShop.shopID}/inventory/${coffeeLotID}`,
+                {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({ stock: newStock }),
+                }
+            );
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(
+                    errorData.message || 'Failed to remove item from inventory'
+                );
+            }
+
+            // Update inventory state locally
+            setInventory((prev) => {
+                if (newStock === 0) {
+                    return prev.filter((item) => item.lotID !== coffeeLotID);
+                } else {
+                    return prev.map((item) =>
+                        item.lotID === coffeeLotID
+                            ? { ...item, stock: newStock }
+                            : item
+                    );
+                }
+            });
+
+            setSuccessMessage(
+                newStock === 0
+                    ? 'Товар удален из инвентаря!'
+                    : 'Количество уменьшено!'
+            );
+            setShowSuccessPopup(true);
+
+            setTimeout(() => {
+                setShowSuccessPopup(false);
+                setSuccessMessage('');
+            }, 3000);
+        } catch (error: unknown) {
+            const errorMessage =
+                error instanceof Error ? error.message : 'Unknown error';
+            console.error('Error removing from inventory:', error);
+            showError('Ошибка при удалении из инвентаря: ' + errorMessage);
         }
     };
 
@@ -306,82 +444,106 @@ export const Catalog: React.FC = () => {
                             <div
                                 key={lot.coffeeLotID}
                                 className={styles.coffeeLotCard}
-                                onMouseEnter={() =>
-                                    setHoveredCardId(lot.coffeeLotID)
-                                }
-                                onMouseLeave={() => setHoveredCardId(null)}
                             >
-                                {lot.imageFilename && (
-                                    <img
-                                        src={`/images/${lot.imageFilename}`}
-                                        alt={lot.name}
-                                        className={styles.coffeeLotImage}
-                                        onClick={() =>
-                                            handleCoffeeLotClick(lot)
-                                        }
-                                        onKeyDown={(e) => {
-                                            if (e.key === 'Enter')
-                                                handleCoffeeLotClick(lot);
-                                        }}
-                                        tabIndex={0}
-                                    />
-                                )}
-                                <div className={styles.coffeeLotInfo}>
-                                    <h4
-                                        className={styles.coffeeLotName}
-                                        onClick={() =>
-                                            handleCoffeeLotClick(lot)
-                                        }
-                                        onKeyDown={(e) => {
-                                            if (e.key === 'Enter')
-                                                handleCoffeeLotClick(lot);
-                                        }}
-                                        tabIndex={0}
-                                    >
-                                        {lot.name}
-                                    </h4>
-                                    <div className={styles.coffeeLotDetails}>
-                                        <span>под {lot.roasting}</span>
-                                        {lot.weight && (
-                                            <span> · {lot.weight}</span>
-                                        )}
-                                    </div>
-                                    <div className={styles.supplierInfo}>
-                                        {lot.supplier && (
-                                            <>
-                                                <div
-                                                    className={cn(
-                                                        styles.supplierDot,
-                                                        getSupplierDotClass(
-                                                            lot.supplier
-                                                        )
-                                                    )}
-                                                />
-                                                <span>{lot.supplier}</span>
-                                            </>
-                                        )}
+                                <div className={styles.coffeeLotCardBody}>
+                                    {lot.imageFilename && (
+                                        <img
+                                            src={`/images/${lot.imageFilename}`}
+                                            alt={lot.name}
+                                            className={styles.coffeeLotImage}
+                                            onClick={() =>
+                                                handleCoffeeLotClick(lot)
+                                            }
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter')
+                                                    handleCoffeeLotClick(lot);
+                                            }}
+                                            tabIndex={0}
+                                        />
+                                    )}
+                                    <div className={styles.coffeeLotInfo}>
+                                        <h4
+                                            className={styles.coffeeLotName}
+                                            onClick={() =>
+                                                handleCoffeeLotClick(lot)
+                                            }
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter')
+                                                    handleCoffeeLotClick(lot);
+                                            }}
+                                            tabIndex={0}
+                                        >
+                                            {lot.name}
+                                        </h4>
+                                        <div
+                                            className={styles.coffeeLotDetails}
+                                        >
+                                            <span>под {lot.roasting}</span>
+                                            {lot.weight && (
+                                                <span> · {lot.weight}</span>
+                                            )}
+                                        </div>
+                                        <div className={styles.supplierInfo}>
+                                            {lot.supplier && (
+                                                <>
+                                                    <div
+                                                        className={cn(
+                                                            styles.supplierDot,
+                                                            getSupplierDotClass(
+                                                                lot.supplier
+                                                            )
+                                                        )}
+                                                    />
+                                                    <span>{lot.supplier}</span>
+                                                </>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
-                                <button
-                                    className={styles.addToInventoryButton}
-                                    style={{
-                                        opacity:
-                                            hoveredCardId === lot.coffeeLotID
-                                                ? 1
-                                                : 0,
-                                    }}
-                                    onClick={() =>
-                                        handleAddToInventory(lot.coffeeLotID)
-                                    }
-                                    disabled={!currentShop}
-                                    title={
-                                        currentShop
-                                            ? 'Добавить в инвентарь'
-                                            : 'Выберите кофейню'
-                                    }
-                                >
-                                    <PlusIcon size={20} color='white' />
-                                </button>
+                                {currentShop && (
+                                    <div className={styles.inventoryStock}>
+                                        <button
+                                            onClick={() =>
+                                                handleAddToInventory(
+                                                    lot.coffeeLotID
+                                                )
+                                            }
+                                            disabled={!currentShop}
+                                        >
+                                            <PlusIcon
+                                                size={12}
+                                                color='var(--brown-20)'
+                                                weight='bold'
+                                            />
+                                        </button>
+
+                                        <div
+                                            className={
+                                                styles.inventoryStockLabel
+                                            }
+                                        >
+                                            {getInventoryStock(lot.coffeeLotID)}{' '}
+                                            шт
+                                        </div>
+                                        {getInventoryStock(lot.coffeeLotID) >
+                                            0 && (
+                                            <button
+                                                onClick={() =>
+                                                    handleRemoveFromInventory(
+                                                        lot.coffeeLotID
+                                                    )
+                                                }
+                                                disabled={!currentShop}
+                                            >
+                                                <MinusIcon
+                                                    size={12}
+                                                    color='var(--brown-20)'
+                                                    weight='bold'
+                                                />
+                                            </button>
+                                        )}
+                                    </div>
+                                )}
                             </div>
                         ))}
                     </div>
@@ -390,6 +552,10 @@ export const Catalog: React.FC = () => {
 
             {showSuccessPopup && (
                 <div className={styles.successPopup}>{successMessage}</div>
+            )}
+
+            {showErrorPopup && (
+                <div className={styles.errorPopup}>{errorMessage}</div>
             )}
         </CatalogLayout>
     );

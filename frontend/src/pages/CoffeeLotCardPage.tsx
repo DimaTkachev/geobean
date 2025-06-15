@@ -259,6 +259,13 @@ export const CoffeeLotCardPage: React.FC = () => {
                                 <span className={styles.paramLabel}>
                                     Вкусовые ноты:
                                 </span>
+                                <Tooltip text={attrInfo['flavorNotes'] || ''}>
+                                    <InfoIcon
+                                        size={16}
+                                        color='var(--brown-60)'
+                                        weight='bold'
+                                    />
+                                </Tooltip>
                             </div>
                             <span>{coffeeLot.flavorNotes.join(', ')}</span>
                         </li>

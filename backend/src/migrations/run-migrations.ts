@@ -159,6 +159,62 @@ const runMigrations = async (): Promise<void> => {
       }
     }
 
+    // Run sync migration
+    const syncMigrationFile = path.join(__dirname, '005_sync_database.sql');
+    if (fs.existsSync(syncMigrationFile)) {
+      const syncSql = fs.readFileSync(syncMigrationFile, 'utf8');
+
+      // Replace INSERT INTO with INSERT IGNORE INTO
+      const safeSyncSql = syncSql.replace(
+        /INSERT INTO/gi,
+        'INSERT IGNORE INTO',
+      );
+
+      // Split the SQL file into individual statements
+      const syncStatements = safeSyncSql
+        .split(';')
+        .map(s => s.trim())
+        .filter(s => s.length > 0 && !s.toLowerCase().startsWith('select'));
+
+      // Execute each statement separately
+      for (const statement of syncStatements) {
+        try {
+          await sequelize.query(`${statement};`);
+        } catch (error) {
+          // Log errors but continue
+          console.error(
+            'Error executing sync statement:',
+            (error as DatabaseError).message,
+          );
+        }
+      }
+    }
+
+    // Run marker data migration
+    const markerMigrationFile = path.join(__dirname, '006_add_marker_data.sql');
+    if (fs.existsSync(markerMigrationFile)) {
+      const markerSql = fs.readFileSync(markerMigrationFile, 'utf8');
+
+      // Split the SQL file into individual statements (already uses INSERT IGNORE)
+      const markerStatements = markerSql
+        .split(';')
+        .map(s => s.trim())
+        .filter(s => s.length > 0);
+
+      // Execute each statement separately
+      for (const statement of markerStatements) {
+        try {
+          await sequelize.query(`${statement};`);
+        } catch (error) {
+          // Log errors but continue
+          console.error(
+            'Error executing marker statement:',
+            (error as DatabaseError).message,
+          );
+        }
+      }
+    }
+
     console.log('✅ Migrations completed successfully');
   } catch (error) {
     console.error('❌ Error running migrations:', error);

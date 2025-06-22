@@ -308,7 +308,7 @@ export const CoffeeMap: React.FC = () => {
         setPopupPosition(null);
     };
 
-    const markerSize = 8;
+    const markerSize = 3;
 
     if (loading) {
         return <Loader variant='container' />;

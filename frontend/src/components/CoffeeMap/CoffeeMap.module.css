@@ -78,12 +78,12 @@
 .markerCircle {
     fill: var(--theme-text);
     stroke: var(--theme-secondary);
-    stroke-width: 2;
+    stroke-width: 0.5;
     transition: all 0.2s ease;
 }
 
 .markerCircle:hover {
-    stroke-width: 3;
+    stroke-width: 1;
 }
 
 .error {

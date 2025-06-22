@@ -435,7 +435,7 @@ export const OwnerInventory: React.FC = () => {
     }
 
     const sidebar =
-        filteredInventory.length > 0 ? (
+        inventory.filter((item) => item.stock > 0).length > 0 ? (
             <OwnerInventorySidebar
                 filters={filters}
                 availableFilters={availableFilters}

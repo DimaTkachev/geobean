@@ -1,0 +1,70 @@
+.modalOverlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modalContent {
+    background-color: var(--theme-card);
+    padding: 32px;
+    border-radius: 12px;
+    text-align: center;
+    position: relative;
+    min-width: 300px;
+    box-shadow: 0 8px 32px var(--theme-shadow);
+}
+
+.closeButton {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--theme-text);
+}
+
+.title {
+    font-weight: 600;
+    font-size: 22px;
+    margin-bottom: 16px;
+    color: var(--theme-text);
+}
+
+.message {
+    margin-bottom: 24px;
+    color: var(--theme-text);
+}
+
+.buttonContainer {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+}
+
+.cancelButton {
+    background: none;
+    border: 1px solid var(--theme-border);
+    color: var(--theme-text);
+    padding: 10px 24px;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    min-width: 100px;
+}
+
+.confirmButton {
+    background: var(--theme-text);
+    color: var(--theme-card);
+    border: none;
+    padding: 10px 24px;
+    border-radius: 4px;
+    font-weight: 600;
+    min-width: 100px;
+    cursor: pointer;
+}

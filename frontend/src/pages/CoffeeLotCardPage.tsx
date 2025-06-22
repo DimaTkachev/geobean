@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useAuth, useShop } from '@contexts/index';
 import { Tooltip } from '@components/Tooltip/Tooltip';
+import { AppLayout } from '@components/Layout';
 import styles from './CoffeeLotCardPage.module.css';
 import { Loader } from '@components/Loader';
 import { debouncedFetch } from '@utils/api';
-import { InfoIcon, MinusIcon, PlusIcon } from '@phosphor-icons/react';
+import { InfoIcon } from '@phosphor-icons/react';
 
 interface CoffeeLot {
     lotID: number;
@@ -32,11 +32,8 @@ interface AttributeInfo {
 
 export const CoffeeLotCardPage: React.FC = () => {
     const { lotID } = useParams<{ lotID: string }>();
-    const { user } = useAuth();
-    const { currentShop } = useShop();
     const [coffeeLot, setCoffeeLot] = useState<CoffeeLot | null>(null);
     const [attrInfo, setAttrInfo] = useState<AttributeInfo>({});
-    const [inventory, setInventory] = useState<number | null>(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -63,51 +60,7 @@ export const CoffeeLotCardPage: React.FC = () => {
         debouncedFetch('/api/coffee-lots/attribute-info')
             .then((res) => res.json())
             .then(setAttrInfo);
-        if (user && currentShop) {
-            const token = localStorage.getItem('authToken');
-            debouncedFetch(
-                `/api/shops/${currentShop.shopID}/inventory/${lotID}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            )
-                .then((res) => {
-                    if (res.ok) {
-                        return res.json();
-                    }
-                    return { stock: 0 };
-                })
-                .then((data) => setInventory(data.stock || 0));
-        }
-    }, [lotID, user, currentShop]);
-
-    const handleQuantity = async (change: number) => {
-        if (!currentShop || !user || !coffeeLot) return;
-        const newQuantity = Math.max(0, (inventory || 0) + change);
-        const token = localStorage.getItem('authToken');
-
-        try {
-            const response = await debouncedFetch(
-                `/api/shops/${currentShop.shopID}/inventory/${coffeeLot.lotID}`,
-                {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${token}`,
-                    },
-                    body: JSON.stringify({ stock: newQuantity }),
-                }
-            );
-
-            if (response.ok) {
-                setInventory(newQuantity);
-            }
-        } catch (error) {
-            console.error('Error updating inventory:', error);
-        }
-    };
+    }, []);
 
     const handleSupplierClick = () => {
         if (coffeeLot?.supplierLink) {
@@ -118,165 +71,145 @@ export const CoffeeLotCardPage: React.FC = () => {
     if (!coffeeLot) return <Loader variant='fullscreen' />;
 
     return (
-        <div className={styles.pageWrapper}>
-            <div className={styles.topSection}>
-                <div className={styles.imageSection}>
-                    {coffeeLot.image && (
-                        <img
-                            src={`/images/${coffeeLot.image}`}
-                            alt={coffeeLot.name}
-                            className={styles.image}
-                        />
-                    )}
-                    {user && (
-                        <div className={styles.inventoryControls}>
-                            <button
-                                className={styles.quantityBtn}
-                                onClick={() => handleQuantity(-1)}
-                                disabled={inventory === 0}
-                            >
-                                <MinusIcon
-                                    size={16}
-                                    color='var(--theme-card)'
-                                    weight='bold'
-                                />
-                            </button>
-                            <span className={styles.quantity}>
-                                {inventory ?? 0} шт
-                            </span>
-                            <button
-                                className={styles.quantityBtn}
-                                onClick={() => handleQuantity(1)}
-                            >
-                                <PlusIcon
-                                    size={16}
-                                    color='var(--theme-card)'
-                                    weight='bold'
-                                />
-                            </button>
+        <AppLayout title={coffeeLot.name}>
+            <div className={styles.pageWrapper}>
+                <div className={styles.topSection}>
+                    <div className={styles.imageSection}>
+                        {coffeeLot.image && (
+                            <img
+                                src={`/images/${coffeeLot.image}`}
+                                alt={coffeeLot.name}
+                                className={styles.image}
+                            />
+                        )}
+                    </div>
+                    <div className={styles.infoSection}>
+                        <h2 className={styles.name}>{coffeeLot.name}</h2>
+                        <div className={styles.roastingWeight}>
+                            под {coffeeLot.roasting}, {coffeeLot.weight}
                         </div>
-                    )}
-                </div>
-                <div className={styles.infoSection}>
-                    <h2 className={styles.name}>{coffeeLot.name}</h2>
-                    <div className={styles.roastingWeight}>
-                        под {coffeeLot.roasting}, {coffeeLot.weight}
-                    </div>
-                    <div className={styles.supplierSection}>
-                        Поставщик:{' '}
-                        <span
-                            className={styles.supplierLink}
-                            onClick={handleSupplierClick}
-                            style={{
-                                cursor: coffeeLot.supplierLink
-                                    ? 'pointer'
-                                    : 'default',
-                            }}
-                        >
-                            {coffeeLot.supplier}
-                        </span>
-                    </div>
+                        <div className={styles.supplierSection}>
+                            Поставщик:{' '}
+                            <span
+                                className={styles.supplierLink}
+                                onClick={handleSupplierClick}
+                                style={{
+                                    cursor: coffeeLot.supplierLink
+                                        ? 'pointer'
+                                        : 'default',
+                                }}
+                            >
+                                {coffeeLot.supplier}
+                            </span>
+                        </div>
 
-                    <ul className={styles.parameters}>
-                        <li className={styles.paramRow}>
-                            <div className={styles.paramLabelWrapper}>
-                                <span className={styles.paramLabel}>
-                                    Страна:
-                                </span>
-                                <Tooltip text={attrInfo['country'] || ''}>
-                                    <InfoIcon
-                                        size={16}
-                                        color='var(--theme-text-secondary)'
-                                        weight='bold'
-                                    />
-                                </Tooltip>
-                            </div>
-                            <span>{coffeeLot.country}</span>
-                        </li>
-                        <li className={styles.paramRow}>
-                            <div className={styles.paramLabelWrapper}>
-                                <span className={styles.paramLabel}>
-                                    Регион:
-                                </span>
-                                <Tooltip text={attrInfo['region'] || ''}>
-                                    <InfoIcon
-                                        size={16}
-                                        color='var(--theme-text-secondary)'
-                                        weight='bold'
-                                    />
-                                </Tooltip>
-                            </div>
-                            <span>{coffeeLot.region}</span>
-                        </li>
-                        <li className={styles.paramRow}>
-                            <div className={styles.paramLabelWrapper}>
-                                <span className={styles.paramLabel}>
-                                    Высота:
-                                </span>
-                                <Tooltip text={attrInfo['height'] || ''}>
-                                    <InfoIcon
-                                        size={16}
-                                        color='var(--theme-text-secondary)'
-                                        weight='bold'
-                                    />
-                                </Tooltip>
-                            </div>
-                            <span>{coffeeLot.height}</span>
-                        </li>
-                        <li className={styles.paramRow}>
-                            <div className={styles.paramLabelWrapper}>
-                                <span className={styles.paramLabel}>
-                                    Q-рейтинг:
-                                </span>
-                                <Tooltip text={attrInfo['qRate'] || ''}>
-                                    <InfoIcon
-                                        size={16}
-                                        color='var(--theme-text-secondary)'
-                                        weight='bold'
-                                    />
-                                </Tooltip>
-                            </div>
-                            <span>{coffeeLot.qRate}</span>
-                        </li>
-                        <li className={styles.paramRow}>
-                            <div className={styles.paramLabelWrapper}>
-                                <span className={styles.paramLabel}>
-                                    Способ обработки:
-                                </span>
-                                <Tooltip
-                                    text={attrInfo['processingMethod'] || ''}
-                                >
-                                    <InfoIcon
-                                        size={16}
-                                        color='var(--theme-text-secondary)'
-                                    />
-                                </Tooltip>
-                            </div>
-                            <span>{coffeeLot.processingMethod}</span>
-                        </li>
-                        <li className={styles.paramRow}>
-                            <div className={styles.paramLabelWrapper}>
-                                <span className={styles.paramLabel}>
-                                    Вкусовые ноты:
-                                </span>
-                                <Tooltip text={attrInfo['flavorNotes'] || ''}>
-                                    <InfoIcon
-                                        size={16}
-                                        color='var(--theme-text-secondary)'
-                                        weight='bold'
-                                    />
-                                </Tooltip>
-                            </div>
-                            <span>{coffeeLot.flavorNotes.join(', ')}</span>
-                        </li>
-                    </ul>
+                        <ul className={styles.parameters}>
+                            <li className={styles.paramRow}>
+                                <div className={styles.paramLabelWrapper}>
+                                    <span className={styles.paramLabel}>
+                                        Страна:
+                                    </span>
+                                    <Tooltip text={attrInfo['country'] || ''}>
+                                        <InfoIcon
+                                            size={16}
+                                            color='var(--theme-text-secondary)'
+                                            weight='bold'
+                                        />
+                                    </Tooltip>
+                                </div>
+                                <span>{coffeeLot.country}</span>
+                            </li>
+                            <li className={styles.paramRow}>
+                                <div className={styles.paramLabelWrapper}>
+                                    <span className={styles.paramLabel}>
+                                        Регион:
+                                    </span>
+                                    <Tooltip text={attrInfo['region'] || ''}>
+                                        <InfoIcon
+                                            size={16}
+                                            color='var(--theme-text-secondary)'
+                                            weight='bold'
+                                        />
+                                    </Tooltip>
+                                </div>
+                                <span>{coffeeLot.region}</span>
+                            </li>
+                            <li className={styles.paramRow}>
+                                <div className={styles.paramLabelWrapper}>
+                                    <span className={styles.paramLabel}>
+                                        Высота:
+                                    </span>
+                                    <Tooltip text={attrInfo['height'] || ''}>
+                                        <InfoIcon
+                                            size={16}
+                                            color='var(--theme-text-secondary)'
+                                            weight='bold'
+                                        />
+                                    </Tooltip>
+                                </div>
+                                <span>{coffeeLot.height}</span>
+                            </li>
+                            <li className={styles.paramRow}>
+                                <div className={styles.paramLabelWrapper}>
+                                    <span className={styles.paramLabel}>
+                                        Q-рейтинг:
+                                    </span>
+                                    <Tooltip text={attrInfo['qRate'] || ''}>
+                                        <InfoIcon
+                                            size={16}
+                                            color='var(--theme-text-secondary)'
+                                            weight='bold'
+                                        />
+                                    </Tooltip>
+                                </div>
+                                <span>{coffeeLot.qRate}</span>
+                            </li>
+                            <li className={styles.paramRow}>
+                                <div className={styles.paramLabelWrapper}>
+                                    <span className={styles.paramLabel}>
+                                        Способ обработки:
+                                    </span>
+                                    <Tooltip
+                                        text={
+                                            attrInfo['processingMethod'] || ''
+                                        }
+                                    >
+                                        <InfoIcon
+                                            size={16}
+                                            color='var(--theme-text-secondary)'
+                                        />
+                                    </Tooltip>
+                                </div>
+                                <span>{coffeeLot.processingMethod}</span>
+                            </li>
+                            <li className={styles.paramRow}>
+                                <div className={styles.paramLabelWrapper}>
+                                    <span className={styles.paramLabel}>
+                                        Вкусовые ноты:
+                                    </span>
+                                    <Tooltip
+                                        text={attrInfo['flavorNotes'] || ''}
+                                    >
+                                        <InfoIcon
+                                            size={16}
+                                            color='var(--theme-text-secondary)'
+                                            weight='bold'
+                                        />
+                                    </Tooltip>
+                                </div>
+                                <span>{coffeeLot.flavorNotes.join(', ')}</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div className={styles.descriptionSection}>
+                    <h4 className={styles.descriptionTitle}>Описание:</h4>
+                    <p className={styles.description}>
+                        {coffeeLot.description}
+                    </p>
                 </div>
             </div>
-            <div className={styles.descriptionSection}>
-                <h4 className={styles.descriptionTitle}>Описание:</h4>
-                <p className={styles.description}>{coffeeLot.description}</p>
-            </div>
-        </div>
+        </AppLayout>
     );
 };
 

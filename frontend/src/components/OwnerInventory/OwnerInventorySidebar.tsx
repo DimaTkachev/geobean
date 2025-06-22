@@ -110,6 +110,7 @@ export const OwnerInventorySidebar: React.FC<OwnerInventorySidebarProps> = ({
             />
 
             <FilterSection
+                key={`roasting-${availableFilters.roastingTypes.length}-${availableFilters.roastingTypes.join(',')}`}
                 title='Тип обжарки:'
                 type='checkbox'
                 options={availableFilters.roastingTypes}
@@ -120,6 +121,7 @@ export const OwnerInventorySidebar: React.FC<OwnerInventorySidebarProps> = ({
             />
 
             <FilterSection
+                key={`processing-${availableFilters.processingMethods.length}-${availableFilters.processingMethods.join(',')}`}
                 title='Способ обработки:'
                 type='checkbox'
                 options={availableFilters.processingMethods}
@@ -130,6 +132,7 @@ export const OwnerInventorySidebar: React.FC<OwnerInventorySidebarProps> = ({
             />
 
             <FilterSection
+                key={`taste-${availableFilters.tasteTags.length}-${availableFilters.tasteTags.join(',')}`}
                 title='Вкус кофе:'
                 type='checkbox'
                 options={availableFilters.tasteTags}
@@ -138,6 +141,7 @@ export const OwnerInventorySidebar: React.FC<OwnerInventorySidebarProps> = ({
             />
 
             <FilterSection
+                key={`suppliers-${availableFilters.suppliers.length}-${availableFilters.suppliers.join(',')}`}
                 title='Поставщик:'
                 type='checkbox'
                 options={availableFilters.suppliers}
@@ -146,6 +150,7 @@ export const OwnerInventorySidebar: React.FC<OwnerInventorySidebarProps> = ({
             />
 
             <FilterSection
+                key={`continents-${availableFilters.continents.length}-${availableFilters.continents.join(',')}`}
                 title='Континент:'
                 type='checkbox'
                 options={availableFilters.continents}

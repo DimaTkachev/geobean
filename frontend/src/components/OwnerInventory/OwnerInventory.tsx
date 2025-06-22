@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import cn from 'classnames';
 
@@ -84,6 +84,64 @@ export const OwnerInventory: React.FC = () => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [itemToDelete, setItemToDelete] = useState<number | null>(null);
 
+    const updateAvailableFilters = useCallback(
+        (inventoryData: InventoryItem[]) => {
+            // Only consider items with stock > 0 for available filters
+            const visibleItems = inventoryData.filter((item) => item.stock > 0);
+
+            const roastingTypes = [
+                ...new Set(visibleItems.map((item) => item.coffeeLot.roasting)),
+            ];
+            const processingMethods = [
+                ...new Set(
+                    visibleItems.map((item) => item.coffeeLot.processingMethod)
+                ),
+            ];
+            const suppliers = [
+                ...new Set(visibleItems.map((item) => item.coffeeLot.supplier)),
+            ];
+            const continents = [
+                ...new Set(
+                    visibleItems.map((item) => item.coffeeLot.continent)
+                ),
+            ];
+            const tasteTags = [
+                ...new Set(
+                    visibleItems.flatMap((item) => item.coffeeLot.tasteTags)
+                ),
+            ];
+
+            setAvailableFilters({
+                roastingTypes,
+                processingMethods,
+                suppliers,
+                continents,
+                tasteTags,
+            });
+
+            // Clean up selected filters if they no longer exist in visible inventory
+            setFilters((prev) => ({
+                ...prev,
+                roastingTypes: prev.roastingTypes.filter((type) =>
+                    roastingTypes.includes(type)
+                ),
+                processingMethods: prev.processingMethods.filter((method) =>
+                    processingMethods.includes(method)
+                ),
+                suppliers: prev.suppliers.filter((supplier) =>
+                    suppliers.includes(supplier)
+                ),
+                continents: prev.continents.filter((continent) =>
+                    continents.includes(continent)
+                ),
+                tasteTags: prev.tasteTags.filter((tag) =>
+                    tasteTags.includes(tag)
+                ),
+            }));
+        },
+        []
+    );
+
     useEffect(() => {
         if (!user) {
             navigate('/login');
@@ -116,35 +174,7 @@ export const OwnerInventory: React.FC = () => {
                 const data: InventoryItem[] = await response.json();
                 setInventory(data);
                 setFilteredInventory(data);
-
-                // Extract filter options from inventory
-                const roastingTypes = [
-                    ...new Set(data.map((item) => item.coffeeLot.roasting)),
-                ];
-                const processingMethods = [
-                    ...new Set(
-                        data.map((item) => item.coffeeLot.processingMethod)
-                    ),
-                ];
-                const suppliers = [
-                    ...new Set(data.map((item) => item.coffeeLot.supplier)),
-                ];
-                const continents = [
-                    ...new Set(data.map((item) => item.coffeeLot.continent)),
-                ];
-                const tasteTags = [
-                    ...new Set(
-                        data.flatMap((item) => item.coffeeLot.tasteTags)
-                    ),
-                ];
-
-                setAvailableFilters({
-                    roastingTypes,
-                    processingMethods,
-                    suppliers,
-                    continents,
-                    tasteTags,
-                });
+                updateAvailableFilters(data);
             } catch (err: unknown) {
                 const errorMessage =
                     err instanceof Error ? err.message : 'Unknown error';
@@ -295,11 +325,12 @@ export const OwnerInventory: React.FC = () => {
                 throw new Error('Failed to update stock');
             }
 
-            setInventory((prev) =>
-                prev.map((item) =>
-                    item.lotID === lotID ? { ...item, stock: newStock } : item
-                )
+            const updatedInventory = inventory.map((item) =>
+                item.lotID === lotID ? { ...item, stock: newStock } : item
             );
+
+            setInventory(updatedInventory);
+            updateAvailableFilters(updatedInventory);
 
             setSuccessMessage('Количество обновлено!');
             setShowSuccessPopup(true);
@@ -339,9 +370,12 @@ export const OwnerInventory: React.FC = () => {
                 throw new Error('Failed to remove from inventory');
             }
 
-            setInventory((prev) =>
-                prev.filter((item) => item.lotID !== itemToDelete)
+            const updatedInventory = inventory.filter(
+                (item) => item.lotID !== itemToDelete
             );
+
+            setInventory(updatedInventory);
+            updateAvailableFilters(updatedInventory);
 
             setSuccessMessage('Товар удален из инвентаря!');
             setShowSuccessPopup(true);
@@ -400,16 +434,17 @@ export const OwnerInventory: React.FC = () => {
         );
     }
 
-    const sidebar = (
-        <OwnerInventorySidebar
-            filters={filters}
-            availableFilters={availableFilters}
-            onFilterChange={handleFilterChange}
-            onSearchChange={handleSearchChange}
-            onStockFilterChange={handleStockFilterChange}
-            onClearFilters={clearFilters}
-        />
-    );
+    const sidebar =
+        filteredInventory.length > 0 ? (
+            <OwnerInventorySidebar
+                filters={filters}
+                availableFilters={availableFilters}
+                onFilterChange={handleFilterChange}
+                onSearchChange={handleSearchChange}
+                onStockFilterChange={handleStockFilterChange}
+                onClearFilters={clearFilters}
+            />
+        ) : undefined;
 
     return (
         <OwnerInventoryLayout sidebar={sidebar}>
@@ -417,11 +452,13 @@ export const OwnerInventory: React.FC = () => {
                 {filteredInventory.length === 0 ? (
                     <div className={styles.emptyState}>
                         <p>
-                            {inventory.length === 0
+                            {inventory.filter((item) => item.stock > 0)
+                                .length === 0
                                 ? 'В вашей кофейне пока ничего нет. Хотите добавить?'
                                 : 'Кофе не найден по заданным критериям'}
                         </p>
-                        {inventory.length === 0 && (
+                        {inventory.filter((item) => item.stock > 0).length ===
+                            0 && (
                             <Button
                                 onClick={() => navigate('/catalog')}
                                 className={styles.catalogButton}

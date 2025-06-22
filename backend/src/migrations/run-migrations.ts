@@ -10,6 +10,25 @@ interface DatabaseError extends Error {
   sqlMessage?: string;
 }
 
+const checkColumnExists = async (
+  tableName: string,
+  columnName: string,
+): Promise<boolean> => {
+  try {
+    const [results] = await sequelize.query(`
+      SELECT COLUMN_NAME 
+      FROM INFORMATION_SCHEMA.COLUMNS 
+      WHERE TABLE_SCHEMA = DATABASE() 
+      AND TABLE_NAME = '${tableName}' 
+      AND COLUMN_NAME = '${columnName}'
+    `);
+    return Array.isArray(results) && results.length > 0;
+  } catch (error) {
+    console.error(`Error checking if column ${columnName} exists:`, error);
+    return false;
+  }
+};
+
 const runMigrations = async (): Promise<void> => {
   try {
     // Run schema migrations
@@ -38,12 +57,15 @@ const runMigrations = async (): Promise<void> => {
       }
     }
 
-    // Run data migrations
+    // Run data migrations with INSERT IGNORE to avoid duplicates
     const dataMigrationFile = path.join(__dirname, '002_insert_data.sql');
     const dataSql = fs.readFileSync(dataMigrationFile, 'utf8');
 
+    // Replace INSERT INTO with INSERT IGNORE INTO to avoid duplicate errors
+    const safeSql = dataSql.replace(/INSERT INTO/gi, 'INSERT IGNORE INTO');
+
     // Split the SQL file into individual statements
-    const dataStatements = dataSql
+    const dataStatements = safeSql
       .split(';')
       .map(s => s.trim())
       .filter(s => s.length > 0);
@@ -87,7 +109,7 @@ const runMigrations = async (): Promise<void> => {
       }
     }
 
-    // Run additional insert and alter migration
+    // Run additional insert and alter migration with safer column addition
     const insertAndAlterMigrationFile = path.join(
       __dirname,
       '004_insert_and_alter.sql',
@@ -97,8 +119,14 @@ const runMigrations = async (): Promise<void> => {
       'utf8',
     );
 
+    // Replace INSERT INTO with INSERT IGNORE INTO
+    const safeInsertAndAlterSql = insertAndAlterSql.replace(
+      /INSERT INTO/gi,
+      'INSERT IGNORE INTO',
+    );
+
     // Split the SQL file into individual statements
-    const insertAndAlterStatements = insertAndAlterSql
+    const insertAndAlterStatements = safeInsertAndAlterSql
       .split(';')
       .map(s => s.trim())
       .filter(s => s.length > 0);
@@ -106,12 +134,27 @@ const runMigrations = async (): Promise<void> => {
     // Execute each statement separately
     for (const statement of insertAndAlterStatements) {
       try {
+        // Check if this is a column addition statement
+        if (statement.toLowerCase().includes('add column qrbase64')) {
+          const columnExists = await checkColumnExists('shop', 'qrBase64');
+          if (columnExists) {
+            console.log('Column qrBase64 already exists, skipping...');
+            continue;
+          }
+        }
+
         await sequelize.query(`${statement};`);
       } catch (error) {
-        // Log the error but continue with other statements
+        const dbError = error as DatabaseError;
+        // Skip duplicate column errors
+        if (dbError.message?.includes('Duplicate column name')) {
+          console.log('Column already exists, skipping...');
+          continue;
+        }
+        // Log other errors but continue
         console.error(
           'Error executing insert/alter statement:',
-          (error as DatabaseError).message,
+          dbError.message,
         );
       }
     }

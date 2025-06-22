@@ -3,8 +3,9 @@ import { useShop } from '@contexts/index';
 import { ShopContainer } from '@components/ShopContainer';
 import styles from './GuestAccess.module.css';
 import { Button } from '@/components/Button';
-import { CopyIcon } from '@phosphor-icons/react';
+import { CopyIcon, DownloadSimpleIcon } from '@phosphor-icons/react';
 import { Input } from '@/components/Input';
+import { debouncedFetch } from '@/utils/api';
 
 const GuestAccess: React.FC = () => {
     const { currentShop, refreshShops } = useShop();
@@ -34,7 +35,7 @@ const GuestAccess: React.FC = () => {
         setError(null);
         try {
             const token = localStorage.getItem('authToken');
-            const res = await fetch(
+            const res = await debouncedFetch(
                 `/api/shops/${currentShop.shopID}/generate-qr`,
                 {
                     method: 'POST',
@@ -58,6 +59,17 @@ const GuestAccess: React.FC = () => {
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleDownloadQr = () => {
+        if (!qrData || !currentShop) return;
+
+        const link = document.createElement('a');
+        link.href = qrData.qrCode;
+        link.download = `qr-${currentShop.name.replace(/[^a-zA-Z0-9]/g, '_')}.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     };
 
     return (
@@ -90,11 +102,20 @@ const GuestAccess: React.FC = () => {
                                 <CopyIcon size={20} color='white' />
                             </Button>
                         </div>
-                        <Button onClick={handleGenerateQr} disabled={loading}>
-                            {loading
-                                ? 'Генерируется...'
-                                : 'Сгенерировать новый QR-код'}
-                        </Button>
+                        <div className={styles.buttonContainer}>
+                            <Button onClick={handleDownloadQr} type='outline'>
+                                <DownloadSimpleIcon size={16} />
+                                Скачать QR-код
+                            </Button>
+                            <Button
+                                onClick={handleGenerateQr}
+                                disabled={loading}
+                            >
+                                {loading
+                                    ? 'Генерируется...'
+                                    : 'Сгенерировать новый QR-код'}
+                            </Button>
+                        </div>
                     </>
                 ) : (
                     <Button

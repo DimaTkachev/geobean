@@ -1,6 +1,11 @@
 import React from 'react';
 
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import {
+    BrowserRouter as Router,
+    Routes,
+    Route,
+    useLocation,
+} from 'react-router-dom';
 
 import { AuthProvider, useAuth } from '@contexts/index';
 import { ShopProvider, useShop } from '@contexts/index';
@@ -22,8 +27,10 @@ import styles from './App.module.css';
 const AppContent: React.FC = () => {
     const { isLoading: authLoading } = useAuth();
     const { isLoading: shopLoading } = useShop();
+    const location = useLocation();
 
     const isGlobalLoading = authLoading || shopLoading;
+    const isGuestPage = location.pathname.startsWith('/guest-inventory');
 
     if (isGlobalLoading) {
         return <Loader variant='container' />;
@@ -31,36 +38,40 @@ const AppContent: React.FC = () => {
 
     return (
         <div className={styles.app}>
-            <Router>
-                <Header />
-                <main className={styles.main}>
-                    <Routes>
-                        <Route path='/' element={<CoffeeMap />} />
-                        <Route path='/register' element={<Registration />} />
-                        <Route path='/login' element={<Login />} />
-                        <Route path='/create-shop' element={<CreateShop />} />
-                        <Route path='/catalog' element={<Catalog />} />
-                        <Route path='/inventory' element={<Inventory />} />
-                        <Route
-                            path='/coffee-lots/:lotID'
-                            element={<CoffeeLotCardPage />}
-                        />
-                        <Route path='/guest-access' element={<GuestAccess />} />
-                        <Route
-                            path='/guest-inventory/:shareUrl'
-                            element={<GuestInventory />}
-                        />
-                    </Routes>
-                </main>
-            </Router>
+            {!isGuestPage && <Header />}
+            <main className={styles.main}>
+                <Routes>
+                    <Route path='/' element={<CoffeeMap />} />
+                    <Route path='/register' element={<Registration />} />
+                    <Route path='/login' element={<Login />} />
+                    <Route path='/create-shop' element={<CreateShop />} />
+                    <Route path='/catalog' element={<Catalog />} />
+                    <Route path='/inventory' element={<Inventory />} />
+                    <Route
+                        path='/coffee-lots/:lotID'
+                        element={<CoffeeLotCardPage />}
+                    />
+                    <Route path='/guest-access' element={<GuestAccess />} />
+                    <Route
+                        path='/guest-inventory/:shareUrl'
+                        element={<GuestInventory />}
+                    />
+                </Routes>
+            </main>
         </div>
     );
 };
 
+const AppWithRouter: React.FC = () => (
+    <Router>
+        <AppContent />
+    </Router>
+);
+
 export const App: React.FC = () => (
     <AuthProvider>
         <ShopProvider>
-            <AppContent />
+            <AppWithRouter />
         </ShopProvider>
     </AuthProvider>
 );

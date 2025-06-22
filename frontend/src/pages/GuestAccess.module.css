@@ -49,6 +49,12 @@
     gap: 8px;
 }
 
+.buttonContainer {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
 .urlInput {
     width: 340px;
     padding: 10px;

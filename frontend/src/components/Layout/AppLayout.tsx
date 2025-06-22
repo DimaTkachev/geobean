@@ -9,6 +9,7 @@ interface AppLayoutProps {
     sidebar?: React.ReactNode;
     header?: React.ReactNode;
     className?: string;
+    showShopContainer?: boolean;
 }
 
 export const AppLayout: React.FC<AppLayoutProps> = ({
@@ -17,9 +18,10 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
     sidebar,
     header,
     className,
+    showShopContainer = true,
 }) => (
     <section className={classNames(styles.appLayout, className)}>
-        <ShopContainer />
+        {showShopContainer && <ShopContainer />}
         <div className={styles.appContent}>
             <div className={styles.header}>
                 <h2 className={styles.title}>{title}</h2>

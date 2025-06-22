@@ -10,12 +10,30 @@
 
 .emptyState {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 300px;
     color: #666;
     font-size: 18px;
     text-align: center;
+    gap: 20px;
+}
+
+.catalogButton {
+    background: var(--brown-80);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.catalogButton:hover {
+    background: var(--brown-60);
 }
 
 .inventoryCardBody {

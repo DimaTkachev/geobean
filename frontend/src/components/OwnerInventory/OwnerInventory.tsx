@@ -12,6 +12,7 @@ import { OwnerInventorySidebar } from './OwnerInventorySidebar';
 
 import styles from './OwnerInventory.module.css';
 import { PlusIcon, MinusIcon, TrashIcon } from '@phosphor-icons/react';
+import { Button } from '../Button';
 
 interface InventoryItem {
     lotID: number;
@@ -417,9 +418,17 @@ export const OwnerInventory: React.FC = () => {
                     <div className={styles.emptyState}>
                         <p>
                             {inventory.length === 0
-                                ? 'Ваш инвентарь пуст. Добавьте кофейные лоты из каталога.'
+                                ? 'В вашей кофейне пока ничего нет. Хотите добавить?'
                                 : 'Кофе не найден по заданным критериям'}
                         </p>
+                        {inventory.length === 0 && (
+                            <Button
+                                onClick={() => navigate('/catalog')}
+                                className={styles.catalogButton}
+                            >
+                                Перейти в каталог
+                            </Button>
+                        )}
                     </div>
                 ) : (
                     <div className={styles.inventoryGrid}>

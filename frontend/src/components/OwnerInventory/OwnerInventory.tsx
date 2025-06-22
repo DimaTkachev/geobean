@@ -565,11 +565,12 @@ export const OwnerInventory: React.FC = () => {
                                         onClick={() =>
                                             updateStock(
                                                 item.lotID,
-                                                item.stock + 1
+                                                Math.max(0, item.stock - 1)
                                             )
                                         }
+                                        disabled={item.stock <= 1}
                                     >
-                                        <PlusIcon
+                                        <MinusIcon
                                             size={12}
                                             color='var(--theme-card)'
                                             weight='bold'
@@ -586,12 +587,11 @@ export const OwnerInventory: React.FC = () => {
                                         onClick={() =>
                                             updateStock(
                                                 item.lotID,
-                                                Math.max(0, item.stock - 1)
+                                                item.stock + 1
                                             )
                                         }
-                                        disabled={item.stock === 0}
                                     >
-                                        <MinusIcon
+                                        <PlusIcon
                                             size={12}
                                             color='var(--theme-card)'
                                             weight='bold'

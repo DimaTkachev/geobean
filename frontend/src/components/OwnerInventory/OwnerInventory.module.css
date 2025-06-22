@@ -148,6 +148,10 @@
     cursor: not-allowed;
 }
 
+.inventoryStock button:disabled {
+    cursor: not-allowed;
+}
+
 .removeButton {
     border: none;
     cursor: pointer;

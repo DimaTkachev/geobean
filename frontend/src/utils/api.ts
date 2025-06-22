@@ -1,4 +1,19 @@
-const API_BASE_URL = 'http://localhost:5001';
+const getApiBaseUrl = () => {
+    const hostname = window.location.hostname;
+
+    if (hostname.includes('loca.lt')) {
+        return 'https://geobean-api.loca.lt';
+    }
+
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+        return 'http://localhost:5001';
+    }
+
+    // Для IP адресов в локальной сети
+    return `http://${hostname}:5001`;
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 const sleep = (ms: number): Promise<void> =>
     new Promise((resolve) => setTimeout(resolve, ms));
@@ -25,8 +40,24 @@ export const fetchApi = async <T>(
     const startTime = Date.now();
     const minDelay = isLocalhost() ? DELAY : 0;
 
+    // Добавляем заголовки для LocalTunnel
+    const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+        ...((options?.headers as Record<string, string>) || {}),
+    };
+
+    // Если используем LocalTunnel, добавляем заголовок для обхода пароля
+    if (API_BASE_URL.includes('loca.lt')) {
+        headers['bypass-tunnel-reminder'] = 'true';
+    }
+
+    const requestOptions = {
+        ...options,
+        headers,
+    };
+
     try {
-        const response = await fetch(fullUrl, options);
+        const response = await fetch(fullUrl, requestOptions);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -63,8 +94,24 @@ export const debouncedFetch = async (
     const startTime = Date.now();
     const minDelay = isLocalhost() ? DELAY : 0;
 
+    // Добавляем заголовки для LocalTunnel
+    const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+        ...((options?.headers as Record<string, string>) || {}),
+    };
+
+    // Если используем LocalTunnel, добавляем заголовок для обхода пароля
+    if (API_BASE_URL.includes('loca.lt')) {
+        headers['bypass-tunnel-reminder'] = 'true';
+    }
+
+    const requestOptions = {
+        ...options,
+        headers,
+    };
+
     try {
-        const response = await fetch(fullUrl, options);
+        const response = await fetch(fullUrl, requestOptions);
 
         if (minDelay > 0) {
             const elapsed = Date.now() - startTime;

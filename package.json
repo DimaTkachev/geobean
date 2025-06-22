@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Coffee bean tracking application",
   "scripts": {
-    "start": "ts-node backend/src/server.ts",
+    "start": "./scripts/app-start.sh",
     "dev": "nodemon",
     "build": "tsc",
     "lint": "eslint . --ext .ts,.tsx",
@@ -11,7 +11,11 @@
     "test": "jest",
     "typecheck": "tsc --noEmit",
     "prepare": "husky install",
-    "lint-staged": "lint-staged"
+    "lint-staged": "lint-staged",
+    "tunnel:start": "./scripts/tunnel-start.sh",
+    "tunnel:stop": "./scripts/tunnel-stop.sh",
+    "stop": "./scripts/app-stop.sh",
+    "backend:only": "ts-node backend/src/server.ts"
   },
   "lint-staged": {
     "**/*.{ts,tsx}": [

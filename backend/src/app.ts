@@ -15,7 +15,15 @@ const app = express();
 app.use(express.static(path.join(__dirname, '../../frontend/public')));
 
 const corsOptions = {
-  origin: ['http://localhost:3000', 'http://localhost:8080'],
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:8080',
+    'http://192.168.1.67:3000',
+    'https://gentle-kids-hug.loca.lt',
+    'https://geobean-app.loca.lt',
+    /^https:\/\/.*\.loca\.lt$/,
+    /^http:\/\/192\.168\.\d+\.\d+:3000$/,
+  ],
   optionsSuccessStatus: 200,
   credentials: true,
 };

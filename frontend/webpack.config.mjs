@@ -76,6 +76,12 @@ export default (env, argv) => {
             port: 3000,
             hot: true,
             historyApiFallback: true,
+            allowedHosts: [
+                'localhost',
+                '.loca.lt',
+                '.ngrok.io',
+                '.ngrok-free.app',
+            ],
             proxy: [
                 {
                     context: ['/api'],

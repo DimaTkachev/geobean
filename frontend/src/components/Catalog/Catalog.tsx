@@ -286,7 +286,7 @@ export const Catalog: React.FC = () => {
 
         try {
             const token = localStorage.getItem('authToken');
-            const response = await fetch(
+            const response = await debouncedFetch(
                 `/api/shops/${currentShop.shopID}/inventory`,
                 {
                     method: 'POST',

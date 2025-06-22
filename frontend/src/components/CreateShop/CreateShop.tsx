@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import styles from './CreateShop.module.css';
 import { Input } from '@components/Input';
 import { useShop } from '@contexts/index';
+import { fetchApi } from '@utils/api';
 
 const themes = [
     { value: 'beige', label: 'Бежевый', color: 'var(--brown-60)' },
@@ -45,7 +46,7 @@ export const CreateShop: React.FC = () => {
 
         try {
             const token = localStorage.getItem('authToken');
-            const response = await fetch('/api/shops', {
+            await fetchApi<ApiResponse>('/api/shops', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -53,12 +54,6 @@ export const CreateShop: React.FC = () => {
                 },
                 body: JSON.stringify({ name, theme: selectedTheme }),
             });
-
-            const data = (await response.json()) as ApiResponse;
-
-            if (!response.ok) {
-                throw new Error(data.message || 'Failed to create shop');
-            }
 
             await refreshShops();
 

@@ -1,5 +1,11 @@
 import path from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
+import TerserPlugin from 'terser-webpack-plugin';
+import CopyWebpackPlugin from 'copy-webpack-plugin';
+import CompressionPlugin from 'compression-webpack-plugin';
+import ImageMinimizerPlugin from 'image-minimizer-webpack-plugin';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -12,8 +18,76 @@ export default (env, argv) => {
         entry: './src/index.tsx',
         output: {
             path: path.resolve(__dirname, 'dist'),
-            filename: 'bundle.js',
+            filename: isProduction ? '[name].[contenthash].js' : '[name].js',
             publicPath: '/',
+            clean: true,
+        },
+        optimization: {
+            minimize: isProduction,
+            minimizer: [
+                new TerserPlugin({
+                    terserOptions: {
+                        compress: {
+                            drop_console: isProduction,
+                        },
+                    },
+                }),
+                new CssMinimizerPlugin(),
+                ...(isProduction
+                    ? [
+                          new ImageMinimizerPlugin({
+                              minimizer: {
+                                  implementation:
+                                      ImageMinimizerPlugin.imageminMinify,
+                                  options: {
+                                      plugins: [
+                                          [
+                                              'imagemin-mozjpeg',
+                                              {
+                                                  quality: 80,
+                                                  progressive: true,
+                                              },
+                                          ],
+                                          [
+                                              'imagemin-pngquant',
+                                              { quality: [0.6, 0.8] },
+                                          ],
+                                          [
+                                              'imagemin-gifsicle',
+                                              { optimizationLevel: 3 },
+                                          ],
+                                          [
+                                              'imagemin-svgo',
+                                              {
+                                                  plugins: [
+                                                      {
+                                                          name: 'preset-default',
+                                                          params: {
+                                                              overrides: {
+                                                                  removeViewBox: false,
+                                                              },
+                                                          },
+                                                      },
+                                                  ],
+                                              },
+                                          ],
+                                      ],
+                                  },
+                              },
+                          }),
+                      ]
+                    : []),
+            ],
+            splitChunks: {
+                chunks: 'all',
+                cacheGroups: {
+                    vendor: {
+                        test: /[\\/]node_modules[\\/]/,
+                        name: 'vendors',
+                        chunks: 'all',
+                    },
+                },
+            },
         },
         module: {
             rules: [
@@ -34,7 +108,9 @@ export default (env, argv) => {
                 {
                     test: /\.module\.css$/,
                     use: [
-                        'style-loader',
+                        isProduction
+                            ? MiniCssExtractPlugin.loader
+                            : 'style-loader',
                         {
                             loader: 'css-loader',
                             options: {
@@ -51,18 +127,80 @@ export default (env, argv) => {
                 {
                     test: /\.css$/,
                     exclude: /\.module\.css$/,
-                    use: ['style-loader', 'css-loader', 'postcss-loader'],
+                    use: [
+                        isProduction
+                            ? MiniCssExtractPlugin.loader
+                            : 'style-loader',
+                        'css-loader',
+                        'postcss-loader',
+                    ],
                 },
                 {
                     test: /\.svg$/,
                     use: ['@svgr/webpack'],
+                },
+                {
+                    test: /\.(png|jpg|jpeg|gif|webp)$/i,
+                    type: 'asset',
+                    generator: {
+                        filename: 'images/[name].[hash][ext]',
+                    },
+                    parser: {
+                        dataUrlCondition: {
+                            maxSize: isProduction ? 4 * 1024 : 8 * 1024,
+                        },
+                    },
+                },
+                {
+                    test: /\.(woff|woff2|eot|ttf|otf)$/i,
+                    type: 'asset/resource',
+                    generator: {
+                        filename: 'fonts/[name].[hash][ext]',
+                    },
                 },
             ],
         },
         plugins: [
             new HtmlWebpackPlugin({
                 template: './public/index.html',
+                minify: isProduction
+                    ? {
+                          removeComments: true,
+                          collapseWhitespace: true,
+                          removeRedundantAttributes: true,
+                          useShortDoctype: true,
+                          removeEmptyAttributes: true,
+                          removeStyleLinkTypeAttributes: true,
+                          keepClosingSlash: true,
+                          minifyJS: true,
+                          minifyCSS: true,
+                          minifyURLs: true,
+                      }
+                    : false,
             }),
+            ...(isProduction
+                ? [
+                      new MiniCssExtractPlugin({
+                          filename: 'css/[name].[contenthash].css',
+                          chunkFilename: 'css/[id].[contenthash].css',
+                      }),
+                      new CopyWebpackPlugin({
+                          patterns: [
+                              {
+                                  from: 'public/images',
+                                  to: 'images',
+                                  noErrorOnMissing: true,
+                              },
+                          ],
+                      }),
+                      new CompressionPlugin({
+                          algorithm: 'gzip',
+                          test: /\.(js|css|html|svg)$/,
+                          threshold: 8192,
+                          minRatio: 0.8,
+                      }),
+                  ]
+                : []),
         ],
         devServer: {
             static: [

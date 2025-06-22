@@ -3,6 +3,7 @@ import cn from 'classnames';
 import { useShop, useAuth } from '@contexts/index';
 import { Shop } from '@contexts/ShopContext';
 import { ShopModal } from '../ShopModal';
+import { fetchApi } from '@utils/api';
 import styles from './ShopContainer.module.css';
 import { PlusIcon } from '@phosphor-icons/react';
 
@@ -42,7 +43,7 @@ export const ShopContainer: React.FC = () => {
         const token = localStorage.getItem('authToken');
         try {
             if (modalMode === 'add') {
-                await fetch('/api/shops', {
+                await fetchApi('/api/shops', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -51,7 +52,7 @@ export const ShopContainer: React.FC = () => {
                     body: JSON.stringify({ name, theme }),
                 });
             } else if (modalMode === 'edit' && modalShop) {
-                await fetch(`/api/shops/${modalShop.shopID}`, {
+                await fetchApi(`/api/shops/${modalShop.shopID}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -74,7 +75,7 @@ export const ShopContainer: React.FC = () => {
         setModalLoading(true);
         const token = localStorage.getItem('authToken');
         try {
-            await fetch(`/api/shops/${modalShop.shopID}`, {
+            await fetchApi(`/api/shops/${modalShop.shopID}`, {
                 method: 'DELETE',
                 headers: { Authorization: `Bearer ${token}` },
             });

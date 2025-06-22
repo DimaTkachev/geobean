@@ -8,6 +8,7 @@ import React, {
 } from 'react';
 import { useAuth } from './AuthContext';
 import { useTheme } from '../hooks/useTheme';
+import { fetchApi } from '@utils/api';
 
 export interface Shop {
     shopID: number;
@@ -64,11 +65,9 @@ export const ShopProvider: React.FC<{ children: ReactNode }> = ({
         setIsLoading(true);
         try {
             const token = localStorage.getItem('authToken');
-            const res = await fetch('/api/shops', {
+            const data: Shop[] = await fetchApi('/api/shops', {
                 headers: { Authorization: `Bearer ${token}` },
             });
-            if (!res.ok) throw new Error('Ошибка загрузки кофеен');
-            const data: Shop[] = await res.json();
             setShops(data);
 
             const savedShopID = localStorage.getItem('currentShopID');

@@ -9,6 +9,7 @@ import { Input } from '@components/Input';
 import { Button } from '../Button';
 import { EyeIcon } from '@phosphor-icons/react';
 import { useAuth } from '@contexts/index';
+import { fetchApi } from '@utils/api';
 
 interface RegistrationFormData {
     email: string;
@@ -70,33 +71,26 @@ export const Registration: React.FC = () => {
         setIsLoading(true);
 
         try {
-            const response = await fetch('/api/auth/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    email: data.email,
-                    password: data.password,
-                }),
-            });
-
-            if (response.ok) {
-                const result = await response.json();
-                localStorage.setItem('authToken', result.token);
-                localStorage.setItem('user', JSON.stringify(result.user));
-
-                setUserAfterRegistration(result.user);
-
-                navigate('/create-shop');
-            } else {
-                const errorData = await response.json();
-                if (errorData.message?.includes('User already exists')) {
-                    setSubmitError('Пользователь с таким email уже существует');
-                } else {
-                    setSubmitError(errorData.message || 'Ошибка регистрации');
+            const result = await fetchApi<{ token: string; user: any }>(
+                '/api/auth/register',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: data.email,
+                        password: data.password,
+                    }),
                 }
-            }
+            );
+
+            localStorage.setItem('authToken', result.token);
+            localStorage.setItem('user', JSON.stringify(result.user));
+
+            setUserAfterRegistration(result.user);
+
+            navigate('/create-shop');
         } catch (error) {
             setSubmitError('Ошибка сети. Попробуйте еще раз.');
         } finally {

@@ -460,7 +460,7 @@ export const getGuestInventory = async (req: Request, res: Response) => {
             lotID: coffeeLot.lotID,
             name: coffeeLot.name,
             image: coffeeLot.image,
-            tasteFilter: coffeeLot.taste,
+            tasteFilter: coffeeLot.tasteFilter,
             Region: coffeeLot.Region,
             Roasting: coffeeLot.Roasting,
             ProcessingMethod: coffeeLot.ProcessingMethod,

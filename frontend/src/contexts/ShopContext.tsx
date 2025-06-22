@@ -7,6 +7,7 @@ import React, {
     useCallback,
 } from 'react';
 import { useAuth } from './AuthContext';
+import { useTheme } from '../hooks/useTheme';
 
 export interface Shop {
     shopID: number;
@@ -47,6 +48,8 @@ export const ShopProvider: React.FC<{ children: ReactNode }> = ({
         const saved = localStorage.getItem('isShopSidebarExpanded');
         return saved !== null ? JSON.parse(saved) : true;
     });
+
+    useTheme(currentShop?.theme);
 
     const setCurrentShop = (shop: Shop | null) => {
         setCurrentShopState(shop);

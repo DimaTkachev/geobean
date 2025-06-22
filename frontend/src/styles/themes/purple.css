@@ -1,0 +1,15 @@
+[data-theme='purple'] {
+    --theme-primary: var(--purple-0);
+    --theme-secondary: var(--purple-20);
+    --theme-accent: var(--purple-40);
+    --theme-text: var(--purple-100);
+    --theme-text-secondary: var(--purple-60);
+    --theme-border: var(--purple-40);
+    --theme-hover: var(--purple-40);
+    --theme-background: var(--purple-20);
+    --theme-card: var(--purple-0);
+    --theme-shadow: #663e7626;
+    --theme-button: var(--purple-60);
+    --theme-button-text: var(--purple-0);
+    --theme-gradient: var(--purple-linear);
+}

@@ -1,0 +1,51 @@
+.demo {
+    padding: 20px;
+    background: var(--theme-background);
+    border: 1px solid var(--theme-border);
+    margin: 20px;
+}
+
+.demo h3 {
+    color: var(--theme-text);
+    margin-bottom: 16px;
+}
+
+.buttons {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.themeButton {
+    padding: 8px 16px;
+    background: var(--theme-button);
+    color: var(--theme-button-text);
+    border: 1px solid var(--theme-button);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.themeButton:hover {
+    background: var(--theme-hover);
+}
+
+.preview {
+    margin-top: 20px;
+}
+
+.card {
+    background: var(--theme-card);
+    border: 1px solid var(--theme-border);
+    padding: 16px;
+    color: var(--theme-text);
+}
+
+.card h4 {
+    margin: 0 0 8px;
+    color: var(--theme-text);
+}
+
+.card p {
+    margin: 0;
+    color: var(--theme-text-secondary);
+}

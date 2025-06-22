@@ -12,6 +12,8 @@
     --purple-20: #f9e8ff;
     --purple-40: #c28cd4;
     --purple-60: #663e76;
+    --purple-80: #300c3c;
+    --purple-100: #1e0626;
     --purple-linear:
         linear-gradient(0deg, var(--purple-20), var(--purple-20)),
         linear-gradient(0deg, rgba(var(--error), 0.1), rgba(var(--error), 0.1));
@@ -19,6 +21,8 @@
     --blue-20: #e5f9ff;
     --blue-40: #8ccdd4;
     --blue-60: #3e6c76;
+    --blue-80: #0c2c3c;
+    --blue-100: #061b26;
     --blue-linear:
         linear-gradient(0deg, var(--blue-20), var(--blue-20)),
         linear-gradient(0deg, rgba(var(--error), 0.1), rgba(var(--error), 0.1));

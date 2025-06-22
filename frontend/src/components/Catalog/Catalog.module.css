@@ -28,8 +28,8 @@
     flex-direction: column;
     justify-content: space-between;
     overflow: hidden;
-    border-bottom: 1px solid var(--brown-40);
-    border-right: 1px solid var(--brown-40);
+    border-bottom: 1px solid var(--theme-border);
+    border-right: 1px solid var(--theme-border);
 }
 
 .coffeeLotInfo {
@@ -70,18 +70,18 @@
 }
 
 .inventoryStock {
-    background-color: var(--brown-60);
+    background-color: var(--theme-text-secondary);
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 600;
-    color: var(--brown-20);
+    color: var(--theme-card);
     padding: 10px;
 }
 
 .inventoryStockLabel {
     font-weight: 600;
-    color: var(--brown-20);
+    color: var(--theme-card);
 }
 
 .supplierDot {

@@ -1,10 +1,10 @@
 .header {
-    background: var(--brown-20);
+    background: var(--theme-background);
     position: sticky;
     top: 0;
     z-index: 1000;
     padding: 12px;
-    border-bottom: 1px solid var(--brown-40);
+    border-bottom: 1px solid var(--theme-border);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -32,7 +32,7 @@
 }
 
 .logoText {
-    color: var(--brown-100);
+    color: var(--theme-text);
     font-size: 20px;
     font-weight: 900;
 }

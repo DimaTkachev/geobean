@@ -1,0 +1,16 @@
+:root,
+[data-theme='beige'] {
+    --theme-primary: var(--brown-0);
+    --theme-secondary: var(--brown-20);
+    --theme-accent: var(--brown-40);
+    --theme-text: var(--brown-100);
+    --theme-text-secondary: var(--brown-80);
+    --theme-border: var(--brown-40);
+    --theme-hover: var(--brown-40);
+    --theme-background: var(--brown-20);
+    --theme-card: var(--brown-0);
+    --theme-shadow: #3c1f0c26;
+    --theme-button: var(--brown-100);
+    --theme-button-text: var(--brown-0);
+    --theme-gradient: var(--brown-linear);
+}

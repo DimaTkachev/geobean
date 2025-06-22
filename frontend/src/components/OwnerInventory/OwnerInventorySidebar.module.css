@@ -1,6 +1,6 @@
 .sidebar {
     width: 100%;
-    background-color: var(--brown-0);
+    background-color: var(--theme-primary);
     padding: 20px;
     overflow-y: auto;
 }
@@ -15,7 +15,7 @@
     font-size: 20px;
     font-weight: 700;
     margin: 0;
-    border-bottom: 2px solid var(--brown-100);
+    border-bottom: 2px solid var(--theme-text);
     padding-bottom: 8px;
 }
 
@@ -31,7 +31,7 @@
     font-size: 16px;
     font-weight: 600;
     margin: 0 0 12px;
-    color: var(--brown-100);
+    color: var(--theme-text);
 }
 
 .radioGroup {
@@ -50,29 +50,25 @@
 }
 
 .radioOption:hover {
-    background-color: var(--brown-10);
+    background-color: var(--theme-hover);
     border-radius: 4px;
 }
 
 .radioOption input[type='radio'] {
     margin: 0;
-    accent-color: var(--brown-60);
+    accent-color: var(--theme-text);
     width: 16px;
     height: 16px;
-    border: 1px solid var(--brown-60);
+    border: 1px solid var(--theme-text);
     border-radius: 50%;
-    appearance: none;
-    appearance: none;
-    appearance: none;
-    appearance: none;
     appearance: none;
 
     &:checked {
-        background-color: var(--brown-60);
+        background-color: var(--theme-text-secondary);
     }
 }
 
 .radioOption span {
-    color: var(--brown-100);
+    color: var(--theme-text);
     font-size: 14px;
 }

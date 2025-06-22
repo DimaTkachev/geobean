@@ -137,7 +137,7 @@ export const CoffeeLotCardPage: React.FC = () => {
                             >
                                 <MinusIcon
                                     size={16}
-                                    color='var(--brown-20)'
+                                    color='var(--theme-card)'
                                     weight='bold'
                                 />
                             </button>
@@ -150,7 +150,7 @@ export const CoffeeLotCardPage: React.FC = () => {
                             >
                                 <PlusIcon
                                     size={16}
-                                    color='var(--brown-20)'
+                                    color='var(--theme-card)'
                                     weight='bold'
                                 />
                             </button>
@@ -186,7 +186,7 @@ export const CoffeeLotCardPage: React.FC = () => {
                                 <Tooltip text={attrInfo['country'] || ''}>
                                     <InfoIcon
                                         size={16}
-                                        color='var(--brown-60)'
+                                        color='var(--theme-text-secondary)'
                                         weight='bold'
                                     />
                                 </Tooltip>
@@ -201,7 +201,7 @@ export const CoffeeLotCardPage: React.FC = () => {
                                 <Tooltip text={attrInfo['region'] || ''}>
                                     <InfoIcon
                                         size={16}
-                                        color='var(--brown-60)'
+                                        color='var(--theme-text-secondary)'
                                         weight='bold'
                                     />
                                 </Tooltip>
@@ -216,7 +216,7 @@ export const CoffeeLotCardPage: React.FC = () => {
                                 <Tooltip text={attrInfo['height'] || ''}>
                                     <InfoIcon
                                         size={16}
-                                        color='var(--brown-60)'
+                                        color='var(--theme-text-secondary)'
                                         weight='bold'
                                     />
                                 </Tooltip>
@@ -231,7 +231,7 @@ export const CoffeeLotCardPage: React.FC = () => {
                                 <Tooltip text={attrInfo['qRate'] || ''}>
                                     <InfoIcon
                                         size={16}
-                                        color='var(--brown-60)'
+                                        color='var(--theme-text-secondary)'
                                         weight='bold'
                                     />
                                 </Tooltip>
@@ -248,7 +248,7 @@ export const CoffeeLotCardPage: React.FC = () => {
                                 >
                                     <InfoIcon
                                         size={16}
-                                        color='var(--brown-60)'
+                                        color='var(--theme-text-secondary)'
                                     />
                                 </Tooltip>
                             </div>
@@ -262,7 +262,7 @@ export const CoffeeLotCardPage: React.FC = () => {
                                 <Tooltip text={attrInfo['flavorNotes'] || ''}>
                                     <InfoIcon
                                         size={16}
-                                        color='var(--brown-60)'
+                                        color='var(--theme-text-secondary)'
                                         weight='bold'
                                     />
                                 </Tooltip>

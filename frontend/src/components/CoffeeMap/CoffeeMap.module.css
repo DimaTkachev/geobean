@@ -10,34 +10,34 @@
 .container {
     display: flex;
     height: 100vh;
-    background-color: var(--brown-0);
+    background-color: var(--theme-card);
 }
 
 .header {
-    background-color: var(--brown-0);
+    background-color: var(--theme-card);
     padding: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-bottom: 1px solid var(--brown-40);
+    border-bottom: 1px solid var(--theme-border);
 }
 
 .title {
     font-size: 32px;
     font-weight: 900;
-    color: var(--brown-100);
+    color: var(--theme-text);
 }
 
 .searchContainer {
-    background-color: var(--brown-0);
+    background-color: var(--theme-card);
     padding: 18px;
-    border-bottom: 1px solid var(--brown-40);
+    border-bottom: 1px solid var(--theme-border);
 }
 
 .mapContainer {
     flex: 1;
     position: relative;
-    background-color: var(--brown-0);
+    background-color: var(--theme-card);
     overflow: hidden;
 }
 
@@ -47,8 +47,8 @@
 }
 
 .geography {
-    fill: var(--brown-60);
-    stroke: var(--brown-40);
+    fill: var(--theme-text-secondary);
+    stroke: var(--theme-border);
     stroke-width: 0.5;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -59,16 +59,16 @@
 }
 
 .geography:hover {
-    fill: var(--brown-80);
+    fill: var(--theme-text);
     stroke-width: 1;
 }
 
 .geography.hasMarkers {
-    fill: var(--brown-80);
+    fill: var(--theme-text);
 }
 
 .geography.hasMarkers:hover {
-    fill: var(--brown-80);
+    fill: var(--theme-text);
 }
 
 .marker {
@@ -76,8 +76,8 @@
 }
 
 .markerCircle {
-    fill: var(--brown-80);
-    stroke: var(--brown-20);
+    fill: var(--theme-text);
+    stroke: var(--theme-secondary);
     stroke-width: 2;
     transition: all 0.2s ease;
 }
@@ -133,8 +133,8 @@
     font-family: Inter, sans-serif;
     display: flex;
     align-items: flex-start;
-    background: #ffefe4;
-    box-shadow: 0 0 10px 0 #260e060d;
+    background: var(--theme-card);
+    box-shadow: 0 0 10px 0 var(--theme-shadow);
     padding: 20px;
     min-width: 380px;
     max-width: 500px;
@@ -148,7 +148,7 @@
     height: 60px;
     object-fit: contain;
     border-radius: 8px;
-    background: var(--brown-20);
+    background: var(--theme-secondary);
 }
 
 .markerPopupInfo {
@@ -161,7 +161,7 @@
 .markerPopupName {
     font-size: 15px;
     font-weight: 500;
-    color: var(--brown-100);
+    color: var(--theme-text);
     margin-bottom: 2px;
     cursor: pointer;
 }

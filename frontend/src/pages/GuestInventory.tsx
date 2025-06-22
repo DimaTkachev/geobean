@@ -16,6 +16,7 @@ import { Button } from '@components/Button';
 import { FilterSection } from '@components/CoffeeMap/FilterSection';
 import { AppLayout } from '@components/Layout/AppLayout';
 import { debouncedFetch } from '@utils/api';
+import { useTheme } from '@hooks/useTheme';
 import Logo from '@assets/images/logo.svg';
 import cn from 'classnames';
 
@@ -107,6 +108,9 @@ const GuestInventory: React.FC = () => {
         tasteTags: [] as string[],
         suppliers: [] as string[],
     });
+
+    // Apply theme based on shop data
+    useTheme(data?.shop?.theme as 'beige' | 'purple' | 'blue');
 
     useEffect(() => {
         if (!shareUrl) return;

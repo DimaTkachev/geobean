@@ -70,7 +70,7 @@ export const ShopModal: React.FC<ShopModalProps> = ({
                     className={styles.closeButton}
                     aria-label='Закрыть'
                 >
-                    <XIcon size={20} weight='bold' color='var(--brown-100)' />
+                    <XIcon size={20} weight='bold' color='var(--theme-text)' />
                 </button>
                 <h2 className={styles.title}>
                     {mode === 'add'

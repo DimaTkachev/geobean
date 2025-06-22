@@ -11,18 +11,18 @@
 }
 
 .header {
-    background-color: var(--brown-0);
+    background-color: var(--theme-card);
     padding: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-bottom: 1px solid var(--brown-40);
+    border-bottom: 1px solid var(--theme-border);
 }
 
 .title {
     font-size: 32px;
     font-weight: 900;
-    color: var(--brown-100);
+    color: var(--theme-text);
     text-align: center;
     margin: 0;
 }
@@ -36,19 +36,19 @@
 .container {
     display: flex;
     flex: 1;
-    background-color: var(--brown-0);
+    background-color: var(--theme-card);
     min-height: 0;
 }
 
 .sidebarContainer {
     flex-shrink: 0;
-    border-right: 1px solid var(--brown-40);
+    border-right: 1px solid var(--theme-border);
 }
 
 .mainContent {
     flex: 1;
     position: relative;
-    background-color: var(--brown-0);
+    background-color: var(--theme-card);
     overflow: hidden;
     display: flex;
     flex-direction: column;

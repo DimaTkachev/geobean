@@ -15,7 +15,7 @@ interface LoaderProps {
 export const Loader: React.FC<LoaderProps> = ({
     variant = 'center',
     size = 50,
-    color = 'var(--brown-100)',
+    color = 'var(--theme-text)',
     text,
     className,
 }) => {

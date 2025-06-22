@@ -1,6 +1,6 @@
 .sidebar {
     width: 100%;
-    background-color: var(--brown-0);
+    background-color: var(--theme-card);
     padding: 20px;
     overflow-y: auto;
 }
@@ -15,7 +15,7 @@
     font-size: 20px;
     font-weight: 700;
     margin: 0;
-    border-bottom: 2px solid var(--brown-100);
+    border-bottom: 2px solid var(--theme-text);
     padding-bottom: 8px;
 }
 

@@ -450,13 +450,13 @@ export const Catalog: React.FC = () => {
                                             ) > 0 ? (
                                                 <CheckIcon
                                                     size={14}
-                                                    color='var(--brown-20)'
+                                                    color='var(--theme-card)'
                                                     weight='bold'
                                                 />
                                             ) : (
                                                 <PlusIcon
                                                     size={14}
-                                                    color='var(--brown-20)'
+                                                    color='var(--theme-card)'
                                                     weight='bold'
                                                 />
                                             )}

@@ -571,7 +571,7 @@ export const OwnerInventory: React.FC = () => {
                                     >
                                         <PlusIcon
                                             size={12}
-                                            color='var(--brown-20)'
+                                            color='var(--theme-card)'
                                             weight='bold'
                                         />
                                     </button>
@@ -593,7 +593,7 @@ export const OwnerInventory: React.FC = () => {
                                     >
                                         <MinusIcon
                                             size={12}
-                                            color='var(--brown-20)'
+                                            color='var(--theme-card)'
                                             weight='bold'
                                         />
                                     </button>

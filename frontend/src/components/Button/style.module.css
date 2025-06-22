@@ -21,36 +21,36 @@
 
     &.outline {
         background: transparent;
-        border: 1px solid var(--brown-40);
-        color: var(--brown-40);
+        border: 1px solid var(--theme-border);
+        color: var(--theme-border);
         transition: all 0.2s ease;
 
         &.active {
-            border: 1px solid var(--brown-80);
-            color: var(--brown-80);
+            border: 1px solid var(--theme-text-secondary);
+            color: var(--theme-text-secondary);
         }
 
         &:hover:not(.disabled) {
-            border: 1px solid var(--brown-100);
-            color: var(--brown-100);
+            border: 1px solid var(--theme-text);
+            color: var(--theme-text);
         }
     }
 
     &.filled {
-        background: var(--brown-40);
-        color: var(--brown-0);
-        border: 1px solid var(--brown-40);
+        background: var(--theme-button);
+        color: var(--theme-button-text);
+        border: 1px solid var(--theme-button);
 
         &.active {
-            color: var(--brown-0);
-            background: var(--brown-80);
-            border: 1px solid var(--brown-80);
+            color: var(--theme-button-text);
+            background: var(--theme-text-secondary);
+            border: 1px solid var(--theme-text-secondary);
         }
 
         &:hover:not(.disabled) {
-            background: var(--brown-100);
-            border: 1px solid var(--brown-100);
-            color: var(--brown-0);
+            background: var(--theme-text);
+            border: 1px solid var(--theme-text);
+            color: var(--theme-button-text);
         }
     }
 }

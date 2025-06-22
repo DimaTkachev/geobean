@@ -1,0 +1,15 @@
+[data-theme='blue'] {
+    --theme-primary: var(--blue-0);
+    --theme-secondary: var(--blue-20);
+    --theme-accent: var(--blue-40);
+    --theme-text: var(--blue-100);
+    --theme-text-secondary: var(--blue-60);
+    --theme-border: var(--blue-40);
+    --theme-hover: var(--blue-40);
+    --theme-background: var(--blue-20);
+    --theme-card: var(--blue-0);
+    --theme-shadow: #3e6c7626;
+    --theme-button: var(--blue-60);
+    --theme-button-text: var(--blue-0);
+    --theme-gradient: var(--blue-linear);
+}

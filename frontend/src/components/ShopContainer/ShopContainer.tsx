@@ -146,7 +146,7 @@ export const ShopContainer: React.FC = () => {
                         <PlusIcon
                             size={16}
                             weight='bold'
-                            color='var(--brown-60)'
+                            color='var(--theme-text-secondary)'
                         />
                     </div>
                     {!isShopSidebarExpanded && (

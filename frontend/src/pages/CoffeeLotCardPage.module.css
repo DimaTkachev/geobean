@@ -1,7 +1,7 @@
 .pageWrapper {
     display: flex;
     flex-direction: column;
-    background: var(--brown-0);
+    background: var(--theme-card);
 }
 
 .topSection {
@@ -19,7 +19,7 @@
 .image {
     object-fit: contain;
     border-radius: 8px;
-    background: #f5e0d1;
+    background: var(--theme-secondary);
     box-shadow: 0 1px 6px rgba(0, 0, 0, 0.04);
     margin-bottom: 12px;
 }
@@ -27,8 +27,8 @@
 .infoSection {
     flex: 1;
     padding: 30px;
-    border-bottom: 1px solid var(--brown-40);
-    border-left: 1px solid var(--brown-40);
+    border-bottom: 1px solid var(--theme-border);
+    border-left: 1px solid var(--theme-border);
 }
 
 .name {
@@ -41,7 +41,7 @@
     display: flex;
     align-items: center;
     padding: 12px 0;
-    border-bottom: 1px dashed var(--brown-40);
+    border-bottom: 1px dashed var(--theme-border);
 
     &:last-child {
         border-bottom: none;
@@ -50,11 +50,11 @@
 
 .roastingWeight {
     margin-bottom: 24px;
-    color: var(--brown-80);
+    color: var(--theme-text-secondary);
 }
 
 .supplierSection {
-    color: var(--brown-80);
+    color: var(--theme-text-secondary);
 
     margin-bottom: 24px;
 }
@@ -81,7 +81,7 @@
 }
 
 .inventoryControls {
-    background-color: var(--brown-60);
+    background-color: var(--theme-text-secondary);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -92,7 +92,7 @@
 
 .quantity {
     font-weight: 600;
-    color: var(--brown-20);
+    color: var(--theme-card);
 }
 
 .descriptionTitle {

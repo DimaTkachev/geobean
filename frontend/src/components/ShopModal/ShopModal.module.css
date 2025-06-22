@@ -12,7 +12,7 @@
 }
 
 .modalContent {
-    background: var(--brown-20);
+    background: var(--theme-background);
     min-width: 440px;
     padding: 20px;
     position: relative;
@@ -80,7 +80,7 @@
 }
 
 .themeButtonSelected {
-    border: 2px solid var(--brown-80);
+    border: 2px solid var(--theme-text);
 }
 
 .buttonContainer {
@@ -92,8 +92,8 @@
 
 .deleteButton {
     background: none;
-    border: 1px solid #a67c3a;
-    color: #3c1f0c;
+    border: 1px solid var(--theme-border);
+    color: var(--theme-text);
     padding: 10px 24px;
     border-radius: 4px;
     font-weight: 500;

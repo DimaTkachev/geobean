@@ -1,7 +1,7 @@
 .guestAccessContainer {
     display: flex;
     height: 100vh;
-    background: var(--brown-20);
+    background: var(--theme-background);
 }
 
 .mainContent {
@@ -10,14 +10,14 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: var(--brown-20);
+    background: var(--theme-background);
 }
 
 .title {
     font-size: 38px;
     font-weight: 700;
     margin-bottom: 18px;
-    color: var(--brown-100);
+    color: var(--theme-text);
     text-align: center;
 }
 
@@ -25,7 +25,7 @@
     margin-bottom: 32px;
     max-width: 440px;
     text-align: center;
-    color: var(--brown-100);
+    color: var(--theme-text);
     font-size: 18px;
 }
 
@@ -60,14 +60,14 @@
     padding: 10px;
     font-size: 17px;
     border-radius: 6px;
-    border: 1px solid var(--brown-50);
-    background: var(--white);
-    color: var(--brown-100);
+    border: 1px solid var(--theme-border);
+    background: var(--theme-card);
+    color: var(--theme-text);
 }
 
 .copyButton {
-    background: var(--brown-60);
-    color: var(--white);
+    background: var(--theme-button);
+    color: var(--theme-button-text);
     border: none;
     border-radius: 6px;
     padding: 8px 12px;
@@ -77,12 +77,12 @@
 }
 
 .copyButton:hover {
-    background: var(--brown-70);
+    background: var(--theme-hover);
 }
 
 .generateButton {
-    background: var(--brown-60);
-    color: var(--white);
+    background: var(--theme-button);
+    color: var(--theme-button-text);
     padding: 14px 38px;
     font-size: 18px;
     border: none;
@@ -93,7 +93,7 @@
 }
 
 .generateButton:hover:not(:disabled) {
-    background: var(--brown-70);
+    background: var(--theme-hover);
 }
 
 .generateButton:disabled {

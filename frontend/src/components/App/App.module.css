@@ -13,11 +13,11 @@
     align-items: center;
     height: 100%;
     width: 100%;
-    background-color: var(--brown-0);
+    background-color: var(--theme-card);
 }
 
 .title {
-    color: var(--brown-100);
+    color: var(--theme-text);
     font-weight: 600;
 }
 
@@ -31,11 +31,11 @@
     font-family: Inter, sans-serif;
     font-optical-sizing: auto;
     font-weight: 400;
-    color: var(--brown-100);
+    color: var(--theme-text);
     font-style: normal;
     line-height: 1.1;
 }
 
 html {
-    background-color: var(--brown-0);
+    background-color: var(--theme-card);
 }

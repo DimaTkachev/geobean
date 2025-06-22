@@ -1,6 +1,6 @@
 .shopsContainer {
-    background-color: var(--brown-20);
-    border-right: 1px solid var(--brown-40);
+    background-color: var(--theme-background);
+    border-right: 1px solid var(--theme-border);
     width: 300px;
     display: flex;
     flex-direction: column;
@@ -25,12 +25,12 @@
     transition: background-color 150ms ease;
 
     &:hover {
-        background-color: var(--brown-40);
+        background-color: var(--theme-hover);
     }
 }
 
 .shopItemSelected {
-    background-color: var(--brown-40);
+    background-color: var(--theme-hover);
 }
 
 .shopAvatar {
@@ -41,15 +41,15 @@
 }
 
 .shopAvatarBeige {
-    background: #8b6a4a;
+    background: var(--brown-60);
 }
 
 .shopAvatarPurple {
-    background: #6c4a8b;
+    background: var(--purple-60);
 }
 
 .shopAvatarBlue {
-    background: #4a6a8b;
+    background: var(--blue-60);
 }
 
 .shopName {
@@ -78,8 +78,8 @@
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    color: var(--brown-60);
-    border: 1px solid var(--brown-60);
+    color: var(--theme-text-secondary);
+    border: 1px solid var(--theme-text-secondary);
     cursor: pointer;
     display: flex;
     align-items: center;

@@ -1,7 +1,7 @@
 .sidebar {
     width: 300px;
-    background-color: var(--brown-0);
-    border-right: 1px solid var(--brown-40);
+    background-color: var(--theme-card);
+    border-right: 1px solid var(--theme-border);
     padding: 20px;
     overflow-y: auto;
 }
@@ -16,7 +16,7 @@
     font-size: 20px;
     font-weight: 700;
     margin: 0;
-    border-bottom: 2px solid var(--brown-100);
+    border-bottom: 2px solid var(--theme-text);
     padding-bottom: 8px;
 }
 

@@ -10,7 +10,7 @@ import { CatalogSidebar } from './CatalogSidebar';
 import { debouncedFetch } from '@utils/api';
 
 import styles from './Catalog.module.css';
-import { PlusIcon, MinusIcon } from '@phosphor-icons/react';
+import { PlusIcon, CheckIcon } from '@phosphor-icons/react';
 
 interface CoffeeLot {
     coffeeLotID: number;
@@ -278,6 +278,12 @@ export const Catalog: React.FC = () => {
             return;
         }
 
+        // Check if item is already in inventory
+        const currentStock = getInventoryStock(coffeeLotID);
+        if (currentStock > 0) {
+            return; // Don't add if already in inventory
+        }
+
         try {
             const token = localStorage.getItem('authToken');
             const response = await fetch(
@@ -300,20 +306,7 @@ export const Catalog: React.FC = () => {
             }
 
             // Update inventory state locally
-            setInventory((prev) => {
-                const existingItem = prev.find(
-                    (item) => item.lotID === coffeeLotID
-                );
-                if (existingItem) {
-                    return prev.map((item) =>
-                        item.lotID === coffeeLotID
-                            ? { ...item, stock: item.stock + 1 }
-                            : item
-                    );
-                } else {
-                    return [...prev, { lotID: coffeeLotID, stock: 1 }];
-                }
-            });
+            setInventory((prev) => [...prev, { lotID: coffeeLotID, stock: 1 }]);
 
             setSuccessMessage('Кофе добавлен в инвентарь!');
             setShowSuccessPopup(true);
@@ -327,71 +320,6 @@ export const Catalog: React.FC = () => {
                 error instanceof Error ? error.message : 'Unknown error';
             console.error('Error adding to inventory:', error);
             showError('Ошибка при добавлении в инвентарь: ' + errorMessage);
-        }
-    };
-
-    const handleRemoveFromInventory = async (coffeeLotID: number) => {
-        if (!currentShop) {
-            return;
-        }
-
-        const currentStock = getInventoryStock(coffeeLotID);
-        if (currentStock === 0) {
-            return;
-        }
-
-        const newStock = currentStock - 1;
-
-        try {
-            const token = localStorage.getItem('authToken');
-            const response = await fetch(
-                `/api/shops/${currentShop.shopID}/inventory/${coffeeLotID}`,
-                {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${token}`,
-                    },
-                    body: JSON.stringify({ stock: newStock }),
-                }
-            );
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(
-                    errorData.message || 'Failed to remove item from inventory'
-                );
-            }
-
-            // Update inventory state locally
-            setInventory((prev) => {
-                if (newStock === 0) {
-                    return prev.filter((item) => item.lotID !== coffeeLotID);
-                } else {
-                    return prev.map((item) =>
-                        item.lotID === coffeeLotID
-                            ? { ...item, stock: newStock }
-                            : item
-                    );
-                }
-            });
-
-            setSuccessMessage(
-                newStock === 0
-                    ? 'Товар удален из инвентаря!'
-                    : 'Количество уменьшено!'
-            );
-            setShowSuccessPopup(true);
-
-            setTimeout(() => {
-                setShowSuccessPopup(false);
-                setSuccessMessage('');
-            }, 3000);
-        } catch (error: unknown) {
-            const errorMessage =
-                error instanceof Error ? error.message : 'Unknown error';
-            console.error('Error removing from inventory:', error);
-            showError('Ошибка при удалении из инвентаря: ' + errorMessage);
         }
     };
 
@@ -507,44 +435,32 @@ export const Catalog: React.FC = () => {
                                     <div className={styles.inventoryStock}>
                                         <button
                                             onClick={() =>
-                                                handleAddToInventory(
+                                                getInventoryStock(
                                                     lot.coffeeLotID
-                                                )
+                                                ) > 0
+                                                    ? undefined
+                                                    : handleAddToInventory(
+                                                          lot.coffeeLotID
+                                                      )
                                             }
                                             disabled={!currentShop}
                                         >
-                                            <PlusIcon
-                                                size={12}
-                                                color='var(--brown-20)'
-                                                weight='bold'
-                                            />
-                                        </button>
-
-                                        <div
-                                            className={
-                                                styles.inventoryStockLabel
-                                            }
-                                        >
-                                            {getInventoryStock(lot.coffeeLotID)}{' '}
-                                            шт
-                                        </div>
-                                        {getInventoryStock(lot.coffeeLotID) >
-                                            0 && (
-                                            <button
-                                                onClick={() =>
-                                                    handleRemoveFromInventory(
-                                                        lot.coffeeLotID
-                                                    )
-                                                }
-                                                disabled={!currentShop}
-                                            >
-                                                <MinusIcon
-                                                    size={12}
+                                            {getInventoryStock(
+                                                lot.coffeeLotID
+                                            ) > 0 ? (
+                                                <CheckIcon
+                                                    size={14}
                                                     color='var(--brown-20)'
                                                     weight='bold'
                                                 />
-                                            </button>
-                                        )}
+                                            ) : (
+                                                <PlusIcon
+                                                    size={14}
+                                                    color='var(--brown-20)'
+                                                    weight='bold'
+                                                />
+                                            )}
+                                        </button>
                                     </div>
                                 )}
                             </div>

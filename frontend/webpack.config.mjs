@@ -53,6 +53,10 @@ export default (env, argv) => {
                     exclude: /\.module\.css$/,
                     use: ['style-loader', 'css-loader', 'postcss-loader'],
                 },
+                {
+                    test: /\.svg$/,
+                    use: ['@svgr/webpack'],
+                },
             ],
         },
         plugins: [

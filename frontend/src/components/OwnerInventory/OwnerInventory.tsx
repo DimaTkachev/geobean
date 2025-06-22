@@ -5,6 +5,7 @@ import cn from 'classnames';
 import { useShop } from '@contexts/index';
 import { useAuth } from '@contexts/index';
 import { Loader } from '@components/Loader';
+import { ConfirmationModal } from '@components/ConfirmationModal';
 import { debouncedFetch } from '@utils/api';
 import { OwnerInventoryLayout } from './OwnerInventoryLayout';
 import { OwnerInventorySidebar } from './OwnerInventorySidebar';
@@ -78,6 +79,9 @@ export const OwnerInventory: React.FC = () => {
     const [successMessage, setSuccessMessage] = useState('');
     const [showErrorPopup, setShowErrorPopup] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const [hoveredCard, setHoveredCard] = useState<number | null>(null);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [itemToDelete, setItemToDelete] = useState<number | null>(null);
 
     useEffect(() => {
         if (!user) {
@@ -156,6 +160,9 @@ export const OwnerInventory: React.FC = () => {
 
     useEffect(() => {
         let filtered = inventory;
+
+        // Always exclude items with stock <= 0
+        filtered = filtered.filter((item) => item.stock > 0);
 
         // Stock filter
         if (filters.stockFilter !== 'all') {
@@ -307,13 +314,18 @@ export const OwnerInventory: React.FC = () => {
         }
     };
 
-    const removeFromInventory = async (lotID: number) => {
-        if (!currentShop) return;
+    const handleDeleteClick = (lotID: number) => {
+        setItemToDelete(lotID);
+        setShowDeleteModal(true);
+    };
+
+    const handleDeleteConfirm = async () => {
+        if (!currentShop || !itemToDelete) return;
 
         try {
             const token = localStorage.getItem('authToken');
             const response = await debouncedFetch(
-                `/api/shops/${currentShop.shopID}/inventory/${lotID}`,
+                `/api/shops/${currentShop.shopID}/inventory/${itemToDelete}`,
                 {
                     method: 'DELETE',
                     headers: {
@@ -326,7 +338,9 @@ export const OwnerInventory: React.FC = () => {
                 throw new Error('Failed to remove from inventory');
             }
 
-            setInventory((prev) => prev.filter((item) => item.lotID !== lotID));
+            setInventory((prev) =>
+                prev.filter((item) => item.lotID !== itemToDelete)
+            );
 
             setSuccessMessage('Товар удален из инвентаря!');
             setShowSuccessPopup(true);
@@ -339,7 +353,15 @@ export const OwnerInventory: React.FC = () => {
                 error instanceof Error ? error.message : 'Unknown error';
             console.error('Error removing from inventory:', error);
             showError('Ошибка при удалении из инвентаря: ' + errorMessage);
+        } finally {
+            setShowDeleteModal(false);
+            setItemToDelete(null);
         }
+    };
+
+    const handleDeleteCancel = () => {
+        setShowDeleteModal(false);
+        setItemToDelete(null);
     };
 
     const handleCoffeeLotClick = (lotID: number): void => {
@@ -405,6 +427,8 @@ export const OwnerInventory: React.FC = () => {
                             <div
                                 key={item.lotID}
                                 className={styles.inventoryCard}
+                                onMouseEnter={() => setHoveredCard(item.lotID)}
+                                onMouseLeave={() => setHoveredCard(null)}
                             >
                                 <div className={styles.inventoryCardBody}>
                                     {item.coffeeLot.imageFilename && (
@@ -477,14 +501,29 @@ export const OwnerInventory: React.FC = () => {
                                     </div>
                                 </div>
                                 <div className={styles.inventoryStock}>
+                                    {hoveredCard === item.lotID && (
+                                        <button
+                                            onClick={() =>
+                                                handleDeleteClick(item.lotID)
+                                            }
+                                            className={styles.removeButton}
+                                            title='Удалить из инвентаря'
+                                        >
+                                            <TrashIcon
+                                                size={12}
+                                                weight='bold'
+                                            />
+                                        </button>
+                                    )}
                                     <button
                                         onClick={() =>
-                                            removeFromInventory(item.lotID)
+                                            updateStock(
+                                                item.lotID,
+                                                item.stock + 1
+                                            )
                                         }
-                                        className={styles.removeButton}
-                                        title='Удалить из инвентаря'
                                     >
-                                        <TrashIcon
+                                        <PlusIcon
                                             size={12}
                                             color='var(--brown-20)'
                                             weight='bold'
@@ -492,47 +531,26 @@ export const OwnerInventory: React.FC = () => {
                                     </button>
 
                                     <div className={styles.inventoryStockLabel}>
-                                        <span
-                                            className={cn(
-                                                styles.stockStatus,
-                                                getStockStatusClass(item.stock)
-                                            )}
-                                        >
+                                        <span className={styles.stockStatus}>
                                             {item.stock} шт
                                         </span>
                                     </div>
 
-                                    <div className={styles.stockControls}>
-                                        <button
-                                            onClick={() =>
-                                                updateStock(
-                                                    item.lotID,
-                                                    Math.max(0, item.stock - 1)
-                                                )
-                                            }
-                                            disabled={item.stock === 0}
-                                        >
-                                            <MinusIcon
-                                                size={12}
-                                                color='var(--brown-20)'
-                                                weight='bold'
-                                            />
-                                        </button>
-                                        <button
-                                            onClick={() =>
-                                                updateStock(
-                                                    item.lotID,
-                                                    item.stock + 1
-                                                )
-                                            }
-                                        >
-                                            <PlusIcon
-                                                size={12}
-                                                color='var(--brown-20)'
-                                                weight='bold'
-                                            />
-                                        </button>
-                                    </div>
+                                    <button
+                                        onClick={() =>
+                                            updateStock(
+                                                item.lotID,
+                                                Math.max(0, item.stock - 1)
+                                            )
+                                        }
+                                        disabled={item.stock === 0}
+                                    >
+                                        <MinusIcon
+                                            size={12}
+                                            color='var(--brown-20)'
+                                            weight='bold'
+                                        />
+                                    </button>
                                 </div>
                             </div>
                         ))}
@@ -547,6 +565,13 @@ export const OwnerInventory: React.FC = () => {
             {showErrorPopup && (
                 <div className={styles.errorPopup}>{errorMessage}</div>
             )}
+
+            <ConfirmationModal
+                isOpen={showDeleteModal}
+                message='Вы уверены, что хотите удалить этот товар из инвентаря?'
+                onConfirm={handleDeleteConfirm}
+                onCancel={handleDeleteCancel}
+            />
         </OwnerInventoryLayout>
     );
 };

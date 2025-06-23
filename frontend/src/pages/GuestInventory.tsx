@@ -296,7 +296,7 @@ const GuestInventory: React.FC = () => {
         setPopupPosition(null);
     };
 
-    const markerSize = 3;
+    const markerSize = 4.5;
 
     if (loading) return <Loader variant='fullscreen' />;
     if (error)
